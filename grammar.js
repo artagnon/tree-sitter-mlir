@@ -226,7 +226,7 @@ module.exports = grammar({
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
     //   attribute-value ::= attribute-alias | dialect-attribute |
     //   builtin-attribute
-    attribute_entry: $ => seq(choice($.bare_id, $.string_literal), '=',
+    attribute_entry: $ => seq(choice($.bare_id, $.string_literal), ':',
       $.attribute_value),
     attribute_value: $ => choice($.attribute_alias, $.dialect_attribute,
       $.builtin_attribute),
@@ -262,13 +262,14 @@ module.exports = grammar({
       seq('func.func', field('name', $.symbol_ref_id),
         field('arguments', $.block_arg_attr_list),
         field('return', optional($.function_return)),
+        field('attributes', optional(seq('attributes', $.dictionary_attribute))),
         field('body', optional($.region))),
 
       // operation ::= `func.return` attr - dict($operands ^ `:` type($operands)) ?
       seq('return', optional($.dictionary_attribute), optional($.value_id_and_type_list)),
     )),
     function_return: $ => seq('->', $.type_list_attr_parens),
-    block_arg_attr_list: $ => seq('(', $.value_id_and_type_attr_list, ')'),
+    block_arg_attr_list: $ => seq('(', optional($.value_id_and_type_attr_list), ')'),
     value_id_and_type_attr_list: $ => seq($.value_id_and_type_attr,
       repeat(seq(',', $.value_id_and_type_attr))),
     value_id_and_type_attr: $ => seq(optional(seq($.value_id, ':')), $.type,

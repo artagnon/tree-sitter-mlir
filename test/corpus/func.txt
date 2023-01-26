@@ -1,4 +1,15 @@
 ==========================================================================
+Function prototype
+==========================================================================
+func.func @abort()
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list)))))
+==========================================================================
 Simple function using func, arith dialects
 ==========================================================================
 func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
@@ -45,5 +56,90 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
                   (value_id_and_type_list
                     (value_id_and_type
                       (value_id)
+                      (type
+                        (builtin_type)))))))))))))
+==========================================================================
+Multiple return values
+==========================================================================
+func.func @count(%x: i64) -> (i64, i64) {
+  return %x, %x: i64, i64
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr_list
+            (value_id_and_type_attr
+              (value_id)
+              (type
+                (builtin_type)))))
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type))
+            (type
+              (builtin_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_id_and_type_list
+                    (value_id_and_type
+                      (value_id))
+                    (value_id_and_type
+                      (value_id)
+                      (type
+                        (builtin_type)))
+                    (value_id_and_type
+                      (type
+                        (builtin_type)))))))))))))
+==========================================================================
+Function with attribute
+==========================================================================
+func.func @count(%x: i64) -> (i64, i64)
+  attributes { fruit: "banana" } {
+  return %x, %x: i64, i64
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr_list
+            (value_id_and_type_attr
+              (value_id)
+              (type
+                (builtin_type)))))
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type))
+            (type
+              (builtin_type))))
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (builtin_attribute
+                (string_literal)))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_id_and_type_list
+                    (value_id_and_type
+                      (value_id))
+                    (value_id_and_type
+                      (value_id)
+                      (type
+                        (builtin_type)))
+                    (value_id_and_type
                       (type
                         (builtin_type)))))))))))))
