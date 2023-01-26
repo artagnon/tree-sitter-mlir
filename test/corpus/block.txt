@@ -1,0 +1,172 @@
+==========================================================================
+Simple branching with terminator statement, using cf, func, arith dialects
+==========================================================================
+func.func @simple(i64, i1) -> i64 {
+^bb0(%a: i64, %cond: i1): // Code dominated by ^bb0 may refer to %a
+  cf.cond_br %cond, ^bb1, ^bb2
+
+^bb1:
+  cf.br ^bb3(%a: i64)    // Branch passes %a as the argument
+
+^bb2:
+  %b = arith.addi %a, %a : i64
+  cf.br ^bb3(%b: i64)    // Branch passes %b as the argument
+
+// ^bb3 receives an argument, named %c, from predecessors
+// and passes it on to bb4 along with %a. %a is referenced
+// directly from its defining operation and is not passed through
+// an argument of ^bb3.
+^bb3(%c: i64):
+  cf.br ^bb4(%c, %a : i64, i64)
+
+^bb4(%d : i64, %e : i64):
+  %0 = arith.addi %d, %e : i64
+  return %0 : i64   // Return is also a terminator.
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        name: (symbol_ref_id)
+        arguments: (block_arg_attr_list
+          (value_id_and_type_attr_list
+            (value_id_and_type_attr
+              (type
+                (builtin_type)))
+            (value_id_and_type_attr
+              (type
+                (builtin_type)))))
+        return: (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type))))
+        body: (region
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_id_and_type_list
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type)))
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type))))))
+            (comment)
+            (operation
+              (custom_operation
+                (cf_dialect
+                  condition: (value_use
+                    (value_id))
+                  trueDest: (successor
+                    (caret_id))
+                  falseDest: (successor
+                    (caret_id))))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (cf_dialect
+                  successor: (successor
+                    (caret_id)
+                    (block_arg_list
+                      (value_id_and_type_list
+                        (value_id_and_type
+                          (value_id)
+                          (type
+                            (builtin_type))))))))))
+          (comment)
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  lhs: (value_use
+                    (value_id))
+                  rhs: (value_use
+                    (value_id))
+                  (type
+                    (builtin_type)))))
+            (operation
+              (custom_operation
+                (cf_dialect
+                  successor: (successor
+                    (caret_id)
+                    (block_arg_list
+                      (value_id_and_type_list
+                        (value_id_and_type
+                          (value_id)
+                          (type
+                            (builtin_type))))))))))
+          (comment)
+          (comment)
+          (comment)
+          (comment)
+          (comment)
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_id_and_type_list
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type))))))
+            (operation
+              (custom_operation
+                (cf_dialect
+                  successor: (successor
+                    (caret_id)
+                    (block_arg_list
+                      (value_id_and_type_list
+                        (value_id_and_type
+                          (value_id))
+                        (value_id_and_type
+                          (value_id)
+                          (type
+                            (builtin_type)))
+                        (value_id_and_type
+                          (type
+                            (builtin_type))))))))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_id_and_type_list
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type)))
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  lhs: (value_use
+                    (value_id))
+                  rhs: (value_use
+                    (value_id))
+                  (type
+                    (builtin_type)))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_id_and_type_list
+                    (value_id_and_type
+                      (value_id)
+                      (type
+                        (builtin_type))))))))
+          (comment))))))

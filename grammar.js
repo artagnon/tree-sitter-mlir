@@ -56,7 +56,7 @@ module.exports = grammar({
     //   value-use ::= value-id
     //   value-use-list ::= value-use (`,` value-use)*
     bare_id: $ => seq(token(/[a-zA-Z_]/),
-      token.immediate(repeat(/[a-zA-Z0-9_$]/))),
+      token.immediate(repeat(/[a-zA-Z0-9_$.]/))),
     bare_id_list: $ => seq($.bare_id, repeat(seq(',', $.bare_id))),
     value_id: $ => seq('%', $._suffix_id),
     alias_name: $ => $.bare_id,
@@ -98,7 +98,7 @@ module.exports = grammar({
     op_result: $ => seq($.value_id, optional(seq(':', $.integer_literal))),
     successor_list: $ => seq('[', $.successor, repeat(seq(',', $.successor)),
       ']'),
-    successor: $ => seq($.caret_id, optional(seq(':', $.block_arg_list))),
+    successor: $ => seq($.caret_id, optional($.block_arg_list)),
     region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
     dictionary_attribute: $ => seq(
       '{',
@@ -124,7 +124,7 @@ module.exports = grammar({
     block_label: $ => seq($._block_id, optional($.block_arg_list), ':'),
     _block_id: $ => $.caret_id,
     caret_id: $ => seq('^', $._suffix_id),
-    value_id_and_type: $ => seq($.value_id, ':', $.type),
+    value_id_and_type: $ => seq(choice(seq($.value_id, ':', $.type), $.value_id, $.type)),
     value_id_and_type_list: $ => seq($.value_id_and_type,
       repeat(seq(',', $.value_id_and_type))),
     block_arg_list: $ => seq('(', optional($.value_id_and_type_list), ')'),
@@ -246,12 +246,61 @@ module.exports = grammar({
       $.function_type,
       $.string_literal,
     ),
+
     // Comment (standard BCPL)
     comment: $ => token(seq('//', /.*/)),
+
+    // TODO: complete
     custom_operation: $ => choice(
-      // TODO: Just basic/incomplete instance.
-      seq('func', field('name', $.symbol_ref_id),
-        $.block_arg_list, '->', $.type, $.region),
+      $.func_dialect,
+      $.cf_dialect,
+      $.arith_dialect,
     ),
+
+    func_dialect: $ => prec.right(choice(
+      // func.func takes arguments, an optional return type, and and optional body
+      seq('func.func', field('name', $.symbol_ref_id),
+        field('arguments', $.block_arg_attr_list),
+        field('return', optional($.function_return)),
+        field('body', optional($.region))),
+
+      // operation ::= `func.return` attr - dict($operands ^ `:` type($operands)) ?
+      seq('return', optional($.dictionary_attribute), optional($.value_id_and_type_list)),
+    )),
+    function_return: $ => seq('->', $.type_list_attr_parens),
+    block_arg_attr_list: $ => seq('(', $.value_id_and_type_attr_list, ')'),
+    value_id_and_type_attr_list: $ => seq($.value_id_and_type_attr,
+      repeat(seq(',', $.value_id_and_type_attr))),
+    value_id_and_type_attr: $ => seq(optional(seq($.value_id, ':')), $.type,
+      optional($.dictionary_attribute)),
+    type_list_attr_parens: $ => prec.left(1, seq(optional('('), $.type,
+      optional($.dictionary_attribute), repeat(seq(',', $.type,
+        optional($.dictionary_attribute))), optional(')'))),
+
+    cf_dialect: $ => choice(
+      // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
+      seq('cf.br', field('successor', $.successor),
+        field('attributes', optional($.dictionary_attribute))),
+
+      // operation ::= `cf.cond_br` $condition `,`
+      // $trueDest(`(` $trueDestOperands ^ `:` type($trueDestOperands)`)`) ? `,`
+      //         $falseDest(`(` $falseDestOperands ^ `:` type($falseDestOperands)`)`) ?
+      //   attr - dict
+      seq('cf.cond_br', seq(
+        field('condition', $.value_use), ',',
+        field('trueDest', $.successor), ',',
+        field('falseDest', $.successor)),
+        optional($.dictionary_attribute)),
+    ),
+
+    arith_dialect: $ => choice(
+      // operation ::= `arith.addi` $lhs `,` $rhs attr-dict `:` type($result)
+      seq('arith.addi', seq(
+        field('lhs', $.value_use), ',',
+        field('rhs', $.value_use),
+        optional($.dictionary_attribute), ':',
+        $.type
+      ))
+    )
   }
 });
