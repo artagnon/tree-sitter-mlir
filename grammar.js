@@ -40,6 +40,7 @@ module.exports = grammar({
       repeat(token.immediate(prec(1, /[^\\"\n\f\v\r]+/))),
       '"',
     ),
+    literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, 'unit'),
 
     // Identifiers
     //   bare-id ::= (letter|[_]) (letter|digit|[_$.])*
@@ -220,13 +221,14 @@ module.exports = grammar({
     // Builtin types
     builtin_type: $ => choice(
       // TODO: Add builtin types
-      seq('i', repeat1(/[0-9]/))),
+      seq('i', repeat1(/[0-9]/)),
+      seq('f', repeat1(/[0-9]/))),
 
     // Attributes
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
     //   attribute-value ::= attribute-alias | dialect-attribute |
     //   builtin-attribute
-    attribute_entry: $ => seq(choice($.bare_id, $.string_literal), ':',
+    attribute_entry: $ => seq(choice($.bare_id, $.string_literal), choice('=', ':'),
       $.attribute_value),
     attribute_value: $ => choice($.attribute_alias, $.dialect_attribute,
       $.builtin_attribute),
@@ -243,8 +245,8 @@ module.exports = grammar({
     // Builtin Attribute Values
     builtin_attribute: $ => choice(
       // TODO
-      $.function_type,
-      $.string_literal,
+      $.type,
+      seq($.literal, optional(seq(':', $.type))),
     ),
 
     // Comment (standard BCPL)
@@ -272,11 +274,11 @@ module.exports = grammar({
     block_arg_attr_list: $ => seq('(', optional($.value_id_and_type_attr_list), ')'),
     value_id_and_type_attr_list: $ => seq($.value_id_and_type_attr,
       repeat(seq(',', $.value_id_and_type_attr))),
-    value_id_and_type_attr: $ => seq(optional(seq($.value_id, ':')), $.type,
+    value_id_and_type_attr: $ => seq(choice(seq($.value_id, ':', $.type), $.value_id, $.type),
       optional($.dictionary_attribute)),
-    type_list_attr_parens: $ => prec.left(1, seq(optional('('), $.type,
+    type_list_attr_parens: $ => choice($.type, seq('(', $.type,
       optional($.dictionary_attribute), repeat(seq(',', $.type,
-        optional($.dictionary_attribute))), optional(')'))),
+        optional($.dictionary_attribute))), ')')),
 
     cf_dialect: $ => choice(
       // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict

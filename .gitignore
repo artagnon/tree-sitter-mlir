@@ -3,3 +3,4 @@ src/
 bindings/
 binding.gyp
 Cargo.toml
+scratch.txt

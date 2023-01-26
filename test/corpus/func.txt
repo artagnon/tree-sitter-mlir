@@ -127,7 +127,8 @@ func.func @count(%x: i64) -> (i64, i64)
             (bare_id)
             (attribute_value
               (builtin_attribute
-                (string_literal)))))
+                (literal
+                  (string_literal))))))
         (region
           (entry_block
             (operation
@@ -143,3 +144,49 @@ func.func @count(%x: i64) -> (i64, i64)
                     (value_id_and_type
                       (type
                         (builtin_type)))))))))))))
+==========================================================================
+Function with result attribute
+==========================================================================
+func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list)
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type))
+            (dictionary_attribute
+              (attribute_entry
+                (bare_id)
+                (attribute_value
+                  (builtin_attribute
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type))))))))))))
+==========================================================================
+Function with argument attribute
+==========================================================================
+func.func @example_fn_arg(%x: i32 {swift.self = unit})
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr_list
+            (value_id_and_type_attr
+              (value_id)
+              (type
+                (builtin_type))
+              (dictionary_attribute
+                (attribute_entry
+                  (bare_id)
+                  (attribute_value
+                    (builtin_attribute
+                      (literal))))))))))))
