@@ -21,22 +21,25 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
   (operation
     (custom_operation
       (func_dialect
-        name: (symbol_ref_id)
-        arguments: (block_arg_attr_list
+        (symbol_ref_id)
+        (block_arg_attr_list
           (value_id_and_type_attr_list
             (value_id_and_type_attr
               (value_id)
               (type
-                (builtin_type)))
+                (builtin_type
+                  (integer_type))))
             (value_id_and_type_attr
               (value_id)
               (type
-                (builtin_type)))))
-        return: (function_return
+                (builtin_type
+                  (integer_type))))))
+        (function_return
           (type_list_attr_parens
             (type
-              (builtin_type))))
-        body: (region
+              (builtin_type
+                (integer_type)))))
+        (region
           (entry_block
             (operation
               (op_result_list
@@ -44,12 +47,13 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
                   (value_id)))
               (custom_operation
                 (arith_dialect
-                  lhs: (value_use
+                  (value_use
                     (value_id))
-                  rhs: (value_use
+                  (value_use
                     (value_id))
                   (type
-                    (builtin_type)))))
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (custom_operation
                 (func_dialect
@@ -57,7 +61,8 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
                     (value_id_and_type
                       (value_id)
                       (type
-                        (builtin_type)))))))))))))
+                        (builtin_type
+                          (integer_type))))))))))))))
 ==========================================================================
 Multiple return values
 ==========================================================================
@@ -75,13 +80,16 @@ func.func @count(%x: i64) -> (i64, i64) {
             (value_id_and_type_attr
               (value_id)
               (type
-                (builtin_type)))))
+                (builtin_type
+                  (integer_type))))))
         (function_return
           (type_list_attr_parens
             (type
-              (builtin_type))
+              (builtin_type
+                (integer_type)))
             (type
-              (builtin_type))))
+              (builtin_type
+                (integer_type)))))
         (region
           (entry_block
             (operation
@@ -93,10 +101,12 @@ func.func @count(%x: i64) -> (i64, i64) {
                     (value_id_and_type
                       (value_id)
                       (type
-                        (builtin_type)))
+                        (builtin_type
+                          (integer_type))))
                     (value_id_and_type
                       (type
-                        (builtin_type)))))))))))))
+                        (builtin_type
+                          (integer_type))))))))))))))
 ==========================================================================
 Function with attribute
 ==========================================================================
@@ -115,13 +125,16 @@ func.func @count(%x: i64) -> (i64, i64)
             (value_id_and_type_attr
               (value_id)
               (type
-                (builtin_type)))))
+                (builtin_type
+                  (integer_type))))))
         (function_return
           (type_list_attr_parens
             (type
-              (builtin_type))
+              (builtin_type
+                (integer_type)))
             (type
-              (builtin_type))))
+              (builtin_type
+                (integer_type)))))
         (dictionary_attribute
           (attribute_entry
             (bare_id)
@@ -140,10 +153,12 @@ func.func @count(%x: i64) -> (i64, i64)
                     (value_id_and_type
                       (value_id)
                       (type
-                        (builtin_type)))
+                        (builtin_type
+                          (integer_type))))
                     (value_id_and_type
                       (type
-                        (builtin_type)))))))))))))
+                        (builtin_type
+                          (integer_type))))))))))))))
 ==========================================================================
 Function with result attribute
 ==========================================================================
@@ -158,7 +173,8 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
         (function_return
           (type_list_attr_parens
             (type
-              (builtin_type))
+              (builtin_type
+                (float_type)))
             (dictionary_attribute
               (attribute_entry
                 (bare_id)
@@ -167,7 +183,8 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
                     (literal
                       (integer_literal))
                     (type
-                      (builtin_type))))))))))))
+                      (builtin_type
+                        (integer_type)))))))))))))
 ==========================================================================
 Function with argument attribute
 ==========================================================================
@@ -183,7 +200,8 @@ func.func @example_fn_arg(%x: i32 {swift.self = unit})
             (value_id_and_type_attr
               (value_id)
               (type
-                (builtin_type))
+                (builtin_type
+                  (integer_type)))
               (dictionary_attribute
                 (attribute_entry
                   (bare_id)

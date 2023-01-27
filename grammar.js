@@ -223,32 +223,32 @@ module.exports = grammar({
     // Builtin types
     builtin_type: $ => choice(
       // TODO: Add opaque_type, function_type
-      $._integer_type,
-      $._float_type,
-      $._complex_type,
-      $._index_type,
-      $._memref_type,
-      $._none_type,
-      $._tensor_type,
-      $._vector_type,
-      $._tuple_type),
+      $.integer_type,
+      $.float_type,
+      $.complex_type,
+      $.index_type,
+      $.memref_type,
+      $.none_type,
+      $.tensor_type,
+      $.vector_type,
+      $.tuple_type),
 
     // signed-integer-type ::= `si`[1-9][0-9]*
     // unsigned-integer-type ::= `ui`[1-9][0-9]*
     // signless-integer-type ::= `i`[1-9][0-9]*
     // integer-type ::= signed-integer-type | unsigned-integer-type | signless-integer-type
-    _integer_type: $ => seq(choice('si', 'ui', 'i'), /[1-9]/, repeat(/[0-9]/)),
-    _float_type: $ => choice('f16', 'f32', 'f64', 'f80', 'f128', 'bf16', 'f8E4M3FN', 'f8E5M2'),
-    _index_type: $ => 'index',
-    _primitive_type: $ => choice($._integer_type, $._float_type, $._index_type),
-    _none_type: $ => 'none',
-    _complex_type: $ => seq('complex<', $._primitive_type, '>'),
+    integer_type: $ => seq(choice('si', 'ui', 'i'), /[1-9]/, repeat(/[0-9]/)),
+    float_type: $ => choice('f16', 'f32', 'f64', 'f80', 'f128', 'bf16', 'f8E4M3FN', 'f8E5M2'),
+    index_type: $ => 'index',
+    _primitive_type: $ => choice($.integer_type, $.float_type, $.index_type),
+    none_type: $ => 'none',
+    complex_type: $ => seq('complex<', $._primitive_type, '>'),
 
     // memref-type ::= `memref` `<` dimension-list-ranked type
     //                 (`,` layout-specification)? (`,` memory-space)? `>`
     // layout-specification ::= attribute-value
     // memory-space ::= attribute-value
-    _memref_type: $ => seq('memref<', $._dimension_list_type,
+    memref_type: $ => seq('memref<', $._dimension_list_type,
       optional(seq(',', $.attribute_value)), optional(seq(',', $.attribute_value)), '>'),
     _dimension_list_type: $ => seq($._dimension_value, repeat(seq('x', $._dimension_value))),
     _dimension_value: $ => choice($._primitive_type, $._decimal_literal, '?', '*'),
@@ -258,22 +258,22 @@ module.exports = grammar({
     // dimension ::= `?` | decimal-literal
     // encoding ::= attribute-value
     // tensor-type ::= `tensor` `<` `*` `x` type `>`
-    _tensor_type: $ => seq('tensor<', $._dimension_list_type,
+    tensor_type: $ => seq('tensor<', $._dimension_list_type,
       optional(seq(',', $.attribute_value)), '>'),
 
     // vector-type ::= `vector` `<` vector-dim-list vector-element-type `>`
     // vector-element-type ::= float-type | integer-type | index-type
     // vector-dim-list := (static-dim-list `x`)? (`[` static-dim-list `]` `x`)?
     // static-dim-list ::= decimal-literal (`x` decimal-literal)*
-    _vector_type: $ => seq('vector<', $._vector_dim_list, $._primitive_type),
+    vector_type: $ => seq('vector<', $._vector_dim_list, $._primitive_type),
     _vector_dim_list: $ => seq($._static_dim_list, 'x',
       optional(seq('[', $._static_dim_list, ']', 'x'))),
     _static_dim_list: $ => prec.left(seq($._decimal_literal, repeat(seq('x', $._decimal_literal)))),
 
     // tuple-type ::= `tuple` `<` (type ( `,` type)*)? `>`
-    _tuple_type: $ => seq('tuple<', $._tuple_value_type, repeat(seq(',', $._tuple_value_type)), '>'),
-    _tuple_value_type: $ => choice($._primitive_type, $._none_type, $._complex_type,
-      $._memref_type, $._tensor_type, $._vector_type),
+    tuple_type: $ => seq('tuple<', $._tuple_value_type, repeat(seq(',', $._tuple_value_type)), '>'),
+    _tuple_value_type: $ => choice($._primitive_type, $.none_type, $.complex_type,
+      $.memref_type, $.tensor_type, $.vector_type),
 
     // Attributes
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
