@@ -1,5 +1,5 @@
 ==========================================================================
-Simple branching with terminator statement, using cf, func, arith dialects
+Simple branching with terminator statement
 ==========================================================================
 func.func @simple(i64, i1) -> i64 {
 ^bb0(%a: i64, %cond: i1): // Code dominated by ^bb0 may refer to %a
@@ -185,3 +185,119 @@ func.func @simple(i64, i1) -> i64 {
                         (builtin_type
                           (integer_type)))))))))
           (comment))))))
+==========================================================================
+Simple switch statement
+==========================================================================
+func.func @switch(%flag : i32, %caseOperand : i32) {
+  cf.switch %flag : i32, [
+    default: ^bb1(%caseOperand : i32),
+    42: ^bb2(%caseOperand : i32),
+    43: ^bb3(%caseOperand : i32)
+  ]
+
+  ^bb1(%bb1arg : i32):
+    return
+  ^bb2(%bb2arg : i32):
+    return
+  ^bb3(%bb3arg : i32):
+    return
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr_list
+            (value_id_and_type_attr
+              (value_id)
+              (type
+                (builtin_type
+                  (integer_type))))
+            (value_id_and_type_attr
+              (value_id)
+              (type
+                (builtin_type
+                  (integer_type))))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (cf_dialect
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (integer_type))))
+                  (case_label)
+                  (successor
+                    (caret_id)
+                    (block_arg_list
+                      (value_id_and_type_list
+                        (value_id_and_type
+                          (value_id)
+                          (type
+                            (builtin_type
+                              (integer_type)))))))
+                  (case_label
+                    (integer_literal))
+                  (successor
+                    (caret_id)
+                    (block_arg_list
+                      (value_id_and_type_list
+                        (value_id_and_type
+                          (value_id)
+                          (type
+                            (builtin_type
+                              (integer_type)))))))
+                  (case_label
+                    (integer_literal))
+                  (successor
+                    (caret_id)
+                    (block_arg_list
+                      (value_id_and_type_list
+                        (value_id_and_type
+                          (value_id)
+                          (type
+                            (builtin_type
+                              (integer_type)))))))))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_id_and_type_list
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (integer_type)))))))
+            (operation
+              (custom_operation
+                (func_dialect))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_id_and_type_list
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (integer_type)))))))
+            (operation
+              (custom_operation
+                (func_dialect))))
+          (block
+            (block_label
+              (caret_id)
+              (block_arg_list
+                (value_id_and_type_list
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (integer_type)))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))

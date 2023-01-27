@@ -193,9 +193,9 @@ module.exports = grammar({
     opaque_dialect_item: $ => seq($.dialect_namespace, '<', $.string_literal,
       '>'),
     pretty_dialect_item: $ => seq($.dialect_namespace, '.',
-      $.pretty_dialect_item_lead_ident,
+      $._pretty_dialect_item_lead_ident,
       optional($.pretty_dialect_item_body)),
-    pretty_dialect_item_lead_ident: $ => $.bare_id,
+    _pretty_dialect_item_lead_ident: $ => $.bare_id,
     pretty_dialect_item_body: $ => seq('<',
       repeat1($.pretty_dialect_item_contents),
       '>'),
@@ -220,6 +220,7 @@ module.exports = grammar({
       repeat1(/[^\[<({>\])}\\0]/))),
     dialect_type: $ => seq(
       '!', choice($.opaque_dialect_item, $.pretty_dialect_item)),
+
     // Builtin types
     builtin_type: $ => choice(
       // TODO: Add opaque_type, function_type
@@ -248,31 +249,32 @@ module.exports = grammar({
     //                 (`,` layout-specification)? (`,` memory-space)? `>`
     // layout-specification ::= attribute-value
     // memory-space ::= attribute-value
-    memref_type: $ => seq('memref<', $._dimension_list_type,
+    memref_type: $ => seq('memref<', $.dim_list,
       optional(seq(',', $.attribute_value)), optional(seq(',', $.attribute_value)), '>'),
-    _dimension_list_type: $ => seq($._dimension_value, repeat(seq('x', $._dimension_value))),
-    _dimension_value: $ => choice($._primitive_type, $._decimal_literal, '?', '*'),
+    dim_list: $ => seq($._memref_dim, repeat(seq('x', $._memref_dim))),
+    _memref_dim: $ => choice($._primitive_type, $._decimal_literal, '?', '*'),
 
     // tensor-type ::= `tensor` `<` dimension-list type (`,` encoding)? `>`
     // dimension-list ::= (dimension `x`)*
     // dimension ::= `?` | decimal-literal
     // encoding ::= attribute-value
     // tensor-type ::= `tensor` `<` `*` `x` type `>`
-    tensor_type: $ => seq('tensor<', $._dimension_list_type,
-      optional(seq(',', $.attribute_value)), '>'),
+    tensor_type: $ => seq('tensor<', $.dim_list,
+      optional(seq(',', $.tensor_encoding)), '>'),
+    tensor_encoding: $ => $.attribute_value,
 
     // vector-type ::= `vector` `<` vector-dim-list vector-element-type `>`
     // vector-element-type ::= float-type | integer-type | index-type
     // vector-dim-list := (static-dim-list `x`)? (`[` static-dim-list `]` `x`)?
     // static-dim-list ::= decimal-literal (`x` decimal-literal)*
-    vector_type: $ => seq('vector<', $._vector_dim_list, $._primitive_type),
-    _vector_dim_list: $ => seq($._static_dim_list, 'x',
-      optional(seq('[', $._static_dim_list, ']', 'x'))),
+    vector_type: $ => seq('vector<', $.vector_dim_list, $._primitive_type, '>'),
+    vector_dim_list: $ => choice(seq($._static_dim_list, 'x',
+      optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x')),
     _static_dim_list: $ => prec.left(seq($._decimal_literal, repeat(seq('x', $._decimal_literal)))),
 
     // tuple-type ::= `tuple` `<` (type ( `,` type)*)? `>`
-    tuple_type: $ => seq('tuple<', $._tuple_value_type, repeat(seq(',', $._tuple_value_type)), '>'),
-    _tuple_value_type: $ => choice($._primitive_type, $.none_type, $.complex_type,
+    tuple_type: $ => seq('tuple<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
+    tuple_dim: $ => choice($._primitive_type, $.none_type, $.complex_type,
       $.memref_type, $.tensor_type, $.vector_type),
 
     // Attributes
@@ -344,7 +346,22 @@ module.exports = grammar({
         field('trueDest', $.successor), ',',
         field('falseDest', $.successor)),
         optional($.dictionary_attribute)),
+
+      // operation ::= `cf.switch` $flag `:` type($flag) `,` `[` `\n`
+      //               custom<SwitchOpCases>(ref(type($flag)),$defaultDestination,
+      //               $defaultOperands,
+      //               type($defaultOperands),
+      //               $case_values,
+      //               $caseDestinations,
+      //               $caseOperands,
+      //               type($caseOperands))
+      //               `]`
+      //               attr-dict
+      seq('cf.switch', field('flag', $.value_id_and_type), ',', '[',
+        $.case_label, $.successor, repeat(seq(',', $.case_label, $.successor)), ']',
+        optional($.dictionary_attribute)),
     ),
+    case_label: $ => seq(choice($.integer_literal, 'default'), ':'),
 
     arith_dialect: $ => choice(
       // operation ::= `arith.addi` $lhs `,` $rhs attr-dict `:` type($result)
