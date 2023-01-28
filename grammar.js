@@ -297,14 +297,7 @@ module.exports = grammar({
     ),
 
     func_dialect: $ => prec.right(choice(
-      // func.func takes arguments, an optional return type, and and optional body
-      seq('func.func', field('name', $.symbol_ref_id),
-        field('arguments', $.block_arg_attr_list),
-        field('return', optional($.function_return)),
-        field('attributes', optional(seq('attributes', $.dictionary_attribute))),
-        field('body', optional($.region))),
-
-      // operation ::= `func.return` attr-dict($operands ^ `:` type($operands)) ?
+      seq('func.func', $._op_func),
       seq(choice('func.return', 'return'),
         field('attributes', optional($.dictionary_attribute)),
         field('results', optional($._value_id_and_type_list))),
@@ -319,18 +312,19 @@ module.exports = grammar({
       repeat(seq(',', $.type, optional($.dictionary_attribute))), ')')),
     variadic: $ => '...',
 
-    llvm_dialect: $ => prec.right(choice(
-      seq('llvm.func', field('name', $.symbol_ref_id),
-        field('arguments', $.block_arg_attr_list),
-        field('return', optional($.function_return)),
-        field('attributes', optional(seq('attributes', $.dictionary_attribute))),
-        field('body', optional($.region))),
+    // (func.func|llvm.func) takes arguments, an optional return type, and and optional body
+    _op_func: $ => seq(
+      field('name', $.symbol_ref_id),
+      field('arguments', $.block_arg_attr_list),
+      field('return', optional($.function_return)),
+      field('attributes', optional(seq('attributes', $.dictionary_attribute))),
+      field('body', optional($.region))),
 
-      // operation ::= `llvm.return` attr-dict ($arg^ `:` type($arg))?
+    llvm_dialect: $ => prec.right(choice(
+      seq('llvm.func', $._op_func),
       seq('llvm.return',
         field('attributes', optional($.dictionary_attribute)),
-        field('results', optional($._value_id_and_type_list))),
-    )),
+        field('results', optional($._value_id_and_type_list))))),
 
     cf_dialect: $ => choice(
       // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
