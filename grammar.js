@@ -301,7 +301,14 @@ module.exports = grammar({
       seq('module',
         field('name', optional($.bare_id)),
         field('attributes', optional($.dictionary_attribute)),
-        field('body', $.region))
+        field('body', $.region)),
+
+      // operation ::= `builtin.unrealized_conversion_cast` ($inputs^ `:` type($inputs))?
+      //                `to` type($outputs) attr-dict
+      seq('unrealized_cast_conversion',
+        field('inputs', $._value_use_type_list), 'to',
+        field('outputs', $.type_list_no_parens),
+        field('attributes', optional($.dictionary_attribute)))
     ),
 
     func_dialect: $ => prec.right(choice(
@@ -463,11 +470,11 @@ module.exports = grammar({
     ),
 
     linalg_dialect: $ => choice(
-      seq('linalg.matmul', 'ins',
-        field('ins', $._linalg_matmul_arg), 'outs',
-        field('outs', $._linalg_matmul_arg)
+      seq('linalg.matmul', 'ins', '(',
+        field('ins', $._value_use_type_list), ')', 'outs', '(',
+        field('outs', $._value_use_type_list), ')'
       )
     ),
-    _linalg_matmul_arg: $ => seq('(', $.value_use_list, ':', $.type_list_no_parens, ')')
+    _value_use_type_list: $ => seq($.value_use_list, ':', $.type_list_no_parens)
   }
 });
