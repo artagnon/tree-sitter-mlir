@@ -293,6 +293,7 @@ module.exports = grammar({
       $.llvm_dialect,
       $.cf_dialect,
       $.arith_dialect,
+      $.scf_dialect,
     ),
 
     func_dialect: $ => prec.right(choice(
@@ -305,7 +306,8 @@ module.exports = grammar({
 
       // operation ::= `func.return` attr-dict($operands ^ `:` type($operands)) ?
       seq(choice('func.return', 'return'),
-        optional($.dictionary_attribute), optional($._value_id_and_type_list)),
+        field('attributes', optional($.dictionary_attribute)),
+        field('results', optional($._value_id_and_type_list))),
     )),
     function_return: $ => seq('->', $.type_list_attr_parens),
     block_arg_attr_list: $ => seq('(', optional($._value_id_and_type_attr_list), ')'),
@@ -313,9 +315,8 @@ module.exports = grammar({
       repeat(seq(',', $.value_id_and_type_attr))),
     value_id_and_type_attr: $ => choice(seq($.value_id_and_type,
       optional($.dictionary_attribute)), $.variadic),
-    type_list_attr_parens: $ => choice($.type, seq('(', $.type,
-      optional($.dictionary_attribute), repeat(seq(',', $.type,
-        optional($.dictionary_attribute))), ')')),
+    type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.dictionary_attribute),
+      repeat(seq(',', $.type, optional($.dictionary_attribute))), ')')),
     variadic: $ => '...',
 
     llvm_dialect: $ => prec.right(choice(
@@ -327,7 +328,8 @@ module.exports = grammar({
 
       // operation ::= `llvm.return` attr-dict ($arg^ `:` type($arg))?
       seq('llvm.return',
-        optional($.dictionary_attribute), optional($._value_id_and_type_list)),
+        field('attributes', optional($.dictionary_attribute)),
+        field('results', optional($._value_id_and_type_list))),
     )),
 
     cf_dialect: $ => choice(
@@ -356,18 +358,48 @@ module.exports = grammar({
       //               attr-dict
       seq('cf.switch', field('flag', $.value_id_and_type), ',', '[',
         $.case_label, $.successor, repeat(seq(',', $.case_label, $.successor)), ']',
-        optional($.dictionary_attribute)),
+        field('attributes', optional($.dictionary_attribute))),
     ),
     case_label: $ => seq(choice($.integer_literal, 'default'), ':'),
 
     arith_dialect: $ => choice(
+      // operation ::= `arith.constant` attr-dict $value
+      seq('arith.constant', optional($.dictionary_attribute), $.literal_and_type),
+
       // operation ::= `arith.addi` $lhs `,` $rhs attr-dict `:` type($result)
-      seq('arith.addi', seq(
+      seq('arith.addi',
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
         optional($.dictionary_attribute), ':',
-        $.type
-      ))
-    )
+        $.type),
+
+      // operation ::= `arith.cmpi` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
+      seq('arith.cmpi',
+        field('predicate',
+          choice('eq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')), ',',
+        field('lhs', $.value_use), ',',
+        field('rhs', $.value_use),
+        field('attributes', optional($.dictionary_attribute)), ':', $.type),
+    ),
+    literal_and_type: $ => seq($.literal, ':', $.type),
+
+    scf_dialect: $ => prec.right(choice(
+      // scf.for %iv = %lb to %ub step %step {
+      // ... // body
+      // }
+      seq('scf.for',
+        field('iv', $.value_use), '=',
+        field('lb', $.value_use), 'to',
+        field('ub', $.value_use), 'step',
+        field('step', $.value_use), 'iter_args', '(',
+        field('iter_args', seq($.value_use, '=', $.value_use)), ')',
+        field('return', $.function_return),
+        field('body', $.region)),
+
+      // operation ::= `scf.yield` attr-dict ($results^ `:` type($results))?
+      seq('scf.yield',
+        field('attributes', optional($.dictionary_attribute)),
+        field('results', optional($._value_id_and_type_list))),
+    ))
   }
 });

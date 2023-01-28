@@ -290,3 +290,147 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (operation
               (custom_operation
                 (func_dialect)))))))))
+==========================================================================
+A for-loop written with scf.for
+==========================================================================
+func.func @for_loop_with_increasing_arg() -> i1 {
+  %c0 = arith.constant 0 : index
+  %c1 = arith.constant 1 : index
+  %c4 = arith.constant 4 : index
+  %c16 = arith.constant 16 : index
+  %0 = scf.for %arg0 = %c0 to %c4 step %c1 iter_args(%arg1 = %c0) -> index {
+      %10 = arith.addi %arg0, %arg1 : index
+      scf.yield %10 : index
+  }
+  %1 = arith.cmpi ule, %0, %c16 : index
+  func.return %1 : i1
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list)
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  (literal_and_type
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type
+                        (index_type)))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  (literal_and_type
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type
+                        (index_type)))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  (literal_and_type
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type
+                        (index_type)))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  (literal_and_type
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type
+                        (index_type)))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (scf_dialect
+                  (value_use
+                    (value_id))
+                  (value_use
+                    (value_id))
+                  (value_use
+                    (value_id))
+                  (value_use
+                    (value_id))
+                  (value_use
+                    (value_id))
+                  (value_use
+                    (value_id))
+                  (function_return
+                    (type_list_attr_parens
+                      (type
+                        (builtin_type
+                          (index_type)))))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result_list
+                          (op_result
+                            (value_id)))
+                        (custom_operation
+                          (arith_dialect
+                            (value_use
+                              (value_id))
+                            (value_use
+                              (value_id))
+                            (type
+                              (builtin_type
+                                (index_type))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_id_and_type
+                              (value_id)
+                              (type
+                                (builtin_type
+                                  (index_type))))))))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  (value_use
+                    (value_id))
+                  (value_use
+                    (value_id))
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (integer_type)))))))))))))
