@@ -332,6 +332,7 @@ module.exports = grammar({
         field('attributes', optional($.dictionary_attribute)),
         field('results', optional($._value_id_and_type_list))),
     )),
+
     function_return: $ => seq('->', $.type_list_attr_parens),
     block_arg_attr_list: $ => seq('(', optional($._value_id_and_type_attr_list), ')'),
     _value_id_and_type_attr_list: $ => seq($.value_id_and_type_attr,
@@ -384,6 +385,7 @@ module.exports = grammar({
         $.case_label, $.successor, repeat(seq(',', $.case_label, $.successor)), ']',
         field('attributes', optional($.dictionary_attribute))),
     ),
+
     case_label: $ => seq(choice($.integer_literal, 'default'), ':'),
 
     arith_dialect: $ => choice(
@@ -447,8 +449,15 @@ module.exports = grammar({
         'arith.truncf'),
         field('in', $.value_use),
         field('attributes', $.dictionary_attribute),
-        $._from_type_to_type)
+        $._from_type_to_type),
+
+      seq('arith.select',
+        field('cond', $.value_use), ',',
+        field('truebr', $.value_use), ',',
+        field('falsebr', $.value_use),
+        ':', $.type_list_no_parens)
     ),
+
     literal_and_type: $ => seq($.literal, ':', $.type),
     _from_type_to_type: $ => seq(':',
       field('fromtype', $.type), 'to',
@@ -463,8 +472,8 @@ module.exports = grammar({
         field('lb', $.value_use), 'to',
         field('ub', $.value_use), 'step',
         field('step', $.value_use),
-        field('iter_args', seq('iter_args', '(', $.value_use, '=', $.value_use, ')')),
-        field('return', $.function_return),
+        field('iter_args', optional(seq('iter_args', '(', $.value_use, '=', $.value_use, ')'))),
+        field('return', optional($.function_return)),
         field('body', $.region)),
 
       // operation ::= `scf.yield` attr-dict ($results^ `:` type($results))?
@@ -532,6 +541,7 @@ module.exports = grammar({
 
       seq('linalg.yield', $._value_use_type_list)
     ),
+
     _value_use_type_list: $ => seq($.value_use_list, ':', $.type_list_no_parens)
   }
 });
