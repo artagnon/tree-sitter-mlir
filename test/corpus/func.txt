@@ -242,3 +242,42 @@ llvm.func @variadic_args(i32, i32, ...)
                   (integer_type)))))
           (value_id_and_type_attr
             (variadic)))))))
+==========================================================================
+Generic function in a module, with attributes
+==========================================================================
+module {
+  "llvm.func"() ({
+  }) {sym_name = "foo", function_type = !llvm.func<void ()>} : () -> ()
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (builtin_dialect
+        (region
+          (entry_block
+            (operation
+              (generic_operation
+                (string_literal)
+                (region_list
+                  (region))
+                (dictionary_attribute
+                  (attribute_entry
+                    (bare_id)
+                    (attribute_value
+                      (builtin_attribute
+                        (literal
+                          (string_literal)))))
+                  (attribute_entry
+                    (bare_id)
+                    (attribute_value
+                      (builtin_attribute
+                        (type
+                          (dialect_type
+                            (pretty_dialect_item
+                              (dialect_namespace)
+                              (dialect_ident)
+                              (pretty_dialect_item_contents))))))))
+                (function_type
+                  (type_list_parens)
+                  (type_list_parens))))))))))

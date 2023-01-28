@@ -197,10 +197,7 @@ module.exports = grammar({
     pretty_dialect_item: $ => seq($.dialect_namespace, '.', $.dialect_ident,
       optional(seq('<', $.pretty_dialect_item_contents, '>'))),
     pretty_dialect_item_contents: $ => prec.left(choice(
-      repeat1(/[^()\[\]{}<>]/),
-      seq('(', repeat1($.pretty_dialect_item_contents), ')'),
-      seq('[', repeat1($.pretty_dialect_item_contents), ']'),
-      seq('{', repeat1($.pretty_dialect_item_contents), '}'),
+      repeat1(/[^<>]/),
       seq('<', repeat1($.pretty_dialect_item_contents), '>'))),
 
     // Builtin types
@@ -289,6 +286,7 @@ module.exports = grammar({
 
     // TODO: complete
     custom_operation: $ => choice(
+      $.builtin_dialect,
       $.func_dialect,
       $.llvm_dialect,
       $.cf_dialect,
@@ -296,6 +294,14 @@ module.exports = grammar({
       $.scf_dialect,
       $.memref_dialect,
       $.linalg_dialect
+    ),
+
+    builtin_dialect: $ => choice(
+      // operation ::= `builtin.module` ($sym_name^)? attr-dict-with-keyword $bodyRegion
+      seq('module',
+        field('name', optional($.bare_id)),
+        field('attributes', optional($.dictionary_attribute)),
+        field('body', $.region))
     ),
 
     func_dialect: $ => prec.right(choice(
