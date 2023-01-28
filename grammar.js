@@ -361,7 +361,32 @@ module.exports = grammar({
       seq('arith.constant', optional($.dictionary_attribute), $.literal_and_type),
 
       // operation ::= `arith.addi` $lhs `,` $rhs attr-dict `:` type($result)
-      seq('arith.addi',
+      // operation ::= `arith.subi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.divsi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.divui` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.ceildivsi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.ceildivui` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.floordivsi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.remsi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.remui` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.muli` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.mulsi_extended` $lhs `,` $rhs attr-dict `:` type($lhs)
+      // operation ::= `arith.andi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.ori` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.xori` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.maxsi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.maxui` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.minsi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.minui` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.shli` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.shrsi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.shrui` $lhs `,` $rhs attr-dict `:` type($result)
+      seq(choice('arith.addi', 'arith.subi', 'arith.divsi', 'arith.divui',
+        'arith.ceildivsi', 'arith.ceildivui', 'arith.floordivsi',
+        'arith.remsi', 'arith.remui', 'arith.muli', 'arith.mulsi_extended',
+        'arith.andi', 'arith.ori', 'arith.xori',
+        'arith.maxsi', 'arith.maxui', 'arith.minsi', 'arith.minui',
+        'arith.shli', 'arith.shrsi', 'arith.shrui'),
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
         optional($.dictionary_attribute), ':',
@@ -369,9 +394,7 @@ module.exports = grammar({
 
       // operation ::= `arith.cmpi` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
       // operation ::= `arith.cmpf` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
-      // operation ::= `arith.divsi` $lhs `,` $rhs attr-dict `:` type($result)
-      // operation ::= `arith.divui` $lhs `,` $rhs attr-dict `:` type($result)
-      seq(choice('arith.cmpi', 'arith.cmpf', 'arith.divsi', 'arith.divui'),
+      seq(choice('arith.cmpi', 'arith.cmpf'),
         field('predicate',
           choice('eq', 'oeq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')), ',',
         field('lhs', $.value_use), ',',
@@ -388,8 +411,10 @@ module.exports = grammar({
       // operation ::= `arith.sitofp` $in attr-dict `:` type($in) `to` type($out)
       // operation ::= `arith.uitofp` $in attr-dict `:` type($in) `to` type($out)
       // operation ::= `arith.bitcast` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.truncf` $in attr-dict `:` type($in) `to` type($out)
       seq(choice('arith.extf', 'arith.extsi', 'arith.extui', 'arith.fptosi', 'arith.fptoui',
-        'arith.index_cast', 'arith.index_castui', 'arith.sitofp', 'arith.uitofp', 'arith.bitcast'),
+        'arith.index_cast', 'arith.index_castui', 'arith.sitofp', 'arith.uitofp', 'arith.bitcast',
+        'arith.truncf'),
         field('in', $.value_use),
         field('attributes', $.dictionary_attribute), ':',
         field('fromtype', $.type), 'to',
