@@ -368,12 +368,32 @@ module.exports = grammar({
         $.type),
 
       // operation ::= `arith.cmpi` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
-      seq('arith.cmpi',
+      // operation ::= `arith.cmpf` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
+      // operation ::= `arith.divsi` $lhs `,` $rhs attr-dict `:` type($result)
+      // operation ::= `arith.divui` $lhs `,` $rhs attr-dict `:` type($result)
+      seq(choice('arith.cmpi', 'arith.cmpf', 'arith.divsi', 'arith.divui'),
         field('predicate',
-          choice('eq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')), ',',
+          choice('eq', 'oeq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')), ',',
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
         field('attributes', optional($.dictionary_attribute)), ':', $.type),
+
+      // operation ::= `arith.extf` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.extsi` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.extui` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.fptosi` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.fptoui` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.index_cast` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.index_castui` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.sitofp` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.uitofp` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.bitcast` $in attr-dict `:` type($in) `to` type($out)
+      seq(choice('arith.extf', 'arith.extsi', 'arith.extui', 'arith.fptosi', 'arith.fptoui',
+        'arith.index_cast', 'arith.index_castui', 'arith.sitofp', 'arith.uitofp', 'arith.bitcast'),
+        field('in', $.value_use),
+        field('attributes', $.dictionary_attribute), ':',
+        field('fromtype', $.type), 'to',
+        field('totype', $.type))
     ),
     literal_and_type: $ => seq($.literal, ':', $.type),
 
