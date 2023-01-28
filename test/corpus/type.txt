@@ -13,19 +13,21 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
         (symbol_ref_id)
         (block_arg_attr_list
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (tensor_type
-                  (dim_list
-                    (integer_type))))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (tensor_type
+                    (dim_list
+                      (integer_type)))))))
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (tensor_type
-                  (dim_list
-                    (integer_type)))))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (tensor_type
+                    (dim_list
+                      (integer_type))))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -75,19 +77,21 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
         (symbol_ref_id)
         (block_arg_attr_list
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (vector_type
-                  (vector_dim_list)
-                  (integer_type)))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (vector_type
+                    (vector_dim_list)
+                    (integer_type))))))
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (vector_type
-                  (vector_dim_list)
-                  (integer_type))))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (vector_type
+                    (vector_dim_list)
+                    (integer_type)))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -138,19 +142,21 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
         (symbol_ref_id)
         (block_arg_attr_list
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (vector_type
-                  (vector_dim_list)
-                  (integer_type)))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (vector_type
+                    (vector_dim_list)
+                    (integer_type))))))
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (vector_type
-                  (vector_dim_list)
-                  (integer_type))))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (vector_type
+                    (vector_dim_list)
+                    (integer_type)))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -185,3 +191,33 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
                         (vector_type
                           (vector_dim_list)
                           (integer_type))))))))))))))
+==========================================================================
+Dialect type
+==========================================================================
+llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
+  llvm.return
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (llvm_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident)
+                    (pretty_dialect_item_contents)))))
+            (dictionary_attribute
+              (attribute_entry
+                (bare_id)))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (llvm_dialect)))))))))

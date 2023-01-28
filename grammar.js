@@ -60,9 +60,10 @@ module.exports = grammar({
     //   value-use-list ::= value-use (`,` value-use)*
     bare_id: $ => seq(token(/[a-zA-Z_]/),
       token.immediate(repeat(/[a-zA-Z0-9_$.]/))),
+    _alias_or_dialect_id: $ => seq(token(/[a-zA-Z_]/),
+      token.immediate(repeat(/[a-zA-Z0-9_$]/))),
     bare_id_list: $ => seq($.bare_id, repeat(seq(',', $.bare_id))),
     value_id: $ => seq('%', $._suffix_id),
-    alias_name: $ => $.bare_id,
     _suffix_id: $ => choice(repeat1(/[0-9]/),
       seq(/[a-zA-Z_$.]/, repeat(/[a-zA-Z0-9_$.]/))),
     symbol_ref_id: $ => seq('@', choice($._suffix_id, $.string_literal),
@@ -166,8 +167,8 @@ module.exports = grammar({
     // Type aliases
     //   type-alias-def ::= '!' alias-name '=' type
     //   type-alias ::= '!' alias-name
-    type_alias_def: $ => seq('!', $.alias_name, '=', $.type),
-    type_alias: $ => seq('!', $.alias_name),
+    type_alias_def: $ => seq('!', $._alias_or_dialect_id, '=', $.type),
+    type_alias: $ => seq('!', $._alias_or_dialect_id),
 
     // Dialect Types
     //   dialect-namespace ::= bare-id
@@ -189,37 +190,18 @@ module.exports = grammar({
     //   dialect-type ::= '!' (opaque-dialect-item | pretty-dialect-item)
     dialect_type: $ => seq(
       '!', choice($.opaque_dialect_item, $.pretty_dialect_item)),
-    dialect_namespace: $ => $.bare_id,
+    dialect_namespace: $ => $._alias_or_dialect_id,
+    dialect_ident: $ => $._alias_or_dialect_id,
     opaque_dialect_item: $ => seq($.dialect_namespace, '<', $.string_literal,
       '>'),
-    pretty_dialect_item: $ => seq($.dialect_namespace, '.',
-      $._pretty_dialect_item_lead_ident,
-      optional($.pretty_dialect_item_body)),
-    _pretty_dialect_item_lead_ident: $ => $.bare_id,
-    pretty_dialect_item_body: $ => seq('<',
-      repeat1($.pretty_dialect_item_contents),
-      '>'),
-
-    // TODO: not sure why prec.left (setting left-associated parsing) needed
-    // here, left-associated way avoids an ambiguity flagged by generator.
-    // It may not be needed and be only papering over an issue.
+    pretty_dialect_item: $ => seq($.dialect_namespace, '.', $.dialect_ident,
+      optional(seq('<', $.pretty_dialect_item_contents, '>'))),
     pretty_dialect_item_contents: $ => prec.left(choice(
-      $.pretty_dialect_item_body,
-      seq('(',
-        repeat1(
-          $.pretty_dialect_item_contents),
-        ')'),
-      seq('[',
-        repeat1(
-          $.pretty_dialect_item_contents),
-        ']'),
-      seq('{',
-        repeat1(
-          $.pretty_dialect_item_contents),
-        '}'),
-      repeat1(/[^\[<({>\])}\\0]/))),
-    dialect_type: $ => seq(
-      '!', choice($.opaque_dialect_item, $.pretty_dialect_item)),
+      repeat1(/[^()\[\]{}<>]/),
+      seq('(', repeat1($.pretty_dialect_item_contents), ')'),
+      seq('[', repeat1($.pretty_dialect_item_contents), ']'),
+      seq('{', repeat1($.pretty_dialect_item_contents), '}'),
+      seq('<', repeat1($.pretty_dialect_item_contents), '>'))),
 
     // Builtin types
     builtin_type: $ => choice(
@@ -281,16 +263,16 @@ module.exports = grammar({
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
     //   attribute-value ::= attribute-alias | dialect-attribute |
     //   builtin-attribute
-    attribute_entry: $ => seq(choice($.bare_id, $.string_literal), choice('=', ':'),
-      $.attribute_value),
+    attribute_entry: $ => seq(choice($.bare_id, $.string_literal), optional(seq(choice('=', ':'),
+      $.attribute_value))),
     attribute_value: $ => choice($.attribute_alias, $.dialect_attribute,
       $.builtin_attribute),
 
     // Attribute Value Aliases
     //   attribute-alias-def ::= '#' alias-name '=' attribute-value
     //   attribute-alias ::= '#' alias-name
-    attribute_alias_def: $ => seq('#', $.alias_name, '=', $.attribute_value),
-    attribute_alias: $ => seq('#', $.alias_name),
+    attribute_alias_def: $ => seq('#', $._alias_or_dialect_id, '=', $.attribute_value),
+    attribute_alias: $ => seq('#', $._alias_or_dialect_id),
     // Dialect Attribute Values
     dialect_attribute: $ => seq('#', choice($.opaque_dialect_item,
       $.pretty_dialect_item)),
@@ -329,12 +311,12 @@ module.exports = grammar({
     block_arg_attr_list: $ => seq('(', optional($._value_id_and_type_attr_list), ')'),
     _value_id_and_type_attr_list: $ => seq($.value_id_and_type_attr,
       repeat(seq(',', $.value_id_and_type_attr))),
-    value_id_and_type_attr: $ => choice(seq(choice(seq($.value_id, ':', $.type),
-      $.value_id, $.type), optional($.dictionary_attribute)), $.variadic_args),
+    value_id_and_type_attr: $ => choice(seq($.value_id_and_type,
+      optional($.dictionary_attribute)), $.variadic),
     type_list_attr_parens: $ => choice($.type, seq('(', $.type,
       optional($.dictionary_attribute), repeat(seq(',', $.type,
         optional($.dictionary_attribute))), ')')),
-    variadic_args: $ => '...',
+    variadic: $ => '...',
 
     llvm_dialect: $ => prec.right(choice(
       seq('llvm.func', field('name', $.symbol_ref_id),
@@ -343,6 +325,7 @@ module.exports = grammar({
         field('attributes', optional(seq('attributes', $.dictionary_attribute))),
         field('body', optional($.region))),
 
+      // operation ::= `llvm.return` attr-dict ($arg^ `:` type($arg))?
       seq('llvm.return',
         optional($.dictionary_attribute), optional($._value_id_and_type_list)),
     )),

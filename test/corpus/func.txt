@@ -24,15 +24,17 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
         (symbol_ref_id)
         (block_arg_attr_list
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (integer_type))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (integer_type)))))
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (integer_type)))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (integer_type))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -75,10 +77,11 @@ func.func @count(%x: i64) -> (i64, i64) {
         (symbol_ref_id)
         (block_arg_attr_list
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (integer_type)))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (integer_type))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -118,10 +121,11 @@ func.func @count(%x: i64) -> (i64, i64)
         (symbol_ref_id)
         (block_arg_attr_list
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (integer_type)))))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (integer_type))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -191,10 +195,11 @@ func.func @example_fn_arg(%x: i32 {swift.self = unit})
         (symbol_ref_id)
         (block_arg_attr_list
           (value_id_and_type_attr
-            (value_id)
-            (type
-              (builtin_type
-                (integer_type)))
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (integer_type))))
             (dictionary_attribute
               (attribute_entry
                 (bare_id)
@@ -213,7 +218,7 @@ llvm.func @variadic(...)
         (symbol_ref_id)
         (block_arg_attr_list
           (value_id_and_type_attr
-            (variadic_args)))))))
+            (variadic)))))))
 ==========================================================================
 Variadic function with other arguments
 ==========================================================================
@@ -226,12 +231,14 @@ llvm.func @variadic_args(i32, i32, ...)
         (symbol_ref_id)
         (block_arg_attr_list
           (value_id_and_type_attr
-            (type
-              (builtin_type
-                (integer_type))))
+            (value_id_and_type
+              (type
+                (builtin_type
+                  (integer_type)))))
           (value_id_and_type_attr
-            (type
-              (builtin_type
-                (integer_type))))
+            (value_id_and_type
+              (type
+                (builtin_type
+                  (integer_type)))))
           (value_id_and_type_attr
-            (variadic_args)))))))
+            (variadic)))))))
