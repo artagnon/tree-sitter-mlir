@@ -283,6 +283,7 @@ module.exports = grammar({
       // TODO
       $.strided_layout,
       $._affine_map_list,
+      $.dense_tensor,
     ),
     strided_layout: $ => seq('strided', '<', '[', $.dim_list, ']',
       ',', 'offset', ':', choice($.integer_literal, '?', '*'), '>'),
@@ -291,6 +292,8 @@ module.exports = grammar({
       '->', '(', $._loop_indices, ')', '>'),
     _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
     _loop_index: $ => seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/)),
+    dense_tensor: $ => seq('dense', '<', choice(seq('[', $._static_dim_list, ']'),
+      $._decimal_literal), '>', ':', $.tensor_type),
 
     // Comment (standard BCPL)
     comment: $ => token(seq('//', /.*/)),
@@ -304,6 +307,7 @@ module.exports = grammar({
       $.arith_dialect,
       $.scf_dialect,
       $.memref_dialect,
+      $.tensor_dialect,
       $.linalg_dialect
     ),
 
@@ -480,6 +484,13 @@ module.exports = grammar({
         $._from_type_to_type)
     ),
 
+    tensor_dialect: $ => choice(
+      seq('tensor.empty', '(',
+        field('size', optional($.value_use_list)), ')',
+        field('attributes', optional($.attribute)), ':',
+        field('return', $.tensor_type))
+    ),
+
     linalg_dialect: $ => choice(
       seq(choice('linalg.batch_matmul', 'linalg.batch_matmul_transpose_b', 'linalg.batch_matvec',
         'linalg.batch_reduce_matmul', 'linalg.conv_1d_ncw_fcw', 'linalg.conv_1d_nwc_wcf',
@@ -500,8 +511,10 @@ module.exports = grammar({
         'linalg.pooling_nwc_max', 'linalg.pooling_nwc_max_unsigned', 'linalg.pooling_nwc_min',
         'linalg.pooling_nwc_min_unsigned', 'linalg.pooling_nwc_sum',
         'linalg.quantized_batch_matmul', 'linalg.quantized_matmul', 'linalg.vecmat'),
+        field('attributes', optional($.attribute)),
         'ins', '(', field('ins', $._value_use_type_list), ')',
-        'outs', '(', field('outs', $._value_use_type_list), ')'
+        'outs', '(', field('outs', $._value_use_type_list), ')',
+        optional($.function_return)
       ),
 
       seq('linalg.generic',

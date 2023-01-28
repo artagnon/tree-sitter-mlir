@@ -299,3 +299,165 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (operation
               (custom_operation
                 (func_dialect)))))))))
+==========================================================================
+dense attribute in linalg.depthwise_conv_1d_nwc_wcm
+==========================================================================
+func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor<3x8x8xf32>)
+  -> tensor<1x10x8x8xf32> {
+  %zero = arith.constant 0.000000e+00 : f32
+  %init = tensor.empty() : tensor<1x10x8x8xf32>
+  %fill = linalg.fill ins(%zero : f32) outs(%init : tensor<1x10x8x8xf32>) -> tensor<1x10x8x8xf32>
+  %0 = linalg.depthwise_conv_1d_nwc_wcm {dilations = dense<1> : tensor<1xi64>,
+    strides = dense<1> : tensor<1xi64>}
+    ins(%input, %filter : tensor<1x12x8xf32>, tensor<3x8x8xf32>)
+    outs(%fill : tensor<1x10x8x8xf32>) -> tensor<1x10x8x8xf32>
+  return %0 : tensor<1x10x8x8xf32>
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (tensor_type
+                    (dim_list
+                      (float_type)))))))
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (tensor_type
+                    (dim_list
+                      (float_type))))))))
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (float_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  (literal_and_type
+                    (literal
+                      (float_literal))
+                    (type
+                      (builtin_type
+                        (float_type)))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (tensor_dialect
+                  (tensor_type
+                    (dim_list
+                      (float_type))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (linalg_dialect
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (float_type))))
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type))))))
+                  (function_return
+                    (type_list_attr_parens
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type))))))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (linalg_dialect
+                  (attribute
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (builtin_attribute
+                            (dense_tensor
+                              (tensor_type
+                                (dim_list
+                                  (integer_type)))))))
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (builtin_attribute
+                            (dense_tensor
+                              (tensor_type
+                                (dim_list
+                                  (integer_type)))))))))
+                  (value_use_list
+                    (value_use
+                      (value_id))
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type))))))
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type))))))
+                  (function_return
+                    (type_list_attr_parens
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type))))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))))))))
