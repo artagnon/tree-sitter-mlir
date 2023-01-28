@@ -262,10 +262,12 @@ module.exports = grammar({
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
     //   attribute-value ::= attribute-alias | dialect-attribute |
     //   builtin-attribute
-    attribute_entry: $ => seq(choice($.bare_id, $.string_literal), optional(seq(choice('=', ':'),
-      $.attribute_value))),
-    attribute_value: $ => choice($.attribute_alias, $.dialect_attribute,
-      $.builtin_attribute),
+    attribute_entry: $ => seq(choice($.bare_id, $.string_literal),
+      optional(seq(choice('=', ':'), $._attribute_value))),
+    _attribute_value: $ => choice(seq($.literal, optional(seq(':', $.type))),
+      $.type, $.attribute_value, seq('[', $.literal, repeat(seq(',', $.literal)), ']')),
+    attribute_value: $ => choice($.attribute_alias, $.dialect_attribute, $.builtin_attribute),
+    attribute: $ => choice($.attribute_value, $.dictionary_attribute),
 
     // Attribute Value Aliases
     //   attribute-alias-def ::= '#' alias-name '=' attribute-value
@@ -279,15 +281,12 @@ module.exports = grammar({
     // Builtin Attribute Values
     builtin_attribute: $ => choice(
       // TODO
-      $.type,
       $.strided_layout,
       $._affine_map_list,
-      seq($.literal, optional(seq(':', $.type))),
-      seq('[', $.builtin_attribute, ']')
     ),
     strided_layout: $ => seq('strided', '<', '[', $.dim_list, ']',
       ',', 'offset', ':', choice($.integer_literal, '?', '*'), '>'),
-    _affine_map_list: $ => prec.left(seq($.affine_map, repeat(seq(',', $.affine_map)))),
+    _affine_map_list: $ => seq('[', $.affine_map, repeat(seq(',', $.affine_map)), ']'),
     affine_map: $ => seq('affine_map', '<', '(', $._loop_indices, ')',
       '->', '(', $._loop_indices, ')', '>'),
     _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
@@ -506,7 +505,7 @@ module.exports = grammar({
       ),
 
       seq('linalg.generic',
-        field('attributes', $.dictionary_attribute),
+        field('attributes', $.attribute),
         'ins', '(', field('ins', $._value_use_type_list), ')',
         'outs', '(', field('outs', $._value_use_type_list), ')',
         field('body', $.region), optional($.function_return)),

@@ -1,4 +1,98 @@
 ==========================================================================
+Function with attribute
+==========================================================================
+func.func @count(%x: i64) -> (i64, i64)
+  attributes { fruit: "banana" } {
+  return %x, %x: i64, i64
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (integer_type))))))
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))
+            (type
+              (builtin_type
+                (integer_type)))))
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (literal
+              (string_literal))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_id_and_type
+                    (value_id))
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (integer_type))))
+                  (value_id_and_type
+                    (type
+                      (builtin_type
+                        (integer_type)))))))))))))
+==========================================================================
+Function with result attribute
+==========================================================================
+func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list)
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (float_type)))
+            (dictionary_attribute
+              (attribute_entry
+                (bare_id)
+                (literal
+                  (integer_literal))
+                (type
+                  (builtin_type
+                    (integer_type)))))))))))
+==========================================================================
+Function with argument attribute
+==========================================================================
+func.func @example_fn_arg(%x: i32 {swift.self = unit})
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (integer_type))))
+            (dictionary_attribute
+              (attribute_entry
+                (bare_id)
+                (literal)))))))))
+==========================================================================
 strided attribute in memref
 ==========================================================================
 func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
@@ -139,18 +233,15 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (operation
               (custom_operation
                 (linalg_dialect
-                  (dictionary_attribute
-                    (attribute_entry
-                      (bare_id)
-                      (attribute_value
-                        (builtin_attribute
-                          (builtin_attribute
-                            (literal
-                              (string_literal))))))
-                    (attribute_entry
-                      (bare_id)
-                      (attribute_value
-                        (builtin_attribute
+                  (attribute
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (literal
+                          (string_literal)))
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
                           (builtin_attribute
                             (affine_map)
                             (affine_map))))))
