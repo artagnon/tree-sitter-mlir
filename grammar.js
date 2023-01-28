@@ -228,8 +228,11 @@ module.exports = grammar({
     //                 (`,` layout-specification)? (`,` memory-space)? `>`
     // layout-specification ::= attribute-value
     // memory-space ::= attribute-value
-    memref_type: $ => seq('memref<', $.dim_list,
-      optional(seq(',', $.attribute_value)), optional(seq(',', $.attribute_value)), '>'),
+    memref_type: $ => seq('memref', '<', $.dim_list,
+      optional(seq(',', $.attribute_value)), optional(seq(',', $.strided_layout)),
+      optional(seq(',', $.attribute_value)), '>'),
+    strided_layout: $ => seq('strided', '<', '[', $.dim_list, ']',
+      ',', 'offset', ':', choice($.integer_literal, '?', '*'), '>'),
     dim_list: $ => seq($._memref_dim, repeat(seq('x', $._memref_dim))),
     _memref_dim: $ => choice($._primitive_type, $._decimal_literal, '?', '*'),
 
@@ -238,7 +241,7 @@ module.exports = grammar({
     // dimension ::= `?` | decimal-literal
     // encoding ::= attribute-value
     // tensor-type ::= `tensor` `<` `*` `x` type `>`
-    tensor_type: $ => seq('tensor<', $.dim_list,
+    tensor_type: $ => seq('tensor', '<', $.dim_list,
       optional(seq(',', $.tensor_encoding)), '>'),
     tensor_encoding: $ => $.attribute_value,
 
@@ -246,13 +249,13 @@ module.exports = grammar({
     // vector-element-type ::= float-type | integer-type | index-type
     // vector-dim-list := (static-dim-list `x`)? (`[` static-dim-list `]` `x`)?
     // static-dim-list ::= decimal-literal (`x` decimal-literal)*
-    vector_type: $ => seq('vector<', $.vector_dim_list, $._primitive_type, '>'),
+    vector_type: $ => seq('vector', '<', $.vector_dim_list, $._primitive_type, '>'),
     vector_dim_list: $ => choice(seq($._static_dim_list, 'x',
       optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x')),
     _static_dim_list: $ => prec.left(seq($._decimal_literal, repeat(seq('x', $._decimal_literal)))),
 
     // tuple-type ::= `tuple` `<` (type ( `,` type)*)? `>`
-    tuple_type: $ => seq('tuple<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
+    tuple_type: $ => seq('tuple', '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
     tuple_dim: $ => choice($._primitive_type, $.none_type, $.complex_type,
       $.memref_type, $.tensor_type, $.vector_type),
 
@@ -470,7 +473,7 @@ module.exports = grammar({
     ),
 
     linalg_dialect: $ => choice(
-      seq('linalg.matmul', 'ins', '(',
+      seq(choice('linalg.matmul', 'linalg.dot'), 'ins', '(',
         field('ins', $._value_use_type_list), ')', 'outs', '(',
         field('outs', $._value_use_type_list), ')'
       )
