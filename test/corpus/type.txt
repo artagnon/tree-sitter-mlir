@@ -221,3 +221,181 @@ llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
             (operation
               (custom_operation
                 (llvm_dialect)))))))))
+==========================================================================
+Linalg matmul with memref of unknown dimensions
+==========================================================================
+func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
+  %c0 = arith.constant 0 : index
+  %c1 = arith.constant 1 : index
+  %A = memref.view %arg0[%c0][%M, %K] : memref<?xi8> to memref<?x?xf32>
+  %B = memref.view %arg0[%c0][%K, %N] : memref<?xi8> to memref<?x?xf32>
+  %C = memref.view %arg0[%c0][%M, %N] : memref<?xi8> to memref<?x?xf32>
+  linalg.matmul ins(%A, %B: memref<?x?xf32>, memref<?x?xf32>)
+                outs(%C: memref<?x?xf32>)
+  return
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (memref_type
+                    (dim_list
+                      (integer_type)))))))
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (index_type)))))
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (index_type)))))
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (index_type))))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  (literal_and_type
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type
+                        (index_type)))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (arith_dialect
+                  (literal_and_type
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type
+                        (index_type)))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (memref_dialect
+                  (value_use
+                    (value_id))
+                  (value_use
+                    (value_id))
+                  (value_use_list
+                    (value_use
+                      (value_id))
+                    (value_use
+                      (value_id)))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (integer_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (memref_dialect
+                  (value_use
+                    (value_id))
+                  (value_use
+                    (value_id))
+                  (value_use_list
+                    (value_use
+                      (value_id))
+                    (value_use
+                      (value_id)))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (integer_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_id)))
+              (custom_operation
+                (memref_dialect
+                  (value_use
+                    (value_id))
+                  (value_use
+                    (value_id))
+                  (value_use_list
+                    (value_use
+                      (value_id))
+                    (value_use
+                      (value_id)))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (integer_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (linalg_dialect
+                  (value_use_list
+                    (value_use
+                      (value_id))
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type)))))
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type))))))
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))

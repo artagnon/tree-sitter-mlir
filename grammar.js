@@ -294,6 +294,8 @@ module.exports = grammar({
       $.cf_dialect,
       $.arith_dialect,
       $.scf_dialect,
+      $.memref_dialect,
+      $.linalg_dialect
     ),
 
     func_dialect: $ => prec.right(choice(
@@ -389,7 +391,7 @@ module.exports = grammar({
         'arith.shli', 'arith.shrsi', 'arith.shrui'),
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
-        optional($.dictionary_attribute), ':',
+        field('attributes', optional($.dictionary_attribute)), ':',
         $.type),
 
       // operation ::= `arith.cmpi` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
@@ -416,11 +418,13 @@ module.exports = grammar({
         'arith.index_cast', 'arith.index_castui', 'arith.sitofp', 'arith.uitofp', 'arith.bitcast',
         'arith.truncf'),
         field('in', $.value_use),
-        field('attributes', $.dictionary_attribute), ':',
-        field('fromtype', $.type), 'to',
-        field('totype', $.type))
+        field('attributes', $.dictionary_attribute),
+        $._from_type_to_type)
     ),
     literal_and_type: $ => seq($.literal, ':', $.type),
+    _from_type_to_type: $ => seq(':',
+      field('fromtype', $.type), 'to',
+      field('totype', $.type)),
 
     scf_dialect: $ => prec.right(choice(
       // scf.for %iv = %lb to %ub step %step {
@@ -430,8 +434,8 @@ module.exports = grammar({
         field('iv', $.value_use), '=',
         field('lb', $.value_use), 'to',
         field('ub', $.value_use), 'step',
-        field('step', $.value_use), 'iter_args', '(',
-        field('iter_args', seq($.value_use, '=', $.value_use)), ')',
+        field('step', $.value_use),
+        field('iter_args', seq('iter_args', '(', $.value_use, '=', $.value_use, ')')),
         field('return', $.function_return),
         field('body', $.region)),
 
@@ -439,6 +443,25 @@ module.exports = grammar({
       seq('scf.yield',
         field('attributes', optional($.dictionary_attribute)),
         field('results', optional($._value_id_and_type_list))),
-    ))
+    )),
+
+    memref_dialect: $ => choice(
+      // operation ::= `memref.view` $source `[` $byte_shift `]` `` `[` $sizes `]` attr-dict
+      //         `:` type($source) `to` type(results)
+      seq('memref.view',
+        field('source', $.value_use), '[',
+        field('byte_shift', $.value_use), ']', '[',
+        field('sizes', $.value_use_list), ']',
+        field('attributes', optional($.dictionary_attribute)),
+        $._from_type_to_type)
+    ),
+
+    linalg_dialect: $ => choice(
+      seq('linalg.matmul', 'ins',
+        field('ins', $._linalg_matmul_arg), 'outs',
+        field('outs', $._linalg_matmul_arg)
+      )
+    ),
+    _linalg_matmul_arg: $ => seq('(', $.value_use_list, ':', $.type_list_no_parens, ')')
   }
 });
