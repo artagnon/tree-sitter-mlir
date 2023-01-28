@@ -485,10 +485,17 @@ module.exports = grammar({
     ),
 
     tensor_dialect: $ => choice(
+      // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)
       seq('tensor.empty', '(',
         field('size', optional($.value_use_list)), ')',
         field('attributes', optional($.attribute)), ':',
-        field('return', $.tensor_type))
+        field('return', $.tensor_type)),
+
+      // operation ::= `tensor.cast` $source attr-dict `:` type($source) `to` type($dest)
+      seq('tensor.cast',
+        field('in', $.value_use),
+        field('attributes', optional($.dictionary_attribute)),
+        $._from_type_to_type)
     ),
 
     linalg_dialect: $ => choice(
