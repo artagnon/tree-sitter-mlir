@@ -424,8 +424,10 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (memref_type
                     (dim_list
                       (float_type))
-                    (strided_layout
-                      (dim_list)))))))
+                    (attribute_value
+                      (builtin_attribute
+                        (strided_layout
+                          (dim_list)))))))))
           (value_id_and_type_attr
             (value_id_and_type
               (value_id)
@@ -434,8 +436,10 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (memref_type
                     (dim_list
                       (float_type))
-                    (strided_layout
-                      (dim_list)))))))
+                    (attribute_value
+                      (builtin_attribute
+                        (strided_layout
+                          (dim_list)))))))))
           (value_id_and_type_attr
             (value_id_and_type
               (value_id)
@@ -460,15 +464,19 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                         (memref_type
                           (dim_list
                             (float_type))
-                          (strided_layout
-                            (dim_list)))))
+                          (attribute_value
+                            (builtin_attribute
+                              (strided_layout
+                                (dim_list)))))))
                     (type
                       (builtin_type
                         (memref_type
                           (dim_list
                             (float_type))
-                          (strided_layout
-                            (dim_list))))))
+                          (attribute_value
+                            (builtin_attribute
+                              (strided_layout
+                                (dim_list))))))))
                   (value_use_list
                     (value_use
                       (value_id)))

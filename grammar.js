@@ -228,11 +228,10 @@ module.exports = grammar({
     //                 (`,` layout-specification)? (`,` memory-space)? `>`
     // layout-specification ::= attribute-value
     // memory-space ::= attribute-value
-    memref_type: $ => seq('memref', '<', $.dim_list,
-      optional(seq(',', $.attribute_value)), optional(seq(',', $.strided_layout)),
+    memref_type: $ => seq('memref', '<',
+      field('dimension_list', $.dim_list),
+      optional(seq(',', $.attribute_value)),
       optional(seq(',', $.attribute_value)), '>'),
-    strided_layout: $ => seq('strided', '<', '[', $.dim_list, ']',
-      ',', 'offset', ':', choice($.integer_literal, '?', '*'), '>'),
     dim_list: $ => seq($._memref_dim, repeat(seq('x', $._memref_dim))),
     _memref_dim: $ => choice($._primitive_type, $._decimal_literal, '?', '*'),
 
@@ -273,16 +272,19 @@ module.exports = grammar({
     //   attribute-alias ::= '#' alias-name
     attribute_alias_def: $ => seq('#', $._alias_or_dialect_id, '=', $.attribute_value),
     attribute_alias: $ => seq('#', $._alias_or_dialect_id),
+
     // Dialect Attribute Values
-    dialect_attribute: $ => seq('#', choice($.opaque_dialect_item,
-      $.pretty_dialect_item)),
+    dialect_attribute: $ => seq('#', choice($.opaque_dialect_item, $.pretty_dialect_item)),
 
     // Builtin Attribute Values
     builtin_attribute: $ => choice(
       // TODO
       $.type,
+      $.strided_layout,
       seq($.literal, optional(seq(':', $.type))),
     ),
+    strided_layout: $ => seq('strided', '<', '[', $.dim_list, ']',
+      ',', 'offset', ':', choice($.integer_literal, '?', '*'), '>'),
 
     // Comment (standard BCPL)
     comment: $ => token(seq('//', /.*/)),
