@@ -1,0 +1,210 @@
+==========================================================================
+strided attribute in memref
+==========================================================================
+func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
+  %arg1: memref<?xf32, strided<[1], offset: ?>>, %arg2: memref<f32>) {
+  linalg.dot ins(%arg0, %arg1 : memref<?xf32, strided<[1], offset: ?>>,
+                                memref<?xf32, strided<[1], offset: ?>>)
+             outs(%arg2:  memref<f32>)
+  return
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (memref_type
+                    (dim_list
+                      (float_type))
+                    (attribute_value
+                      (builtin_attribute
+                        (strided_layout
+                          (dim_list)))))))))
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (memref_type
+                    (dim_list
+                      (float_type))
+                    (attribute_value
+                      (builtin_attribute
+                        (strided_layout
+                          (dim_list)))))))))
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (memref_type
+                    (dim_list
+                      (float_type))))))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (linalg_dialect
+                  (value_use_list
+                    (value_use
+                      (value_id))
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type))
+                          (attribute_value
+                            (builtin_attribute
+                              (strided_layout
+                                (dim_list)))))))
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type))
+                          (attribute_value
+                            (builtin_attribute
+                              (strided_layout
+                                (dim_list))))))))
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
+==========================================================================
+affine_map attribute in linalg.generic
+==========================================================================
+func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
+  %arg1: memref<?xf32, strided<[1], offset: ?>>) {
+  linalg.generic {
+    iterator_types = ["parallel"],
+    indexing_maps = [ affine_map<(i) -> (i)>, affine_map<(i) -> (i)>] }
+   ins(%arg0: memref<?xf32, strided<[1], offset: ?>>)
+   outs(%arg1: memref<?xf32, strided<[1], offset: ?>>) {
+    ^bb0(%a: f32, %b: f32):
+      linalg.yield %a : f32
+  }
+  return
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (block_arg_attr_list
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (memref_type
+                    (dim_list
+                      (float_type))
+                    (attribute_value
+                      (builtin_attribute
+                        (strided_layout
+                          (dim_list)))))))))
+          (value_id_and_type_attr
+            (value_id_and_type
+              (value_id)
+              (type
+                (builtin_type
+                  (memref_type
+                    (dim_list
+                      (float_type))
+                    (attribute_value
+                      (builtin_attribute
+                        (strided_layout
+                          (dim_list))))))))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (linalg_dialect
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (builtin_attribute
+                          (builtin_attribute
+                            (literal
+                              (string_literal))))))
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (builtin_attribute
+                          (builtin_attribute
+                            (affine_map)
+                            (affine_map))))))
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type))
+                          (attribute_value
+                            (builtin_attribute
+                              (strided_layout
+                                (dim_list))))))))
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type))
+                          (attribute_value
+                            (builtin_attribute
+                              (strided_layout
+                                (dim_list))))))))
+                  (region
+                    (block
+                      (block_label
+                        (caret_id)
+                        (block_arg_list
+                          (value_id_and_type
+                            (value_id)
+                            (type
+                              (builtin_type
+                                (float_type))))
+                          (value_id_and_type
+                            (value_id)
+                            (type
+                              (builtin_type
+                                (float_type))))))
+                      (operation
+                        (custom_operation
+                          (linalg_dialect
+                            (value_use_list
+                              (value_use
+                                (value_id)))
+                            (type_list_no_parens
+                              (type
+                                (builtin_type
+                                  (float_type))))))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))

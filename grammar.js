@@ -281,10 +281,17 @@ module.exports = grammar({
       // TODO
       $.type,
       $.strided_layout,
+      $._affine_map_list,
       seq($.literal, optional(seq(':', $.type))),
+      seq('[', $.builtin_attribute, ']')
     ),
     strided_layout: $ => seq('strided', '<', '[', $.dim_list, ']',
       ',', 'offset', ':', choice($.integer_literal, '?', '*'), '>'),
+    _affine_map_list: $ => prec.left(seq($.affine_map, repeat(seq(',', $.affine_map)))),
+    affine_map: $ => seq('affine_map', '<', '(', $._loop_indices, ')',
+      '->', '(', $._loop_indices, ')', '>'),
+    _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
+    _loop_index: $ => seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/)),
 
     // Comment (standard BCPL)
     comment: $ => token(seq('//', /.*/)),
@@ -475,10 +482,36 @@ module.exports = grammar({
     ),
 
     linalg_dialect: $ => choice(
-      seq(choice('linalg.matmul', 'linalg.dot'), 'ins', '(',
-        field('ins', $._value_use_type_list), ')', 'outs', '(',
-        field('outs', $._value_use_type_list), ')'
-      )
+      seq(choice('linalg.batch_matmul', 'linalg.batch_matmul_transpose_b', 'linalg.batch_matvec',
+        'linalg.batch_reduce_matmul', 'linalg.conv_1d_ncw_fcw', 'linalg.conv_1d_nwc_wcf',
+        'linalg.conv_1d', 'linalg.conv_2d_nchw_fchw', 'linalg.conv_2d_ngchw_fgchw',
+        'linalg.conv_2d_nhwc_fhwc', 'linalg.conv_2d_nhwc_hwcf', 'linalg.conv_2d_nhwc_hwcf_q',
+        'linalg.conv_2d', 'linalg.conv_3d_ndhwc_dhwcf', 'linalg.conv_3d_ndhwc_dhwcf_q',
+        'linalg.conv_3d', 'linalg.copy', 'linalg.depthwise_conv_1d_nwc_wcm',
+        'linalg.depthwise_conv_2d_nchw_chw', 'linalg.depthwise_conv_2d_nhwc_hwc',
+        'linalg.depthwise_conv_2d_nhwc_hwc_q', 'linalg.depthwise_conv_2d_nhwc_hwcm',
+        'linalg.depthwise_conv_2d_nhwc_hwcm_q', 'linalg.depthwise_conv_3d_ndhwc_dhwc',
+        'linalg.depthwise_conv_3d_ndhwc_dhwcm', 'linalg.dot', 'linalg.elemwise_binary',
+        'linalg.elemwise_unary', 'linalg.fill', 'linalg.fill_rng_2d', 'linalg.matmul',
+        'linalg.matmul_transpose_b', 'linalg.matmul_unsigned', 'linalg.matvec', 'linalg.mmt4d',
+        'linalg.pooling_nchw_max', 'linalg.pooling_nchw_sum', 'linalg.pooling_ncw_max',
+        'linalg.pooling_ncw_sum', 'linalg.pooling_ndhwc_max', 'linalg.pooling_ndhwc_min',
+        'linalg.pooling_ndhwc_sum', 'linalg.pooling_nhwc_max', 'linalg.pooling_nhwc_max_unsigned',
+        'linalg.pooling_nhwc_min', 'linalg.pooling_nhwc_min_unsigned', 'linalg.pooling_nhwc_sum',
+        'linalg.pooling_nwc_max', 'linalg.pooling_nwc_max_unsigned', 'linalg.pooling_nwc_min',
+        'linalg.pooling_nwc_min_unsigned', 'linalg.pooling_nwc_sum',
+        'linalg.quantized_batch_matmul', 'linalg.quantized_matmul', 'linalg.vecmat'),
+        'ins', '(', field('ins', $._value_use_type_list), ')',
+        'outs', '(', field('outs', $._value_use_type_list), ')'
+      ),
+
+      seq('linalg.generic',
+        field('attributes', $.dictionary_attribute),
+        'ins', '(', field('ins', $._value_use_type_list), ')',
+        'outs', '(', field('outs', $._value_use_type_list), ')',
+        field('body', $.region), optional($.function_return)),
+
+      seq('linalg.yield', $._value_use_type_list)
     ),
     _value_use_type_list: $ => seq($.value_use_list, ':', $.type_list_no_parens)
   }
