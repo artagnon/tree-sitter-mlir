@@ -1,5 +1,5 @@
 ==========================================================================
-Simple branching with terminator statement
+Simple branching with comments
 ==========================================================================
 func.func @simple(i64, i1) -> i64 {
 ^bb0(%a: i64, %cond: i1): // Code dominated by ^bb0 may refer to %a
@@ -30,15 +30,14 @@ func.func @simple(i64, i1) -> i64 {
       (func_dialect
         (symbol_ref_id)
         (block_arg_attr_list
-          (value_id_and_type_attr_list
-            (value_id_and_type_attr
-              (type
-                (builtin_type
-                  (integer_type))))
-            (value_id_and_type_attr
-              (type
-                (builtin_type
-                  (integer_type))))))
+          (value_id_and_type_attr
+            (type
+              (builtin_type
+                (integer_type))))
+          (value_id_and_type_attr
+            (type
+              (builtin_type
+                (integer_type)))))
         (function_return
           (type_list_attr_parens
             (type
@@ -49,17 +48,16 @@ func.func @simple(i64, i1) -> i64 {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type_list
-                  (value_id_and_type
-                    (value_id)
-                    (type
-                      (builtin_type
-                        (integer_type))))
-                  (value_id_and_type
-                    (value_id)
-                    (type
-                      (builtin_type
-                        (integer_type)))))))
+                (value_id_and_type
+                  (value_id)
+                  (type
+                    (builtin_type
+                      (integer_type))))
+                (value_id_and_type
+                  (value_id)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (comment)
             (operation
               (custom_operation
@@ -79,12 +77,11 @@ func.func @simple(i64, i1) -> i64 {
                   (successor
                     (caret_id)
                     (block_arg_list
-                      (value_id_and_type_list
-                        (value_id_and_type
-                          (value_id)
-                          (type
-                            (builtin_type
-                              (integer_type)))))))))))
+                      (value_id_and_type
+                        (value_id)
+                        (type
+                          (builtin_type
+                            (integer_type))))))))))
           (comment)
           (block
             (block_label
@@ -108,12 +105,11 @@ func.func @simple(i64, i1) -> i64 {
                   (successor
                     (caret_id)
                     (block_arg_list
-                      (value_id_and_type_list
-                        (value_id_and_type
-                          (value_id)
-                          (type
-                            (builtin_type
-                              (integer_type)))))))))))
+                      (value_id_and_type
+                        (value_id)
+                        (type
+                          (builtin_type
+                            (integer_type))))))))))
           (comment)
           (comment)
           (comment)
@@ -123,45 +119,42 @@ func.func @simple(i64, i1) -> i64 {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type_list
-                  (value_id_and_type
-                    (value_id)
-                    (type
-                      (builtin_type
-                        (integer_type)))))))
+                (value_id_and_type
+                  (value_id)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (custom_operation
                 (cf_dialect
                   (successor
                     (caret_id)
                     (block_arg_list
-                      (value_id_and_type_list
-                        (value_id_and_type
-                          (value_id))
-                        (value_id_and_type
-                          (value_id)
-                          (type
-                            (builtin_type
-                              (integer_type))))
-                        (value_id_and_type
-                          (type
-                            (builtin_type
-                              (integer_type)))))))))))
+                      (value_id_and_type
+                        (value_id))
+                      (value_id_and_type
+                        (value_id)
+                        (type
+                          (builtin_type
+                            (integer_type))))
+                      (value_id_and_type
+                        (type
+                          (builtin_type
+                            (integer_type))))))))))
           (block
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type_list
-                  (value_id_and_type
-                    (value_id)
-                    (type
-                      (builtin_type
-                        (integer_type))))
-                  (value_id_and_type
-                    (value_id)
-                    (type
-                      (builtin_type
-                        (integer_type)))))))
+                (value_id_and_type
+                  (value_id)
+                  (type
+                    (builtin_type
+                      (integer_type))))
+                (value_id_and_type
+                  (value_id)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (op_result_list
                 (op_result
@@ -178,12 +171,11 @@ func.func @simple(i64, i1) -> i64 {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_id_and_type_list
-                    (value_id_and_type
-                      (value_id)
-                      (type
-                        (builtin_type
-                          (integer_type)))))))))
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (integer_type))))))))
           (comment))))))
 ==========================================================================
 Simple switch statement
@@ -209,17 +201,16 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
       (func_dialect
         (symbol_ref_id)
         (block_arg_attr_list
-          (value_id_and_type_attr_list
-            (value_id_and_type_attr
-              (value_id)
-              (type
-                (builtin_type
-                  (integer_type))))
-            (value_id_and_type_attr
-              (value_id)
-              (type
-                (builtin_type
-                  (integer_type))))))
+          (value_id_and_type_attr
+            (value_id)
+            (type
+              (builtin_type
+                (integer_type))))
+          (value_id_and_type_attr
+            (value_id)
+            (type
+              (builtin_type
+                (integer_type)))))
         (region
           (entry_block
             (operation
@@ -234,44 +225,40 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                   (successor
                     (caret_id)
                     (block_arg_list
-                      (value_id_and_type_list
-                        (value_id_and_type
-                          (value_id)
-                          (type
-                            (builtin_type
-                              (integer_type)))))))
+                      (value_id_and_type
+                        (value_id)
+                        (type
+                          (builtin_type
+                            (integer_type))))))
                   (case_label
                     (integer_literal))
                   (successor
                     (caret_id)
                     (block_arg_list
-                      (value_id_and_type_list
-                        (value_id_and_type
-                          (value_id)
-                          (type
-                            (builtin_type
-                              (integer_type)))))))
+                      (value_id_and_type
+                        (value_id)
+                        (type
+                          (builtin_type
+                            (integer_type))))))
                   (case_label
                     (integer_literal))
                   (successor
                     (caret_id)
                     (block_arg_list
-                      (value_id_and_type_list
-                        (value_id_and_type
-                          (value_id)
-                          (type
-                            (builtin_type
-                              (integer_type)))))))))))
+                      (value_id_and_type
+                        (value_id)
+                        (type
+                          (builtin_type
+                            (integer_type))))))))))
           (block
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type_list
-                  (value_id_and_type
-                    (value_id)
-                    (type
-                      (builtin_type
-                        (integer_type)))))))
+                (value_id_and_type
+                  (value_id)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (custom_operation
                 (func_dialect))))
@@ -279,12 +266,11 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type_list
-                  (value_id_and_type
-                    (value_id)
-                    (type
-                      (builtin_type
-                        (integer_type)))))))
+                (value_id_and_type
+                  (value_id)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (custom_operation
                 (func_dialect))))
@@ -292,12 +278,11 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type_list
-                  (value_id_and_type
-                    (value_id)
-                    (type
-                      (builtin_type
-                        (integer_type)))))))
+                (value_id_and_type
+                  (value_id)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (custom_operation
                 (func_dialect)))))))))

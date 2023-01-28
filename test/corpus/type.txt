@@ -12,21 +12,20 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
       (func_dialect
         (symbol_ref_id)
         (block_arg_attr_list
-          (value_id_and_type_attr_list
-            (value_id_and_type_attr
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (integer_type))))))
-            (value_id_and_type_attr
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (integer_type))))))))
+          (value_id_and_type_attr
+            (value_id)
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (integer_type))))))
+          (value_id_and_type_attr
+            (value_id)
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (integer_type)))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -54,14 +53,13 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
             (operation
               (custom_operation
                 (func_dialect
-                  (value_id_and_type_list
-                    (value_id_and_type
-                      (value_id)
-                      (type
-                        (builtin_type
-                          (tensor_type
-                            (dim_list
-                              (integer_type))))))))))))))))
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (integer_type)))))))))))))))
 ==========================================================================
 Vector type
 ==========================================================================
@@ -76,21 +74,20 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
       (func_dialect
         (symbol_ref_id)
         (block_arg_attr_list
-          (value_id_and_type_attr_list
-            (value_id_and_type_attr
-              (value_id)
-              (type
-                (builtin_type
-                  (vector_type
-                    (vector_dim_list)
-                    (integer_type)))))
-            (value_id_and_type_attr
-              (value_id)
-              (type
-                (builtin_type
-                  (vector_type
-                    (vector_dim_list)
-                    (integer_type)))))))
+          (value_id_and_type_attr
+            (value_id)
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type)))))
+          (value_id_and_type_attr
+            (value_id)
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -118,14 +115,13 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
             (operation
               (custom_operation
                 (func_dialect
-                  (value_id_and_type_list
-                    (value_id_and_type
-                      (value_id)
-                      (type
-                        (builtin_type
-                          (vector_type
-                            (vector_dim_list)
-                            (integer_type)))))))))))))))
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (vector_type
+                          (vector_dim_list)
+                          (integer_type))))))))))))))
 ==========================================================================
 Scalable vector type
 ==========================================================================
@@ -141,21 +137,20 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
       (func_dialect
         (symbol_ref_id)
         (block_arg_attr_list
-          (value_id_and_type_attr_list
-            (value_id_and_type_attr
-              (value_id)
-              (type
-                (builtin_type
-                  (vector_type
-                    (vector_dim_list)
-                    (integer_type)))))
-            (value_id_and_type_attr
-              (value_id)
-              (type
-                (builtin_type
-                  (vector_type
-                    (vector_dim_list)
-                    (integer_type)))))))
+          (value_id_and_type_attr
+            (value_id)
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type)))))
+          (value_id_and_type_attr
+            (value_id)
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -183,11 +178,10 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
             (operation
               (custom_operation
                 (func_dialect
-                  (value_id_and_type_list
-                    (value_id_and_type
-                      (value_id)
-                      (type
-                        (builtin_type
-                          (vector_type
-                            (vector_dim_list)
-                            (integer_type)))))))))))))))
+                  (value_id_and_type
+                    (value_id)
+                    (type
+                      (builtin_type
+                        (vector_type
+                          (vector_dim_list)
+                          (integer_type))))))))))))))

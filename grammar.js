@@ -128,9 +128,9 @@ module.exports = grammar({
     _block_id: $ => $.caret_id,
     caret_id: $ => seq('^', $._suffix_id),
     value_id_and_type: $ => seq(choice(seq($.value_id, ':', $.type), $.value_id, $.type)),
-    value_id_and_type_list: $ => seq($.value_id_and_type,
+    _value_id_and_type_list: $ => seq($.value_id_and_type,
       repeat(seq(',', $.value_id_and_type))),
-    block_arg_list: $ => seq('(', optional($.value_id_and_type_list), ')'),
+    block_arg_list: $ => seq('(', optional($._value_id_and_type_list), ')'),
 
     // Regions
     //   region      ::= `{` entry-block? block* `}`
@@ -308,6 +308,7 @@ module.exports = grammar({
     // TODO: complete
     custom_operation: $ => choice(
       $.func_dialect,
+      $.llvm_dialect,
       $.cf_dialect,
       $.arith_dialect,
     ),
@@ -320,18 +321,31 @@ module.exports = grammar({
         field('attributes', optional(seq('attributes', $.dictionary_attribute))),
         field('body', optional($.region))),
 
-      // operation ::= `func.return` attr - dict($operands ^ `:` type($operands)) ?
-      seq('return', optional($.dictionary_attribute), optional($.value_id_and_type_list)),
+      // operation ::= `func.return` attr-dict($operands ^ `:` type($operands)) ?
+      seq(choice('func.return', 'return'),
+        optional($.dictionary_attribute), optional($._value_id_and_type_list)),
     )),
     function_return: $ => seq('->', $.type_list_attr_parens),
-    block_arg_attr_list: $ => seq('(', optional($.value_id_and_type_attr_list), ')'),
-    value_id_and_type_attr_list: $ => seq($.value_id_and_type_attr,
+    block_arg_attr_list: $ => seq('(', optional($._value_id_and_type_attr_list), ')'),
+    _value_id_and_type_attr_list: $ => seq($.value_id_and_type_attr,
       repeat(seq(',', $.value_id_and_type_attr))),
-    value_id_and_type_attr: $ => seq(choice(seq($.value_id, ':', $.type), $.value_id, $.type),
-      optional($.dictionary_attribute)),
+    value_id_and_type_attr: $ => choice(seq(choice(seq($.value_id, ':', $.type),
+      $.value_id, $.type), optional($.dictionary_attribute)), $.variadic_args),
     type_list_attr_parens: $ => choice($.type, seq('(', $.type,
       optional($.dictionary_attribute), repeat(seq(',', $.type,
         optional($.dictionary_attribute))), ')')),
+    variadic_args: $ => '...',
+
+    llvm_dialect: $ => prec.right(choice(
+      seq('llvm.func', field('name', $.symbol_ref_id),
+        field('arguments', $.block_arg_attr_list),
+        field('return', optional($.function_return)),
+        field('attributes', optional(seq('attributes', $.dictionary_attribute))),
+        field('body', optional($.region))),
+
+      seq('llvm.return',
+        optional($.dictionary_attribute), optional($._value_id_and_type_list)),
+    )),
 
     cf_dialect: $ => choice(
       // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
