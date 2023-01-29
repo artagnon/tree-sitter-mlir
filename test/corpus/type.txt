@@ -192,7 +192,7 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
                           (vector_dim_list)
                           (integer_type))))))))))))))
 ==========================================================================
-Dialect type
+!llvm.ptr dialect type
 ==========================================================================
 llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
   llvm.return
@@ -213,9 +213,10 @@ llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
                     (dialect_namespace)
                     (dialect_ident)
                     (pretty_dialect_item_contents)))))
-            (dictionary_attribute
-              (attribute_entry
-                (bare_id)))))
+            (attribute
+              (dictionary_attribute
+                (attribute_entry
+                  (bare_id))))))
         (region
           (entry_block
             (operation

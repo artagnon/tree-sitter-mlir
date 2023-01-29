@@ -1,7 +1,7 @@
 module.exports = grammar({
   name: 'mlir',
   extras: $ => [/\s/,
-    $.comment,
+    $.comment
   ],
   conflicts: $ => [],
   rules: {
@@ -10,7 +10,7 @@ module.exports = grammar({
     toplevel: $ => seq(choice(
       $.operation,
       $.attribute_alias_def,
-      $.type_alias_def,
+      $.type_alias_def
     )),
 
     // Common syntax (lang-ref)
@@ -315,7 +315,7 @@ module.exports = grammar({
       // operation ::= `builtin.module` ($sym_name^)? attr-dict-with-keyword $bodyRegion
       seq('module',
         field('name', optional($.bare_id)),
-        field('attributes', optional($.dictionary_attribute)),
+        field('attributes', optional($.attribute)),
         field('body', $.region)),
 
       // operation ::= `builtin.unrealized_conversion_cast` ($inputs^ `:` type($inputs))?
@@ -323,13 +323,13 @@ module.exports = grammar({
       seq('unrealized_cast_conversion',
         field('inputs', $._value_use_type_list), 'to',
         field('outputs', $.type_list_no_parens),
-        field('attributes', optional($.dictionary_attribute)))
+        field('attributes', optional($.attribute)))
     ),
 
     func_dialect: $ => prec.right(choice(
       seq('func.func', $._op_func),
       seq(choice('func.return', 'return'),
-        field('attributes', optional($.dictionary_attribute)),
+        field('attributes', optional($.attribute)),
         field('results', optional($._value_id_and_type_list))),
     )),
 
@@ -338,9 +338,9 @@ module.exports = grammar({
     _value_id_and_type_attr_list: $ => seq($.value_id_and_type_attr,
       repeat(seq(',', $.value_id_and_type_attr))),
     value_id_and_type_attr: $ => choice(seq($.value_id_and_type,
-      optional($.dictionary_attribute)), $.variadic),
-    type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.dictionary_attribute),
-      repeat(seq(',', $.type, optional($.dictionary_attribute))), ')')),
+      optional($.attribute)), $.variadic),
+    type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.attribute),
+      repeat(seq(',', $.type, optional($.attribute))), ')')),
     variadic: $ => '...',
 
     // (func.func|llvm.func) takes arguments, an optional return type, and and optional body
@@ -348,19 +348,19 @@ module.exports = grammar({
       field('name', $.symbol_ref_id),
       field('arguments', $.block_arg_attr_list),
       field('return', optional($.function_return)),
-      field('attributes', optional(seq('attributes', $.dictionary_attribute))),
+      field('attributes', optional(seq('attributes', $.attribute))),
       field('body', optional($.region))),
 
     llvm_dialect: $ => prec.right(choice(
       seq('llvm.func', $._op_func),
       seq('llvm.return',
-        field('attributes', optional($.dictionary_attribute)),
+        field('attributes', optional($.attribute)),
         field('results', optional($._value_id_and_type_list))))),
 
     cf_dialect: $ => choice(
       // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
       seq('cf.br', field('successor', $.successor),
-        field('attributes', optional($.dictionary_attribute))),
+        field('attributes', optional($.attribute))),
 
       // operation ::= `cf.cond_br` $condition `,`
       // $trueDest(`(` $trueDestOperands ^ `:` type($trueDestOperands)`)`)? `,`
@@ -369,7 +369,7 @@ module.exports = grammar({
         field('condition', $.value_use), ',',
         field('trueDest', $.successor), ',',
         field('falseDest', $.successor)),
-        optional($.dictionary_attribute)),
+        optional($.attribute)),
 
       // operation ::= `cf.switch` $flag `:` type($flag) `,` `[` `\n`
       //               custom<SwitchOpCases>(ref(type($flag)),$defaultDestination,
@@ -383,14 +383,14 @@ module.exports = grammar({
       //               attr-dict
       seq('cf.switch', field('flag', $.value_id_and_type), ',', '[',
         $.case_label, $.successor, repeat(seq(',', $.case_label, $.successor)), ']',
-        field('attributes', optional($.dictionary_attribute))),
+        field('attributes', optional($.attribute))),
     ),
 
     case_label: $ => seq(choice($.integer_literal, 'default'), ':'),
 
     arith_dialect: $ => choice(
       // operation ::= `arith.constant` attr-dict $value
-      seq('arith.constant', optional($.dictionary_attribute), $.literal_and_type),
+      seq('arith.constant', optional($.attribute), $.literal_and_type),
 
       // operation ::= `arith.addi` $lhs `,` $rhs attr-dict `:` type($result)
       // operation ::= `arith.subi` $lhs `,` $rhs attr-dict `:` type($result)
@@ -421,7 +421,7 @@ module.exports = grammar({
         'arith.shli', 'arith.shrsi', 'arith.shrui'),
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
-        field('attributes', optional($.dictionary_attribute)), ':',
+        field('attributes', optional($.attribute)), ':',
         $.type),
 
       // operation ::= `arith.addui_extended` $lhs `,` $rhs attr-dict `:` type($sum)
@@ -429,7 +429,7 @@ module.exports = grammar({
       seq('arith.addui_extended',
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
-        field('attributes', optional($.dictionary_attribute)),
+        field('attributes', optional($.attribute)),
         ':', $.type, ',', $.type),
 
       // operation ::= `arith.addf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
@@ -450,16 +450,16 @@ module.exports = grammar({
         'arith.remf', 'arith.subf'),
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
-        field('fastmath', optional(seq('fastmath', $.dictionary_attribute))),
-        field('attributes', optional($.dictionary_attribute)), ':',
+        field('fastmath', optional($._fastmath_flags)),
+        field('attributes', optional($.attribute)), ':',
         $.type),
 
       // operation ::= `arith.negf` $operand (`fastmath` `` $fastmath^)?
       //                attr-dict `:` type($result)
       seq(choice('arith.negf'),
         field('operand', $.value_use),
-        field('fastmath', optional(seq('fastmath', $.dictionary_attribute))),
-        field('attributes', optional($.dictionary_attribute)), ':',
+        field('fastmath', optional($._fastmath_flags)),
+        field('attributes', optional($.attribute)), ':',
         $.type),
 
       // operation ::= `arith.cmpi` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
@@ -469,7 +469,7 @@ module.exports = grammar({
           choice('eq', 'oeq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')), ',',
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
-        field('attributes', optional($.dictionary_attribute)), ':', $.type),
+        field('attributes', optional($.attribute)), ':', $.type),
 
       // operation ::= `arith.extf` $in attr-dict `:` type($in) `to` type($out)
       // operation ::= `arith.extsi` $in attr-dict `:` type($in) `to` type($out)
@@ -486,7 +486,7 @@ module.exports = grammar({
         'arith.index_cast', 'arith.index_castui', 'arith.sitofp', 'arith.uitofp', 'arith.bitcast',
         'arith.truncf'),
         field('in', $.value_use),
-        field('attributes', $.dictionary_attribute),
+        field('attributes', $.attribute),
         $._from_type_to_type),
 
       seq('arith.select',
@@ -495,6 +495,11 @@ module.exports = grammar({
         field('falsebr', $.value_use),
         ':', $.type_list_no_parens)
     ),
+
+    _fastmath_flags: $ => seq('fastmath', '<',
+      seq($.fastmath_flag, repeat(seq(',', $.fastmath_flag))), '>'),
+    fastmath_flag: $ => choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
+      'contract', 'afn', 'fast'),
 
     literal_and_type: $ => seq($.literal, ':', $.type),
     _from_type_to_type: $ => seq(':',
@@ -522,7 +527,7 @@ module.exports = grammar({
 
       // operation ::= `scf.yield` attr-dict ($results^ `:` type($results))?
       seq('scf.yield',
-        field('attributes', optional($.dictionary_attribute)),
+        field('attributes', optional($.attribute)),
         field('results', optional($._value_id_and_type_list))),
     )),
 
@@ -533,7 +538,7 @@ module.exports = grammar({
         field('source', $.value_use), '[',
         field('byte_shift', $.value_use), ']', '[',
         field('sizes', $.value_use_list), ']',
-        field('attributes', optional($.dictionary_attribute)),
+        field('attributes', optional($.attribute)),
         $._from_type_to_type)
     ),
 
@@ -547,7 +552,7 @@ module.exports = grammar({
       // operation ::= `tensor.cast` $source attr-dict `:` type($source) `to` type($dest)
       seq('tensor.cast',
         field('in', $.value_use),
-        field('attributes', optional($.dictionary_attribute)),
+        field('attributes', optional($.attribute)),
         $._from_type_to_type)
     ),
 
