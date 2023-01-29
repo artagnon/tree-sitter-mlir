@@ -424,6 +424,44 @@ module.exports = grammar({
         field('attributes', optional($.dictionary_attribute)), ':',
         $.type),
 
+      // operation ::= `arith.addui_extended` $lhs `,` $rhs attr-dict `:` type($sum)
+      //                `,` type($overflow)
+      seq('arith.addui_extended',
+        field('lhs', $.value_use), ',',
+        field('rhs', $.value_use),
+        field('attributes', optional($.dictionary_attribute)),
+        ':', $.type, ',', $.type),
+
+      // operation ::= `arith.addf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+      //                attr-dict `:` type($result)
+      // operation ::= `arith.divf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+      //                attr-dict `:` type($result)
+      // operation ::= `arith.maxf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+      //                attr-dict `:` type($result)
+      // operation ::= `arith.minf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+      //                attr-dict `:` type($result)
+      // operation ::= `arith.mulf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+      //                attr-dict `:` type($result)
+      // operation ::= `arith.remf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+      //                attr-dict `:` type($result)
+      // operation ::= `arith.subf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+      //                attr-dict `:` type($result)
+      seq(choice('arith.addf', 'arith.divf', 'arith.maxf', 'arith.minf', 'arith.mulf',
+        'arith.remf', 'arith.subf'),
+        field('lhs', $.value_use), ',',
+        field('rhs', $.value_use),
+        field('fastmath', optional(seq('fastmath', $.dictionary_attribute))),
+        field('attributes', optional($.dictionary_attribute)), ':',
+        $.type),
+
+      // operation ::= `arith.negf` $operand (`fastmath` `` $fastmath^)?
+      //                attr-dict `:` type($result)
+      seq(choice('arith.negf'),
+        field('operand', $.value_use),
+        field('fastmath', optional(seq('fastmath', $.dictionary_attribute))),
+        field('attributes', optional($.dictionary_attribute)), ':',
+        $.type),
+
       // operation ::= `arith.cmpi` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
       // operation ::= `arith.cmpf` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
       seq(choice('arith.cmpi', 'arith.cmpf'),
@@ -464,6 +502,12 @@ module.exports = grammar({
       field('totype', $.type)),
 
     scf_dialect: $ => prec.right(choice(
+      seq('scf.if',
+        field('condition', $.value_use),
+        optional($.function_return),
+        field('trueblk', $.region), 'else',
+        field('falseblk', $.region)),
+
       // scf.for %iv = %lb to %ub step %step {
       // ... // body
       // }
