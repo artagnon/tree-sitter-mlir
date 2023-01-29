@@ -579,8 +579,14 @@ module.exports = grammar({
 
       seq('linalg.generic',
         field('attributes', $.attribute),
-        'ins', '(', field('ins', $._value_use_type_list), ')',
-        'outs', '(', field('outs', $._value_use_type_list), ')',
+        field('ins', seq('ins', '(', $._value_use_type_list, ')')),
+        field('outs', seq('outs', '(', $._value_use_type_list, ')')),
+        field('body', $.region), optional($.function_return)),
+
+      seq('linalg.map',
+        field('ins', optional(seq('ins', '(', $._value_use_type_list, ')'))),
+        field('outs', seq('outs', '(', $._value_use_type_list, ')')),
+        field('arguments', $.block_arg_list),
         field('body', $.region), optional($.function_return)),
 
       seq('linalg.yield', $._value_use_type_list)
