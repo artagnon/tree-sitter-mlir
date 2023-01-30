@@ -26,16 +26,21 @@ module.exports = grammar({
     //  string-literal  ::= `"` [^"\n\f\v\r]* `"`   TODO: define escaping rules
     //
     _digit: $ => /[0-9]/,
-    _hex_digit: $ => /[0-9a-fA-F]/,
     integer_literal: $ => choice($._decimal_literal, $._hexadecimal_literal),
-    _decimal_literal: $ => seq(optional(/[-+]/), repeat1($._digit)),
-    _hexadecimal_literal: $ => seq('0x', repeat1($._hex_digit)),
-    float_literal: $ => seq(
-      optional(/[-+]/), repeat1($._digit), '.',
-      repeat($._digit), optional(seq(/[eE]/, optional(/[-+]/), repeat1($._digit)))),
-    string_literal: $ => seq('"', repeat(token.immediate(prec(1, /[^\\"\n\f\v\r]+/))), '"'),
-    bool_literal: $ => choice('true', 'false'),
-    unit_literal: $ => 'unit',
+    _decimal_literal: $ => token(seq(optional(/[-+]/), token.immediate(repeat1(/[0-9]/)))),
+    _hexadecimal_literal: $ => token(seq('0x', token.immediate(repeat1(/[0-9a-fA-F]/)))),
+    float_literal: $ => token(seq(
+      optional(/[-+]/),
+      token.immediate(repeat1(/[0-9]/)),
+      token.immediate('.'),
+      token.immediate(repeat(/[0-9]/)),
+      token.immediate(optional(seq(/[eE]/,
+        token.immediate(optional(/[-+]/)),
+        token.immediate(repeat1(/[0-9]/))))))),
+    string_literal: $ => token(seq('"', token.immediate(repeat(/[^\\"\n\f\v\r]+/)),
+      token.immediate('"'))),
+    bool_literal: $ => token(choice('true', 'false')),
+    unit_literal: $ => token('unit'),
     complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal), ',',
       choice($.integer_literal, $.float_literal), ')'),
     tensor_literal: $ => seq(choice('dense', 'sparse'), '<',
@@ -51,7 +56,6 @@ module.exports = grammar({
     _primitive_idx_literal: $ => choice($.integer_literal, $.float_literal,
       $.bool_literal, $.complex_literal),
 
-
     // Identifiers
     //   bare-id ::= (letter|[_]) (letter|digit|[_$.])*
     //   bare-id-list ::= bare-id (`,` bare-id)*
@@ -66,14 +70,14 @@ module.exports = grammar({
     //   // Uses of value, e.g. in an operand list to an operation.
     //   value-use ::= value-id
     //   value-use-list ::= value-use (`,` value-use)*
-    bare_id: $ => seq(token(/[a-zA-Z_]/),
-      token.immediate(repeat(/[a-zA-Z0-9_$.]/))),
-    _alias_or_dialect_id: $ => seq(token(/[a-zA-Z_]/),
-      token.immediate(repeat(/[a-zA-Z0-9_$]/))),
+    bare_id: $ => token(seq(/[a-zA-Z_]/,
+      token.immediate(repeat(/[a-zA-Z0-9_$.]/)))),
+    _alias_or_dialect_id: $ => token(seq(/[a-zA-Z_]/,
+      token.immediate(repeat(/[a-zA-Z0-9_$]/)))),
     bare_id_list: $ => seq($.bare_id, repeat(seq(',', $.bare_id))),
     value_id: $ => seq('%', $._suffix_id),
-    _suffix_id: $ => choice(repeat1($._digit),
-      seq(/[a-zA-Z_$.]/, repeat(/[a-zA-Z0-9_$.]/))),
+    _suffix_id: $ => token(choice(repeat1(/[0-9]/), seq(/[a-zA-Z_$.]/,
+      token.immediate(repeat(/[a-zA-Z0-9_$.]/))))),
     symbol_ref_id: $ => seq('@', choice($._suffix_id, $.string_literal),
       optional(seq('::', $.symbol_ref_id))),
     value_use: $ => $.value_id,
@@ -295,7 +299,7 @@ module.exports = grammar({
     affine_map: $ => seq('affine_map', '<', '(', $._loop_indices, ')',
       '->', '(', $._loop_indices, ')', '>'),
     _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
-    _loop_index: $ => seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/)),
+    _loop_index: $ => token(seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/))),
 
     // Comment (standard BCPL)
     comment: $ => token(seq('//', /.*/)),
