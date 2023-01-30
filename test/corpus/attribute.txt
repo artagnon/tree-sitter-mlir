@@ -11,13 +11,11 @@ func.func @count(%x: i64) -> (i64, i64)
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (integer_type))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (integer_type))))
         (function_return
           (type_list_attr_parens
             (type
@@ -59,7 +57,7 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list)
+        (function_arg_list)
         (function_return
           (type_list_attr_parens
             (type
@@ -84,19 +82,17 @@ func.func @example_fn_arg(%x: i32 {swift.self = unit})
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (integer_type))))
-            (attribute
-              (dictionary_attribute
-                (attribute_entry
-                  (bare_id)
-                  (literal
-                    (unit_literal)))))))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (integer_type)))
+          (attribute
+            (dictionary_attribute
+              (attribute_entry
+                (bare_id)
+                (literal
+                  (unit_literal))))))))))
 ==========================================================================
 strided attribute in memref
 ==========================================================================
@@ -113,39 +109,33 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (memref_type
-                    (dim_list
-                      (float_type))
-                    (attribute_value
-                      (builtin_attribute
-                        (strided_layout
-                          (dim_list)))))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (memref_type
-                    (dim_list
-                      (float_type))
-                    (attribute_value
-                      (builtin_attribute
-                        (strided_layout
-                          (dim_list)))))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (memref_type
-                    (dim_list
-                      (float_type))))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))
+                (attribute_value
+                  (builtin_attribute
+                    (strided_layout
+                      (dim_list)))))))
+          (value_id)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))
+                (attribute_value
+                  (builtin_attribute
+                    (strided_layout
+                      (dim_list)))))))
+          (value_id)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))))))
         (region
           (entry_block
             (operation
@@ -208,31 +198,27 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (memref_type
-                    (dim_list
-                      (float_type))
-                    (attribute_value
-                      (builtin_attribute
-                        (strided_layout
-                          (dim_list)))))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (memref_type
-                    (dim_list
-                      (float_type))
-                    (attribute_value
-                      (builtin_attribute
-                        (strided_layout
-                          (dim_list))))))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))
+                (attribute_value
+                  (builtin_attribute
+                    (strided_layout
+                      (dim_list)))))))
+          (value_id)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))
+                (attribute_value
+                  (builtin_attribute
+                    (strided_layout
+                      (dim_list))))))))
         (region
           (entry_block
             (operation
@@ -324,23 +310,19 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (float_type)))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (float_type))))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_id)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -493,25 +475,19 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (float_type)))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (float_type)))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (integer_type))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (float_type)))
+          (value_id)
+          (type
+            (builtin_type
+              (float_type)))
+          (value_id)
+          (type
+            (builtin_type
+              (integer_type))))
         (region
           (entry_block
             (operation

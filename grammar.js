@@ -110,7 +110,7 @@ module.exports = grammar({
     op_result: $ => seq($.value_id, optional(seq(':', $.integer_literal))),
     successor_list: $ => seq('[', $.successor, repeat(seq(',', $.successor)),
       ']'),
-    successor: $ => seq($.caret_id, optional($.block_arg_list)),
+    successor: $ => seq($.caret_id, optional($.value_arg_list)),
     region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
     dictionary_attribute: $ => seq(
       '{',
@@ -136,10 +136,11 @@ module.exports = grammar({
     block_label: $ => seq($._block_id, optional($.block_arg_list), ':'),
     _block_id: $ => $.caret_id,
     caret_id: $ => seq('^', $._suffix_id),
-    value_id_and_type: $ => seq(choice(seq($.value_id, ':', $.type), $.value_id, $.type)),
-    _value_id_and_type_list: $ => seq($.value_id_and_type,
-      repeat(seq(',', $.value_id_and_type))),
+    value_id_and_type: $ => seq($.value_id, optional(seq(':', $.type))),
+    _value_id_and_type_list: $ => seq($.value_id_and_type, repeat(seq(',', $.value_id_and_type))),
     block_arg_list: $ => seq('(', optional($._value_id_and_type_list), ')'),
+    value_arg_list: $ => seq('(', optional($._value_use_type_list), ')'),
+    _value_use_type_list: $ => seq($.value_use_list, ':', $.type_list_no_parens),
 
     // Regions
     //   region      ::= `{` entry-block? block* `}`
@@ -165,10 +166,6 @@ module.exports = grammar({
     type: $ => choice($.type_alias, $.dialect_type, $.builtin_type),
     type_list_no_parens: $ => seq($.type, repeat(seq(',', $.type))),
     type_list_parens: $ => seq('(', optional($.type_list_no_parens), ')'),
-    ssa_use_and_type: $ => seq($.ssa_use, ':', $.type),
-    ssa_use: $ => $.value_use,
-    ssa_use_and_type_list: $ => seq($.ssa_use_and_type,
-      repeat(seq(',', $.ssa_use_and_type))),
     function_type: $ => seq(choice($.type, $.type_list_parens), '->',
       choice($.type, $.type_list_parens)),
 
@@ -340,11 +337,12 @@ module.exports = grammar({
     )),
 
     function_return: $ => seq('->', $.type_list_attr_parens),
-    block_arg_attr_list: $ => seq('(', optional($._value_id_and_type_attr_list), ')'),
-    _value_id_and_type_attr_list: $ => seq($.value_id_and_type_attr,
-      repeat(seq(',', $.value_id_and_type_attr))),
-    value_id_and_type_attr: $ => choice(seq($.value_id_and_type,
-      optional($.attribute)), $.variadic),
+    function_arg_list: $ => seq('(', optional(choice($.variadic,
+      $._value_id_and_type_attr_list)), ')'),
+    _value_id_and_type_attr_list: $ => seq($._value_id_and_type_attr,
+      repeat(seq(',', $._value_id_and_type_attr)), optional(seq(',', $.variadic))),
+    _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute)),
+    _function_arg: $ => choice(seq($.value_id, ':', $.type), $.value_id, $.type),
     type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.attribute),
       repeat(seq(',', $.type, optional($.attribute))), ')')),
     variadic: $ => '...',
@@ -352,7 +350,7 @@ module.exports = grammar({
     // (func.func|llvm.func) takes arguments, an optional return type, and and optional body
     _op_func: $ => seq(
       field('name', $.symbol_ref_id),
-      field('arguments', $.block_arg_attr_list),
+      field('arguments', $.function_arg_list),
       field('return', optional($.function_return)),
       field('attributes', optional(seq('attributes', $.attribute))),
       field('body', optional($.region))),
@@ -535,7 +533,7 @@ module.exports = grammar({
       // operation ::= `scf.yield` attr-dict ($results^ `:` type($results))?
       seq('scf.yield',
         field('attributes', optional($.attribute)),
-        field('results', optional($._value_id_and_type_list))),
+        field('results', optional($._value_use_type_list))),
     )),
 
     memref_dialect: $ => choice(
@@ -610,7 +608,5 @@ module.exports = grammar({
 
       seq('linalg.yield', $._value_use_type_list)
     ),
-
-    _value_use_type_list: $ => seq($.value_use_list, ':', $.type_list_no_parens)
   }
 });

@@ -11,23 +11,19 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (integer_type)))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (integer_type))))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (integer_type)))))
+          (value_id)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (integer_type))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -77,23 +73,19 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (vector_type
-                    (vector_dim_list)
-                    (integer_type))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (vector_type
-                    (vector_dim_list)
-                    (integer_type)))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (vector_type
+                (vector_dim_list)
+                (integer_type))))
+          (value_id)
+          (type
+            (builtin_type
+              (vector_type
+                (vector_dim_list)
+                (integer_type)))))
         (function_return
           (type_list_attr_parens
             (type
@@ -144,23 +136,19 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (vector_type
-                    (vector_dim_list)
-                    (integer_type))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (vector_type
-                    (vector_dim_list)
-                    (integer_type)))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (vector_type
+                (vector_dim_list)
+                (integer_type))))
+          (value_id)
+          (type
+            (builtin_type
+              (vector_type
+                (vector_dim_list)
+                (integer_type)))))
         (function_return
           (type_list_attr_parens
             (type
@@ -209,20 +197,18 @@ llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
     (custom_operation
       (llvm_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (dialect_type
-                  (pretty_dialect_item
-                    (dialect_namespace)
-                    (dialect_ident)
-                    (pretty_dialect_item_contents)))))
-            (attribute
-              (dictionary_attribute
-                (attribute_entry
-                  (bare_id))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (dialect_type
+              (pretty_dialect_item
+                (dialect_namespace)
+                (dialect_ident)
+                (pretty_dialect_item_contents))))
+          (attribute
+            (dictionary_attribute
+              (attribute_entry
+                (bare_id)))))
         (region
           (entry_block
             (operation
@@ -247,33 +233,25 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (memref_type
-                    (dim_list
-                      (integer_type)))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (index_type)))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (index_type)))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (index_type))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (integer_type)))))
+          (value_id)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_id)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_id)
+          (type
+            (builtin_type
+              (index_type))))
         (region
           (entry_block
             (operation
@@ -422,31 +400,25 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (float_type)))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (float_type)))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (float_type))))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_id)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_id)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type))))))
         (region
           (entry_block
             (operation
@@ -559,13 +531,11 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (index_type))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (index_type))))
         (function_return
           (type_list_attr_parens
             (type

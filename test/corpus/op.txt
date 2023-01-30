@@ -16,15 +16,13 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (tensor_type
-                    (dim_list
-                      (float_type))))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type))))))
         (function_return
           (type_list_attr_parens
             (type
@@ -106,31 +104,25 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (memref_type
-                    (dim_list
-                      (float_type)))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (memref_type
-                    (dim_list
-                      (float_type)))))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (memref_type
-                    (dim_list
-                      (float_type))))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type)))))
+          (value_id)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type)))))
+          (value_id)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))))))
         (region
           (entry_block
             (operation

@@ -8,7 +8,7 @@ func.func @abort()
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list)))))
+        (function_arg_list)))))
 ==========================================================================
 Simple function using func, arith dialects
 ==========================================================================
@@ -22,19 +22,15 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (integer_type)))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (integer_type))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_id)
+          (type
+            (builtin_type
+              (integer_type))))
         (function_return
           (type_list_attr_parens
             (type
@@ -66,7 +62,7 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
                       (builtin_type
                         (integer_type)))))))))))))
 ==========================================================================
-Multiple return values
+Function with multiple return values
 ==========================================================================
 func.func @count(%x: i64) -> (i64, i64) {
   return %x, %x: i64, i64
@@ -77,13 +73,11 @@ func.func @count(%x: i64) -> (i64, i64) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (value_id)
-              (type
-                (builtin_type
-                  (integer_type))))))
+        (function_arg_list
+          (value_id)
+          (type
+            (builtin_type
+              (integer_type))))
         (function_return
           (type_list_attr_parens
             (type
@@ -119,9 +113,8 @@ llvm.func @variadic(...)
     (custom_operation
       (llvm_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (variadic)))))))
+        (function_arg_list
+          (variadic))))))
 ==========================================================================
 Variadic function with other arguments
 ==========================================================================
@@ -132,19 +125,14 @@ llvm.func @variadic_args(i32, i32, ...)
     (custom_operation
       (llvm_dialect
         (symbol_ref_id)
-        (block_arg_attr_list
-          (value_id_and_type_attr
-            (value_id_and_type
-              (type
-                (builtin_type
-                  (integer_type)))))
-          (value_id_and_type_attr
-            (value_id_and_type
-              (type
-                (builtin_type
-                  (integer_type)))))
-          (value_id_and_type_attr
-            (variadic)))))))
+        (function_arg_list
+          (type
+            (builtin_type
+              (integer_type)))
+          (type
+            (builtin_type
+              (integer_type)))
+          (variadic))))))
 ==========================================================================
 Generic function in a module, with attributes
 ==========================================================================
