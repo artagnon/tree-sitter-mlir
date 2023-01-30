@@ -28,21 +28,29 @@ module.exports = grammar({
     _digit: $ => /[0-9]/,
     _hex_digit: $ => /[0-9a-fA-F]/,
     integer_literal: $ => choice($._decimal_literal, $._hexadecimal_literal),
-    _decimal_literal: $ => repeat1($._digit),
+    _decimal_literal: $ => seq(optional(/[-+]/), repeat1($._digit)),
     _hexadecimal_literal: $ => seq('0x', repeat1($._hex_digit)),
-    float_literal: $ => token(
-      seq(optional(/[-+]/), repeat1(/[0_9]/),
-        optional(seq('.', repeat(/[0-9]/),
-          optional(seq(/[eE]/, optional(/[-+]/),
-            repeat1(/[0-9]/))))))),
-    string_literal: $ => seq(
-      '"',
-      repeat(token.immediate(prec(1, /[^\\"\n\f\v\r]+/))),
-      '"',
-    ),
+    float_literal: $ => seq(
+      optional(/[-+]/), repeat1($._digit), '.',
+      repeat($._digit), optional(seq(/[eE]/, optional(/[-+]/), repeat1($._digit)))),
+    string_literal: $ => seq('"', repeat(token.immediate(prec(1, /[^\\"\n\f\v\r]+/))), '"'),
     bool_literal: $ => choice('true', 'false'),
-    literal: $ => choice($.integer_literal, $.float_literal,
-      $.string_literal, $.bool_literal, 'unit'),
+    unit_literal: $ => 'unit',
+    complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal), ',',
+      choice($.integer_literal, $.float_literal), ')'),
+    tensor_literal: $ => seq(choice('dense', 'sparse'), '<',
+      choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
+        $._primitive_idx_literal), '>'),
+    literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
+      $.tensor_literal, $.complex_literal, $.unit_literal),
+
+    nested_idx_list: $ => seq('[', choice($.nested_idx_list, $._idx_list),
+      repeat(seq(',', $.nested_idx_list)), ']'),
+    _idx_list: $ => prec.right(seq($._primitive_idx_literal,
+      repeat(seq(',', $._primitive_idx_literal)))),
+    _primitive_idx_literal: $ => choice($.integer_literal, $.float_literal,
+      $.bool_literal, $.complex_literal),
+
 
     // Identifiers
     //   bare-id ::= (letter|[_]) (letter|digit|[_$.])*
@@ -64,7 +72,7 @@ module.exports = grammar({
       token.immediate(repeat(/[a-zA-Z0-9_$]/))),
     bare_id_list: $ => seq($.bare_id, repeat(seq(',', $.bare_id))),
     value_id: $ => seq('%', $._suffix_id),
-    _suffix_id: $ => choice(repeat1(/[0-9]/),
+    _suffix_id: $ => choice(repeat1($._digit),
       seq(/[a-zA-Z_$.]/, repeat(/[a-zA-Z0-9_$.]/))),
     symbol_ref_id: $ => seq('@', choice($._suffix_id, $.string_literal),
       optional(seq('::', $.symbol_ref_id))),
@@ -220,9 +228,10 @@ module.exports = grammar({
     integer_type: $ => seq(choice('si', 'ui', 'i'), /[1-9]/, repeat(/[0-9]/)),
     float_type: $ => choice('f16', 'f32', 'f64', 'f80', 'f128', 'bf16', 'f8E4M3FN', 'f8E5M2'),
     index_type: $ => 'index',
-    _primitive_type: $ => choice($.integer_type, $.float_type, $.index_type),
     none_type: $ => 'none',
-    complex_type: $ => seq('complex<', $._primitive_type, '>'),
+    complex_type: $ => seq('complex<', $._prim_type, '>'),
+    _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
+      $.complex_type, $.none_type, $.memref_type),
 
     // memref-type ::= `memref` `<` dimension-list-ranked type
     //                 (`,` layout-specification)? (`,` memory-space)? `>`
@@ -232,8 +241,8 @@ module.exports = grammar({
       field('dimension_list', $.dim_list),
       optional(seq(',', $.attribute_value)),
       optional(seq(',', $.attribute_value)), '>'),
-    dim_list: $ => seq($._memref_dim, repeat(seq('x', $._memref_dim))),
-    _memref_dim: $ => choice($._primitive_type, $._decimal_literal, '?', '*'),
+    dim_list: $ => seq($._dim_primitive, repeat(seq('x', $._dim_primitive))),
+    _dim_primitive: $ => choice($._prim_type, repeat1($._digit), '?', '*'),
 
     // tensor-type ::= `tensor` `<` dimension-list type (`,` encoding)? `>`
     // dimension-list ::= (dimension `x`)*
@@ -248,15 +257,14 @@ module.exports = grammar({
     // vector-element-type ::= float-type | integer-type | index-type
     // vector-dim-list := (static-dim-list `x`)? (`[` static-dim-list `]` `x`)?
     // static-dim-list ::= decimal-literal (`x` decimal-literal)*
-    vector_type: $ => seq('vector', '<', $.vector_dim_list, $._primitive_type, '>'),
+    vector_type: $ => seq('vector', '<', $.vector_dim_list, $._prim_type, '>'),
     vector_dim_list: $ => choice(seq($._static_dim_list, 'x',
       optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x')),
-    _static_dim_list: $ => prec.left(seq($._decimal_literal, repeat(seq('x', $._decimal_literal)))),
+    _static_dim_list: $ => prec.left(seq(repeat1($._digit), repeat(seq('x', repeat1($._digit))))),
 
     // tuple-type ::= `tuple` `<` (type ( `,` type)*)? `>`
     tuple_type: $ => seq('tuple', '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
-    tuple_dim: $ => choice($._primitive_type, $.none_type, $.complex_type,
-      $.memref_type, $.tensor_type, $.vector_type),
+    tuple_dim: $ => choice($._prim_type, $.tensor_type, $.vector_type),
 
     // Attributes
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
@@ -283,7 +291,6 @@ module.exports = grammar({
       // TODO
       $.strided_layout,
       $._affine_map_list,
-      $.dense_tensor,
     ),
     strided_layout: $ => seq('strided', '<', '[', $.dim_list, ']',
       ',', 'offset', ':', choice($.integer_literal, '?', '*'), '>'),
@@ -292,8 +299,6 @@ module.exports = grammar({
       '->', '(', $._loop_indices, ')', '>'),
     _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
     _loop_index: $ => seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/)),
-    dense_tensor: $ => seq('dense', '<', choice(seq('[', $._static_dim_list, ']'),
-      $._decimal_literal), '>', ':', $.tensor_type),
 
     // Comment (standard BCPL)
     comment: $ => token(seq('//', /.*/)),
@@ -328,9 +333,10 @@ module.exports = grammar({
 
     func_dialect: $ => prec.right(choice(
       seq('func.func', $._op_func),
+
       seq(choice('func.return', 'return'),
         field('attributes', optional($.attribute)),
-        field('results', optional($._value_id_and_type_list))),
+        field('results', optional($._value_use_type_list)))
     )),
 
     function_return: $ => seq('->', $.type_list_attr_parens),
@@ -353,9 +359,10 @@ module.exports = grammar({
 
     llvm_dialect: $ => prec.right(choice(
       seq('llvm.func', $._op_func),
+
       seq('llvm.return',
         field('attributes', optional($.attribute)),
-        field('results', optional($._value_id_and_type_list))))),
+        field('results', optional($._value_use_type_list))))),
 
     cf_dialect: $ => choice(
       // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
@@ -553,7 +560,14 @@ module.exports = grammar({
       seq('tensor.cast',
         field('in', $.value_use),
         field('attributes', optional($.attribute)),
-        $._from_type_to_type)
+        $._from_type_to_type),
+
+      // operation ::= `tensor.extract` $tensor `[` $indices `]` attr-dict `:` type($tensor)
+      seq('tensor.extract',
+        field('tensor', $.value_use), '[',
+        field('indices', optional($.value_use_list)), ']',
+        field('attributes', optional($.attribute)), ':',
+        $.type)
     ),
 
     linalg_dialect: $ => choice(

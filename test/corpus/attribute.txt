@@ -37,14 +37,15 @@ func.func @count(%x: i64) -> (i64, i64)
             (operation
               (custom_operation
                 (func_dialect
-                  (value_id_and_type
-                    (value_id))
-                  (value_id_and_type
-                    (value_id)
+                  (value_use_list
+                    (value_use
+                      (value_id))
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
                     (type
                       (builtin_type
-                        (integer_type))))
-                  (value_id_and_type
+                        (integer_type)))
                     (type
                       (builtin_type
                         (integer_type)))))))))))))
@@ -94,7 +95,8 @@ func.func @example_fn_arg(%x: i32 {swift.self = unit})
               (dictionary_attribute
                 (attribute_entry
                   (bare_id)
-                  (literal))))))))))
+                  (literal
+                    (unit_literal)))))))))))
 ==========================================================================
 strided attribute in memref
 ==========================================================================
@@ -408,20 +410,24 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                     (dictionary_attribute
                       (attribute_entry
                         (bare_id)
-                        (attribute_value
-                          (builtin_attribute
-                            (dense_tensor
-                              (tensor_type
-                                (dim_list
-                                  (integer_type)))))))
+                        (literal
+                          (tensor_literal
+                            (integer_literal)))
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (integer_type))))))
                       (attribute_entry
                         (bare_id)
-                        (attribute_value
-                          (builtin_attribute
-                            (dense_tensor
-                              (tensor_type
-                                (dim_list
-                                  (integer_type)))))))))
+                        (literal
+                          (tensor_literal
+                            (integer_literal)))
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (integer_type))))))))
                   (value_use_list
                     (value_use
                       (value_id))
@@ -457,8 +463,10 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
             (operation
               (custom_operation
                 (func_dialect
-                  (value_id_and_type
-                    (value_id)
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
                     (type
                       (builtin_type
                         (tensor_type

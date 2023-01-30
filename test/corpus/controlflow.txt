@@ -173,8 +173,10 @@ func.func @simple(i64, i1) -> i64 {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_id_and_type
-                    (value_id)
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
                     (type
                       (builtin_type
                         (integer_type))))))))
@@ -429,8 +431,10 @@ func.func @for_loop_with_increasing_arg() -> i1 {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_id_and_type
-                    (value_id)
+                  (value_use_list
+                    (value_use
+                      (value_id)))
+                  (type_list_no_parens
                     (type
                       (builtin_type
                         (integer_type)))))))))))))
