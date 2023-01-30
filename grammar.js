@@ -27,18 +27,12 @@ module.exports = grammar({
     //
     _digit: $ => /[0-9]/,
     integer_literal: $ => choice($._decimal_literal, $._hexadecimal_literal),
-    _decimal_literal: $ => token(seq(optional(/[-+]/), token.immediate(repeat1(/[0-9]/)))),
-    _hexadecimal_literal: $ => token(seq('0x', token.immediate(repeat1(/[0-9a-fA-F]/)))),
+    _decimal_literal: $ => token(seq(optional(/[-+]/), repeat1(/[0-9]/))),
+    _hexadecimal_literal: $ => token(seq('0x', repeat1(/[0-9a-fA-F]/))),
     float_literal: $ => token(seq(
-      optional(/[-+]/),
-      token.immediate(repeat1(/[0-9]/)),
-      token.immediate('.'),
-      token.immediate(repeat(/[0-9]/)),
-      token.immediate(optional(seq(/[eE]/,
-        token.immediate(optional(/[-+]/)),
-        token.immediate(repeat1(/[0-9]/))))))),
-    string_literal: $ => token(seq('"', token.immediate(repeat(/[^\\"\n\f\v\r]+/)),
-      token.immediate('"'))),
+      optional(/[-+]/), repeat1(/[0-9]/), '.', repeat(/[0-9]/),
+      optional(seq(/[eE]/, optional(/[-+]/), repeat1(/[0-9]/))))),
+    string_literal: $ => token(seq('"', repeat(/[^\\"\n\f\v\r]+/), '"')),
     bool_literal: $ => token(choice('true', 'false')),
     unit_literal: $ => token('unit'),
     complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal), ',',
@@ -70,14 +64,12 @@ module.exports = grammar({
     //   // Uses of value, e.g. in an operand list to an operation.
     //   value-use ::= value-id
     //   value-use-list ::= value-use (`,` value-use)*
-    bare_id: $ => token(seq(/[a-zA-Z_]/,
-      token.immediate(repeat(/[a-zA-Z0-9_$.]/)))),
-    _alias_or_dialect_id: $ => token(seq(/[a-zA-Z_]/,
-      token.immediate(repeat(/[a-zA-Z0-9_$]/)))),
+    bare_id: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
+    _alias_or_dialect_id: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/))),
     bare_id_list: $ => seq($.bare_id, repeat(seq(',', $.bare_id))),
     value_id: $ => seq('%', $._suffix_id),
     _suffix_id: $ => token(choice(repeat1(/[0-9]/), seq(/[a-zA-Z_$.]/,
-      token.immediate(repeat(/[a-zA-Z0-9_$.]/))))),
+      repeat(/[a-zA-Z0-9_$.]/)))),
     symbol_ref_id: $ => seq('@', choice($._suffix_id, $.string_literal),
       optional(seq('::', $.symbol_ref_id))),
     value_use: $ => $.value_id,
@@ -226,10 +218,11 @@ module.exports = grammar({
     // unsigned-integer-type ::= `ui`[1-9][0-9]*
     // signless-integer-type ::= `i`[1-9][0-9]*
     // integer-type ::= signed-integer-type | unsigned-integer-type | signless-integer-type
-    integer_type: $ => seq(choice('si', 'ui', 'i'), /[1-9]/, repeat(/[0-9]/)),
-    float_type: $ => choice('f16', 'f32', 'f64', 'f80', 'f128', 'bf16', 'f8E4M3FN', 'f8E5M2'),
-    index_type: $ => 'index',
-    none_type: $ => 'none',
+    integer_type: $ => token(seq(choice('si', 'ui', 'i'), /[1-9]/, repeat(/[0-9]/))),
+    float_type: $ => token(choice('f16', 'f32', 'f64', 'f80', 'f128', 'bf16',
+      'f8E4M3FN', 'f8E5M2')),
+    index_type: $ => token('index'),
+    none_type: $ => token('none'),
     complex_type: $ => seq('complex<', $._prim_type, '>'),
     _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
       $.complex_type, $.none_type, $.memref_type),
