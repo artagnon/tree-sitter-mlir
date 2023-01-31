@@ -1,5 +1,5 @@
 func.func @simple(i64, i1) -> i64 {
-// <- function
+// <- function.builtin
 //        ^ function
 //               ^ punctuation.bracket
 //                ^ type
@@ -16,7 +16,7 @@ func.func @simple(i64, i1) -> i64 {
 //            ^ variable.parameter
 //                   ^ type
   cf.cond_br %cond, ^bb1, ^bb2
-// ^ function
+// ^ function.builtin
 //           ^ variable.parameter
 //                  ^ tag
 //                        ^ tag
@@ -24,7 +24,7 @@ func.func @simple(i64, i1) -> i64 {
 ^bb1:
 // <- tag
   cf.br ^bb3(%a: i64)    // Branch passes %a as the argument
-// ^ function
+// ^ function.builtin
 //      ^ tag
 //           ^ variable.parameter
 //               ^ type
@@ -35,12 +35,12 @@ func.func @simple(i64, i1) -> i64 {
   %b = arith.addi %a, %a : i64
 // ^ variable
 //   ^ operator
-//     ^ function
+//     ^ function.builtin
 //                ^ variable.parameter
 //                    ^ variable.parameter
 //                         ^ type
   cf.br ^bb3(%b: i64)    // Branch passes %b as the argument
-// ^ function
+// ^ function.builtin
 //      ^ tag
 //           ^ variable
 //               ^ type
@@ -50,7 +50,7 @@ func.func @simple(i64, i1) -> i64 {
 //   ^ variable.parameter
 //        ^ type
   cf.br ^bb4(%c, %a : i64, i64)
-// ^ function
+// ^ function.builtin
 //      ^ tag
 //           ^ variable.parameter
 //               ^ variable.parameter
@@ -65,11 +65,12 @@ func.func @simple(i64, i1) -> i64 {
   %0 = arith.addi %d, %e : i64
 // ^ variable
 //   ^ operator
-//     ^ function
+//     ^ function.builtin
 //                ^ variable.parameter
 //                    ^ variable.parameter
 //                          ^ type
   return %0 : i64   // Return is also a terminator.
+// ^ function.builtin
 //       ^ variable
 //            ^ type
 //                  ^ comment

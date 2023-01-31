@@ -1,5 +1,5 @@
 func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor<3x8x8xf32>)
-// <- function
+// <- function.builtin
 //        ^ function
 //                                   ^ variable.parameter
 //                                           ^ type
@@ -10,21 +10,23 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
 //   ^ type
   %zero = arith.constant 0.000000e+00 : f32
 // ^ variable
-//        ^ function
+//        ^ function.builtin
 //                       ^ number
 //                                      ^ type
   %init = tensor.empty() : tensor<1x10x8x8xf32>
 // ^ variable
-//        ^ function
+//        ^ function.builtin
 //                         ^ type
   %fill = linalg.fill ins(%zero : f32) outs(%init : tensor<1x10x8x8xf32>) -> tensor<1x10x8x8xf32>
 // ^ variable
-//        ^ function
+//        ^ function.builtin
 //                    ^ keyword
 //                        ^ variable
 //                                ^ type
 //                                     ^ keyword
   %0 = linalg.depthwise_conv_1d_nwc_wcm {dilations = dense<1> : tensor<1xi64>,
+// ^ variable
+//     ^ function.builtin
 //                                       ^ property
 //                                                   ^ constant.builtin
     strides = dense<1> : tensor<1xi64>}
@@ -35,6 +37,6 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
     outs(%fill : tensor<1x10x8x8xf32>) -> tensor<1x10x8x8xf32>
 //       ^ variable
   return %0 : tensor<1x10x8x8xf32>
-// ^ function
+// ^ function.builtin
 //       ^ variable
 }

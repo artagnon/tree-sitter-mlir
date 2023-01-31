@@ -134,7 +134,7 @@
   "linalg.generic"
   "linalg.map"
   "linalg.yield"
-] @function
+] @function.builtin
 
 (type) @type
 
