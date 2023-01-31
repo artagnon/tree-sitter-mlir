@@ -260,16 +260,14 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                       (block_label
                         (caret_id)
                         (block_arg_list
-                          (value_use_and_type
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type))))
-                          (value_use_and_type
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type))))))
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (float_type)))
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (float_type)))))
                       (operation
                         (custom_operation
                           (linalg_dialect

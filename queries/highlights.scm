@@ -1,16 +1,44 @@
-"func.func" @keyword
-"llvm.func" @keyword
+[
+  "func.func"
+  "llvm.func"
+] @keyword
 
-"return" @function
-"llvm.return" @function
-"arith.addi" @function
+[
+  "return"
+  "llvm.return"
+  "arith.addi"
+  "cf.br"
+  "cf.cond_br"
+] @function
 
 (type) @type
-(integer_literal) @number
-(float_literal) @number
+
+[
+  (integer_literal)
+  (float_literal)
+] @number
+
+[
+  "("
+  ")"
+  "{"
+  "}"
+] @punctuation.bracket
+
+[
+  ":"
+  "->"
+  ","
+] @punctuation
+
+(string_literal) @string
 
 (func_dialect name: (symbol_ref_id) @function)
 (llvm_dialect name: (symbol_ref_id) @function)
 
 (function_arg_list (value_use) @variable.parameter)
-(successor (value_use_list (value_use)) @variable.parameter)
+(block_arg_list (value_use) @variable.parameter)
+
+(caret_id) @tag
+(value_use) @variable
+(comment) @comment

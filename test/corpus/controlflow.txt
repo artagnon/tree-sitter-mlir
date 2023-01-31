@@ -46,16 +46,14 @@ func.func @simple(i64, i1) -> i64 {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_use_and_type
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))
-                (value_use_and_type
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
             (comment)
             (operation
               (custom_operation
@@ -114,11 +112,10 @@ func.func @simple(i64, i1) -> i64 {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_use_and_type
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
             (operation
               (custom_operation
                 (cf_dialect
@@ -138,16 +135,14 @@ func.func @simple(i64, i1) -> i64 {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_use_and_type
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))
-                (value_use_and_type
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
             (operation
               (op_result_list
                 (op_result
@@ -206,11 +201,10 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (operation
               (custom_operation
                 (cf_dialect
-                  (value_use_and_type
-                    (value_use)
-                    (type
-                      (builtin_type
-                        (integer_type))))
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type)))
                   (case_label)
                   (successor
                     (caret_id)
@@ -244,11 +238,10 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_use_and_type
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
             (operation
               (custom_operation
                 (func_dialect))))
@@ -256,11 +249,10 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_use_and_type
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
             (operation
               (custom_operation
                 (func_dialect))))
@@ -268,11 +260,10 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_use_and_type
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (integer_type))))))
+                (value_use)
+                (type
+                  (builtin_type
+                    (integer_type)))))
             (operation
               (custom_operation
                 (func_dialect)))))))))

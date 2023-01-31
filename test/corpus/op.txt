@@ -148,16 +148,14 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                           (dim_list
                             (float_type))))))
                   (block_arg_list
-                    (value_use_and_type
-                      (value_use)
-                      (type
-                        (builtin_type
-                          (float_type))))
-                    (value_use_and_type
-                      (value_use)
-                      (type
-                        (builtin_type
-                          (float_type)))))
+                    (value_use)
+                    (type
+                      (builtin_type
+                        (float_type)))
+                    (value_use)
+                    (type
+                      (builtin_type
+                        (float_type))))
                   (region
                     (entry_block
                       (operation

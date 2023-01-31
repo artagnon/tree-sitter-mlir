@@ -132,9 +132,9 @@ module.exports = grammar({
     block_label: $ => seq($._block_id, optional($.block_arg_list), ':'),
     _block_id: $ => $.caret_id,
     caret_id: $ => seq('^', $._suffix_id),
-    value_use_and_type: $ => seq($.value_use, optional(seq(':', $.type))),
-    _value_use_and_type_list: $ => seq($.value_use_and_type,
-      repeat(seq(',', $.value_use_and_type))),
+    _value_use_and_type: $ => seq($.value_use, optional(seq(':', $.type))),
+    _value_use_and_type_list: $ => seq($._value_use_and_type,
+      repeat(seq(',', $._value_use_and_type))),
     block_arg_list: $ => seq('(', optional($._value_use_and_type_list), ')'),
     _value_arg_list: $ => seq('(', optional($._value_use_type_list), ')'),
     _value_use_type_list: $ => seq($.value_use_list, ':', $.type_list_no_parens),
@@ -384,7 +384,7 @@ module.exports = grammar({
       //               type($caseOperands))
       //               `]`
       //               attr-dict
-      seq('cf.switch', field('flag', $.value_use_and_type), ',', '[',
+      seq('cf.switch', field('flag', $._value_use_and_type), ',', '[',
         $.case_label, $.successor, repeat(seq(',', $.case_label, $.successor)), ']',
         field('attributes', optional($.attribute))),
     ),
