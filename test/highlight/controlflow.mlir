@@ -1,5 +1,5 @@
 func.func @simple(i64, i1) -> i64 {
-// <- keyword
+// <- function
 //        ^ function
 //               ^ punctuation.bracket
 //                ^ type

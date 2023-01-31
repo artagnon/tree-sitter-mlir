@@ -1,5 +1,5 @@
 func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
-// <- keyword
+// <- function
 //        ^ function
 //                  ^ punctuation.bracket
 //                   ^ variable.parameter

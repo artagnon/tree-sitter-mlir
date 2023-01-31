@@ -1,5 +1,5 @@
 func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor<3x8x8xf32>)
-// <- keyword
+// <- function
 //        ^ function
 //                                   ^ variable.parameter
 //                                           ^ type
