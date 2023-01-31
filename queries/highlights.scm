@@ -1,14 +1,23 @@
 [
   "func.func"
   "llvm.func"
+  "ins"
+  "outs"
+  "else"
+  "loc"
+  "attributes"
 ] @keyword
 
 [
   "return"
   "llvm.return"
+  "arith.constant"
   "arith.addi"
   "cf.br"
   "cf.cond_br"
+  "tensor.empty"
+  "linalg.fill"
+  "linalg.depthwise_conv_1d_nwc_wcm"
 ] @function
 
 (type) @type
@@ -25,12 +34,9 @@
   (unit_literal)
 ] @constant.builtin
 
-[
-  "loc"
-  "attributes"
-] @constant.builtin
-
 (string_literal) @string
+
+(attribute) @property
 
 [
   "("

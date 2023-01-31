@@ -550,7 +550,7 @@ module.exports = grammar({
       seq('tensor.empty', '(',
         field('size', optional($.value_use_list)), ')',
         field('attributes', optional($.attribute)), ':',
-        field('return', $.tensor_type)),
+        field('return', $.type)),
 
       // operation ::= `tensor.cast` $source attr-dict `:` type($source) `to` type($dest)
       seq('tensor.cast',

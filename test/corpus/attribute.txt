@@ -340,9 +340,11 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (value_use)))
               (custom_operation
                 (tensor_dialect
-                  (tensor_type
-                    (dim_list
-                      (float_type))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
             (operation
               (op_result_list
                 (op_result
