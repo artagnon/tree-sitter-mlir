@@ -3,8 +3,10 @@ func.func @simple(i64, i1) -> i64 {
 //        ^ function
 //               ^ punctuation.bracket
 //                ^ type
+//                   ^ punctuation.delimeter
 //                     ^ type
 //                       ^ punctuation.bracket
+//                         ^ operator
 //                            ^ type
 //                                ^ punctuation.bracket
 ^bb0(%a: i64, %cond: i1):
@@ -32,6 +34,7 @@ func.func @simple(i64, i1) -> i64 {
 // <- tag
   %b = arith.addi %a, %a : i64
 // ^ variable
+//   ^ operator
 //     ^ function
 //                ^ variable.parameter
 //                    ^ variable.parameter
@@ -61,6 +64,7 @@ func.func @simple(i64, i1) -> i64 {
 //                  ^ type
   %0 = arith.addi %d, %e : i64
 // ^ variable
+//   ^ operator
 //     ^ function
 //                ^ variable.parameter
 //                    ^ variable.parameter
@@ -68,5 +72,6 @@ func.func @simple(i64, i1) -> i64 {
   return %0 : i64   // Return is also a terminator.
 //       ^ variable
 //            ^ type
+//                  ^ comment
 }
 // <- punctuation.bracket

@@ -19,19 +19,37 @@
 ] @number
 
 [
+  (bool_literal)
+  (complex_literal)
+  (tensor_literal)
+  (unit_literal)
+] @constant.builtin
+
+[
+  "loc"
+  "attributes"
+] @constant.builtin
+
+(string_literal) @string
+
+[
   "("
   ")"
   "{"
   "}"
+  "["
+  "]"
 ] @punctuation.bracket
 
 [
   ":"
-  "->"
   ","
-] @punctuation
+] @punctuation.delimeter
 
-(string_literal) @string
+[
+  "="
+  "->"
+] @operator
 
 (func_dialect name: (symbol_ref_id) @function)
 (llvm_dialect name: (symbol_ref_id) @function)

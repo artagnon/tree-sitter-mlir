@@ -113,7 +113,7 @@ module.exports = grammar({
       optional(seq($.attribute_entry,
         repeat(seq(',', $.attribute_entry)))),
       '}'),
-    trailing_location: $ => seq('loc(', $.location, ')'),
+    trailing_location: $ => seq('loc', '(', $.location, ')'),
     // TODO: Complete location forms.
     location: $ => $.string_literal,
 
