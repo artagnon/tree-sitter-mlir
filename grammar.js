@@ -67,12 +67,11 @@ module.exports = grammar({
     bare_id: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$.]/))),
     _alias_or_dialect_id: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/))),
     bare_id_list: $ => seq($.bare_id, repeat(seq(',', $.bare_id))),
-    value_id: $ => seq('%', $._suffix_id),
+    value_use: $ => seq('%', $._suffix_id),
     _suffix_id: $ => token(choice(repeat1(/[0-9]/), seq(/[a-zA-Z_$.]/,
       repeat(/[a-zA-Z0-9_$.]/)))),
     symbol_ref_id: $ => seq('@', choice($._suffix_id, $.string_literal),
       optional(seq('::', $.symbol_ref_id))),
-    value_use: $ => $.value_id,
     value_use_list: $ => seq($.value_use, repeat(seq(',', $.value_use))),
 
     // Operations
@@ -92,9 +91,10 @@ module.exports = grammar({
     //   dictionary-attribute ::= `{` (attribute-entry (`,` attribute-entry)*)?
     //                            `}`
     //   trailing-location    ::= (`loc` `(` location `)`)?
-    operation: $ => seq(optional($.op_result_list),
-      choice($.generic_operation, $.custom_operation),
-      optional($.trailing_location)),
+    operation: $ => seq(
+      field('lhs', optional($.op_result_list)),
+      field('rhs', choice($.generic_operation, $.custom_operation)),
+      field('location', optional($.trailing_location))),
     generic_operation: $ =>
       seq($.string_literal, '(', optional($.value_use_list),
         ')', optional($.successor_list),
@@ -103,10 +103,10 @@ module.exports = grammar({
         $.function_type),
     // custom-operation rule is defined later in the grammar, post the generic.
     op_result_list: $ => seq($.op_result, repeat(seq(',', $.op_result)), '='),
-    op_result: $ => seq($.value_id, optional(seq(':', $.integer_literal))),
+    op_result: $ => seq($.value_use, optional(seq(':', $.integer_literal))),
     successor_list: $ => seq('[', $.successor, repeat(seq(',', $.successor)),
       ']'),
-    successor: $ => seq($.caret_id, optional($.value_arg_list)),
+    successor: $ => seq($.caret_id, optional($._value_arg_list)),
     region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
     dictionary_attribute: $ => seq(
       '{',
@@ -132,10 +132,11 @@ module.exports = grammar({
     block_label: $ => seq($._block_id, optional($.block_arg_list), ':'),
     _block_id: $ => $.caret_id,
     caret_id: $ => seq('^', $._suffix_id),
-    value_id_and_type: $ => seq($.value_id, optional(seq(':', $.type))),
-    _value_id_and_type_list: $ => seq($.value_id_and_type, repeat(seq(',', $.value_id_and_type))),
-    block_arg_list: $ => seq('(', optional($._value_id_and_type_list), ')'),
-    value_arg_list: $ => seq('(', optional($._value_use_type_list), ')'),
+    value_use_and_type: $ => seq($.value_use, optional(seq(':', $.type))),
+    _value_use_and_type_list: $ => seq($.value_use_and_type,
+      repeat(seq(',', $.value_use_and_type))),
+    block_arg_list: $ => seq('(', optional($._value_use_and_type_list), ')'),
+    _value_arg_list: $ => seq('(', optional($._value_use_type_list), ')'),
     _value_use_type_list: $ => seq($.value_use_list, ':', $.type_list_no_parens),
 
     // Regions
@@ -339,7 +340,7 @@ module.exports = grammar({
     _value_id_and_type_attr_list: $ => seq($._value_id_and_type_attr,
       repeat(seq(',', $._value_id_and_type_attr)), optional(seq(',', $.variadic))),
     _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute)),
-    _function_arg: $ => choice(seq($.value_id, ':', $.type), $.value_id, $.type),
+    _function_arg: $ => choice(seq($.value_use, ':', $.type), $.value_use, $.type),
     type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.attribute),
       repeat(seq(',', $.type, optional($.attribute))), ')')),
     variadic: $ => '...',
@@ -383,7 +384,7 @@ module.exports = grammar({
       //               type($caseOperands))
       //               `]`
       //               attr-dict
-      seq('cf.switch', field('flag', $.value_id_and_type), ',', '[',
+      seq('cf.switch', field('flag', $.value_use_and_type), ',', '[',
         $.case_label, $.successor, repeat(seq(',', $.case_label, $.successor)), ']',
         field('attributes', optional($.attribute))),
     ),

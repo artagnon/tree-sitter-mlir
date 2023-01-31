@@ -46,13 +46,13 @@ func.func @simple(i64, i1) -> i64 {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type
-                  (value_id)
+                (value_use_and_type
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))
-                (value_id_and_type
-                  (value_id)
+                (value_use_and_type
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))
@@ -60,8 +60,7 @@ func.func @simple(i64, i1) -> i64 {
             (operation
               (custom_operation
                 (cf_dialect
-                  (value_use
-                    (value_id))
+                  (value_use)
                   (successor
                     (caret_id))
                   (successor
@@ -74,14 +73,12 @@ func.func @simple(i64, i1) -> i64 {
                 (cf_dialect
                   (successor
                     (caret_id)
-                    (value_arg_list
-                      (value_use_list
-                        (value_use
-                          (value_id)))
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (integer_type))))))))))
+                    (value_use_list
+                      (value_use))
+                    (type_list_no_parens
+                      (type
+                        (builtin_type
+                          (integer_type)))))))))
           (comment)
           (block
             (block_label
@@ -89,13 +86,11 @@ func.func @simple(i64, i1) -> i64 {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))
@@ -104,14 +99,12 @@ func.func @simple(i64, i1) -> i64 {
                 (cf_dialect
                   (successor
                     (caret_id)
-                    (value_arg_list
-                      (value_use_list
-                        (value_use
-                          (value_id)))
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (integer_type))))))))))
+                    (value_use_list
+                      (value_use))
+                    (type_list_no_parens
+                      (type
+                        (builtin_type
+                          (integer_type)))))))))
           (comment)
           (comment)
           (comment)
@@ -121,8 +114,8 @@ func.func @simple(i64, i1) -> i64 {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type
-                  (value_id)
+                (value_use_and_type
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))
@@ -131,43 +124,38 @@ func.func @simple(i64, i1) -> i64 {
                 (cf_dialect
                   (successor
                     (caret_id)
-                    (value_arg_list
-                      (value_use_list
-                        (value_use
-                          (value_id))
-                        (value_use
-                          (value_id)))
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (integer_type)))
-                        (type
-                          (builtin_type
-                            (integer_type))))))))))
+                    (value_use_list
+                      (value_use)
+                      (value_use))
+                    (type_list_no_parens
+                      (type
+                        (builtin_type
+                          (integer_type)))
+                      (type
+                        (builtin_type
+                          (integer_type)))))))))
           (block
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type
-                  (value_id)
+                (value_use_and_type
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))
-                (value_id_and_type
-                  (value_id)
+                (value_use_and_type
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))
@@ -175,8 +163,7 @@ func.func @simple(i64, i1) -> i64 {
               (custom_operation
                 (func_dialect
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -206,11 +193,11 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (integer_type)))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (integer_type))))
@@ -219,52 +206,46 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (operation
               (custom_operation
                 (cf_dialect
-                  (value_id_and_type
-                    (value_id)
+                  (value_use_and_type
+                    (value_use)
                     (type
                       (builtin_type
                         (integer_type))))
                   (case_label)
                   (successor
                     (caret_id)
-                    (value_arg_list
-                      (value_use_list
-                        (value_use
-                          (value_id)))
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (integer_type))))))
+                    (value_use_list
+                      (value_use))
+                    (type_list_no_parens
+                      (type
+                        (builtin_type
+                          (integer_type)))))
                   (case_label
                     (integer_literal))
                   (successor
                     (caret_id)
-                    (value_arg_list
-                      (value_use_list
-                        (value_use
-                          (value_id)))
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (integer_type))))))
+                    (value_use_list
+                      (value_use))
+                    (type_list_no_parens
+                      (type
+                        (builtin_type
+                          (integer_type)))))
                   (case_label
                     (integer_literal))
                   (successor
                     (caret_id)
-                    (value_arg_list
-                      (value_use_list
-                        (value_use
-                          (value_id)))
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (integer_type))))))))))
+                    (value_use_list
+                      (value_use))
+                    (type_list_no_parens
+                      (type
+                        (builtin_type
+                          (integer_type)))))))))
           (block
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type
-                  (value_id)
+                (value_use_and_type
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))
@@ -275,8 +256,8 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type
-                  (value_id)
+                (value_use_and_type
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))
@@ -287,8 +268,8 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (block_label
               (caret_id)
               (block_arg_list
-                (value_id_and_type
-                  (value_id)
+                (value_use_and_type
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))
@@ -327,7 +308,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
                   (literal_and_type
@@ -339,7 +320,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
                   (literal_and_type
@@ -351,7 +332,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
                   (literal_and_type
@@ -363,7 +344,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
                   (literal_and_type
@@ -375,21 +356,15 @@ func.func @for_loop_with_increasing_arg() -> i1 {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (scf_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
                   (function_return
                     (type_list_attr_parens
                       (type
@@ -400,13 +375,11 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                       (operation
                         (op_result_list
                           (op_result
-                            (value_id)))
+                            (value_use)))
                         (custom_operation
                           (arith_dialect
-                            (value_use
-                              (value_id))
-                            (value_use
-                              (value_id))
+                            (value_use)
+                            (value_use)
                             (type
                               (builtin_type
                                 (index_type))))))
@@ -414,8 +387,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                         (custom_operation
                           (scf_dialect
                             (value_use_list
-                              (value_use
-                                (value_id)))
+                              (value_use))
                             (type_list_no_parens
                               (type
                                 (builtin_type
@@ -423,13 +395,11 @@ func.func @for_loop_with_increasing_arg() -> i1 {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (index_type))))))
@@ -437,8 +407,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
               (custom_operation
                 (func_dialect
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -466,15 +435,15 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (index_type)))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (index_type)))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (index_type))))
@@ -483,54 +452,41 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
             (operation
               (custom_operation
                 (scf_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
                   (region
                     (entry_block
                       (operation
                         (custom_operation
                           (scf_dialect
-                            (value_use
-                              (value_id))
-                            (value_use
-                              (value_id))
-                            (value_use
-                              (value_id))
-                            (value_use
-                              (value_id))
+                            (value_use)
+                            (value_use)
+                            (value_use)
+                            (value_use)
                             (region
                               (entry_block
                                 (operation
                                   (op_result_list
                                     (op_result
-                                      (value_id)))
+                                      (value_use)))
                                   (custom_operation
                                     (arith_dialect
-                                      (value_use
-                                        (value_id))
-                                      (value_use
-                                        (value_id))
+                                      (value_use)
+                                      (value_use)
                                       (type
                                         (builtin_type
                                           (index_type))))))
                                 (operation
                                   (op_result_list
                                     (op_result
-                                      (value_id)))
+                                      (value_use)))
                                   (custom_operation
                                     (arith_dialect
-                                      (value_use
-                                        (value_id))
-                                      (value_use
-                                        (value_id))
-                                      (value_use
-                                        (value_id))
+                                      (value_use)
+                                      (value_use)
+                                      (value_use)
                                       (type_list_no_parens
                                         (type
                                           (builtin_type
@@ -538,28 +494,23 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                 (operation
                                   (op_result_list
                                     (op_result
-                                      (value_id)))
+                                      (value_use)))
                                   (custom_operation
                                     (arith_dialect
-                                      (value_use
-                                        (value_id))
-                                      (value_use
-                                        (value_id))
+                                      (value_use)
+                                      (value_use)
                                       (type
                                         (builtin_type
                                           (index_type))))))
                                 (operation
                                   (op_result_list
                                     (op_result
-                                      (value_id)))
+                                      (value_use)))
                                   (custom_operation
                                     (arith_dialect
-                                      (value_use
-                                        (value_id))
-                                      (value_use
-                                        (value_id))
-                                      (value_use
-                                        (value_id))
+                                      (value_use)
+                                      (value_use)
+                                      (value_use)
                                       (type_list_no_parens
                                         (type
                                           (builtin_type
@@ -567,14 +518,10 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                 (operation
                                   (custom_operation
                                     (scf_dialect
-                                      (value_use
-                                        (value_id))
-                                      (value_use
-                                        (value_id))
-                                      (value_use
-                                        (value_id))
-                                      (value_use
-                                        (value_id))
+                                      (value_use)
+                                      (value_use)
+                                      (value_use)
+                                      (value_use)
                                       (region))))))))))))))
             (operation
               (custom_operation
@@ -602,11 +549,11 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (integer_type)))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (float_type))))
@@ -615,13 +562,12 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
             (operation
               (op_result_list
                 (op_result
-                  (value_id))
+                  (value_use))
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (scf_dialect
-                  (value_use
-                    (value_id))
+                  (value_use)
                   (function_return
                     (type_list_attr_parens
                       (type
@@ -635,26 +581,22 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                       (operation
                         (op_result_list
                           (op_result
-                            (value_id)))
+                            (value_use)))
                         (custom_operation
                           (arith_dialect
-                            (value_use
-                              (value_id))
-                            (value_use
-                              (value_id))
+                            (value_use)
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))))
                       (operation
                         (op_result_list
                           (op_result
-                            (value_id)))
+                            (value_use)))
                         (custom_operation
                           (arith_dialect
-                            (value_use
-                              (value_id))
-                            (value_use
-                              (value_id))
+                            (value_use)
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))))
@@ -662,10 +604,8 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                         (custom_operation
                           (scf_dialect
                             (value_use_list
-                              (value_use
-                                (value_id))
-                              (value_use
-                                (value_id)))
+                              (value_use)
+                              (value_use))
                             (type_list_no_parens
                               (type
                                 (builtin_type
@@ -678,26 +618,22 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                       (operation
                         (op_result_list
                           (op_result
-                            (value_id)))
+                            (value_use)))
                         (custom_operation
                           (arith_dialect
-                            (value_use
-                              (value_id))
-                            (value_use
-                              (value_id))
+                            (value_use)
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))))
                       (operation
                         (op_result_list
                           (op_result
-                            (value_id)))
+                            (value_use)))
                         (custom_operation
                           (arith_dialect
-                            (value_use
-                              (value_id))
-                            (value_use
-                              (value_id))
+                            (value_use)
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))))
@@ -705,10 +641,8 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                         (custom_operation
                           (scf_dialect
                             (value_use_list
-                              (value_use
-                                (value_id))
-                              (value_use
-                                (value_id)))
+                              (value_use)
+                              (value_use))
                             (type_list_no_parens
                               (type
                                 (builtin_type

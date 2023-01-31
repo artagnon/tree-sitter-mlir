@@ -12,7 +12,7 @@ func.func @count(%x: i64) -> (i64, i64)
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (integer_type))))
@@ -36,10 +36,8 @@ func.func @count(%x: i64) -> (i64, i64)
               (custom_operation
                 (func_dialect
                   (value_use_list
-                    (value_use
-                      (value_id))
-                    (value_use
-                      (value_id)))
+                    (value_use)
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -83,7 +81,7 @@ func.func @example_fn_arg(%x: i32 {swift.self = unit})
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (integer_type)))
@@ -110,7 +108,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (memref_type
@@ -120,7 +118,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (builtin_attribute
                     (strided_layout
                       (dim_list)))))))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (memref_type
@@ -130,7 +128,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (builtin_attribute
                     (strided_layout
                       (dim_list)))))))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (memref_type
@@ -142,10 +140,8 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
               (custom_operation
                 (linalg_dialect
                   (value_use_list
-                    (value_use
-                      (value_id))
-                    (value_use
-                      (value_id)))
+                    (value_use)
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -166,8 +162,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                               (strided_layout
                                 (dim_list))))))))
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -199,7 +194,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (memref_type
@@ -209,7 +204,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (builtin_attribute
                     (strided_layout
                       (dim_list)))))))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (memref_type
@@ -237,8 +232,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                             (affine_map)
                             (affine_map))))))
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -250,8 +244,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                               (strided_layout
                                 (dim_list))))))))
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -267,13 +260,13 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                       (block_label
                         (caret_id)
                         (block_arg_list
-                          (value_id_and_type
-                            (value_id)
+                          (value_use_and_type
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))
-                          (value_id_and_type
-                            (value_id)
+                          (value_use_and_type
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))))
@@ -281,8 +274,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                         (custom_operation
                           (linalg_dialect
                             (value_use_list
-                              (value_use
-                                (value_id)))
+                              (value_use))
                             (type_list_no_parens
                               (type
                                 (builtin_type
@@ -311,13 +303,13 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
                   (float_type)))))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (tensor_type
@@ -335,7 +327,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
                   (literal_and_type
@@ -347,7 +339,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (tensor_dialect
                   (tensor_type
@@ -356,19 +348,17 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (linalg_dialect
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
                         (float_type))))
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -385,7 +375,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (linalg_dialect
                   (attribute
@@ -411,10 +401,8 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                               (dim_list
                                 (integer_type))))))))
                   (value_use_list
-                    (value_use
-                      (value_id))
-                    (value_use
-                      (value_id)))
+                    (value_use)
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -427,8 +415,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                           (dim_list
                             (float_type))))))
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -446,8 +433,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
               (custom_operation
                 (func_dialect
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -476,15 +462,15 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (float_type)))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (float_type)))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (integer_type))))
@@ -493,13 +479,11 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (fastmath_flag)
                   (type
                     (builtin_type
@@ -507,13 +491,11 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (fastmath_flag)
                   (type
                     (builtin_type
@@ -521,13 +503,11 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (fastmath_flag)
                   (type
                     (builtin_type
@@ -535,13 +515,11 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (fastmath_flag)
                   (type
                     (builtin_type
@@ -549,13 +527,11 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (fastmath_flag)
                   (type
                     (builtin_type
@@ -563,11 +539,10 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
+                  (value_use)
                   (fastmath_flag)
                   (type
                     (builtin_type
@@ -575,13 +550,11 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (fastmath_flag)
                   (type
                     (builtin_type
@@ -589,13 +562,11 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (fastmath_flag)
                   (fastmath_flag)
                   (type
@@ -604,13 +575,11 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (fastmath_flag)
                   (fastmath_flag)
                   (fastmath_flag)

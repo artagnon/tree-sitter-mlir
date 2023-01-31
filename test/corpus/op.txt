@@ -17,7 +17,7 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (tensor_type
@@ -35,12 +35,11 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (linalg_dialect
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -53,7 +52,7 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
                       (operation
                         (op_result_list
                           (op_result
-                            (value_id)))
+                            (value_use)))
                         (custom_operation
                           (arith_dialect
                             (literal_and_type
@@ -66,8 +65,7 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
                         (custom_operation
                           (linalg_dialect
                             (value_use_list
-                              (value_use
-                                (value_id)))
+                              (value_use))
                             (type_list_no_parens
                               (type
                                 (builtin_type
@@ -76,8 +74,7 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
               (custom_operation
                 (func_dialect
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -105,19 +102,19 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (memref_type
                 (dim_list
                   (float_type)))))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (memref_type
                 (dim_list
                   (float_type)))))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (memref_type
@@ -129,10 +126,8 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
               (custom_operation
                 (linalg_dialect
                   (value_use_list
-                    (value_use
-                      (value_id))
-                    (value_use
-                      (value_id)))
+                    (value_use)
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -145,8 +140,7 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                           (dim_list
                             (float_type))))))
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -154,13 +148,13 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                           (dim_list
                             (float_type))))))
                   (block_arg_list
-                    (value_id_and_type
-                      (value_id)
+                    (value_use_and_type
+                      (value_use)
                       (type
                         (builtin_type
                           (float_type))))
-                    (value_id_and_type
-                      (value_id)
+                    (value_use_and_type
+                      (value_use)
                       (type
                         (builtin_type
                           (float_type)))))
@@ -169,13 +163,11 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                       (operation
                         (op_result_list
                           (op_result
-                            (value_id)))
+                            (value_use)))
                         (custom_operation
                           (arith_dialect
-                            (value_use
-                              (value_id))
-                            (value_use
-                              (value_id))
+                            (value_use)
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))))
@@ -183,8 +175,7 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                         (custom_operation
                           (linalg_dialect
                             (value_use_list
-                              (value_use
-                                (value_id)))
+                              (value_use))
                             (type_list_no_parens
                               (type
                                 (builtin_type

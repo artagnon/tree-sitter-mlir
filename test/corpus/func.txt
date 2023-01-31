@@ -23,11 +23,11 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (integer_type)))
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (integer_type))))
@@ -41,13 +41,11 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
             (operation
               (op_result_list
                 (op_result
-                  (value_id)))
+                  (value_use)))
               (custom_operation
                 (arith_dialect
-                  (value_use
-                    (value_id))
-                  (value_use
-                    (value_id))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))
@@ -55,8 +53,7 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
               (custom_operation
                 (func_dialect
                   (value_use_list
-                    (value_use
-                      (value_id)))
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
@@ -74,7 +71,7 @@ func.func @count(%x: i64) -> (i64, i64) {
       (func_dialect
         (symbol_ref_id)
         (function_arg_list
-          (value_id)
+          (value_use)
           (type
             (builtin_type
               (integer_type))))
@@ -92,10 +89,8 @@ func.func @count(%x: i64) -> (i64, i64) {
               (custom_operation
                 (func_dialect
                   (value_use_list
-                    (value_use
-                      (value_id))
-                    (value_use
-                      (value_id)))
+                    (value_use)
+                    (value_use))
                   (type_list_no_parens
                     (type
                       (builtin_type
