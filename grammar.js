@@ -43,7 +43,7 @@ module.exports = grammar({
     literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
       $.tensor_literal, $.complex_literal, $.unit_literal),
 
-    nested_idx_list: $ => seq('[', choice($.nested_idx_list, $._idx_list),
+    nested_idx_list: $ => seq('[', optional(choice($.nested_idx_list, $._idx_list)),
       repeat(seq(',', $.nested_idx_list)), ']'),
     _idx_list: $ => prec.right(seq($._primitive_idx_literal,
       repeat(seq(',', $._primitive_idx_literal)))),
@@ -557,6 +557,14 @@ module.exports = grammar({
         field('in', $.value_use),
         field('attributes', optional($.attribute)),
         $._from_type_to_type),
+
+      // operation ::= `tensor.collapse_shape` $src $reassociation attr-dict `:` type($src)
+      //                `into` type($result)
+      seq(choice('tensor.collapse_shape', 'tensor.expand_shape'),
+        field('tensor', $.value_use),
+        field('reassociation', $.nested_idx_list),
+        field('attributes', optional($.attribute)),
+        ':', $.type, 'into', $.type),
 
       // operation ::= `tensor.extract` $tensor `[` $indices `]` attr-dict `:` type($tensor)
       seq('tensor.extract',
