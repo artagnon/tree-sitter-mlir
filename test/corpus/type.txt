@@ -11,7 +11,7 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -24,7 +24,7 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
               (tensor_type
                 (dim_list
                   (integer_type))))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -70,7 +70,7 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -83,7 +83,7 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
               (vector_type
                 (vector_dim_list)
                 (integer_type)))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -130,7 +130,7 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -143,7 +143,7 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
               (vector_type
                 (vector_dim_list)
                 (integer_type)))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -188,7 +188,7 @@ llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
     (custom_operation
       (llvm_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (dialect_type
@@ -224,7 +224,7 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -376,7 +376,7 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -503,12 +503,12 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
               (index_type))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type

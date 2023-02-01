@@ -29,14 +29,14 @@ func.func @simple(i64, i1) -> i64 {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (type
             (builtin_type
               (integer_type)))
           (type
             (builtin_type
               (integer_type))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -187,7 +187,7 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -288,8 +288,8 @@ func.func @for_loop_with_increasing_arg() -> i1 {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list)
-        (function_return
+        (func_arg_list)
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -356,11 +356,9 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                   (value_use)
                   (value_use)
                   (value_use)
-                  (function_return
-                    (type_list_attr_parens
-                      (type
-                        (builtin_type
-                          (index_type)))))
+                  (type
+                    (builtin_type
+                      (index_type)))
                   (region
                     (entry_block
                       (operation
@@ -425,7 +423,7 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -539,7 +537,7 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -559,8 +557,8 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
               (custom_operation
                 (scf_dialect
                   (value_use)
-                  (function_return
-                    (type_list_attr_parens
+                  (type_list_parens
+                    (type_list_no_parens
                       (type
                         (builtin_type
                           (float_type)))

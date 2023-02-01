@@ -8,7 +8,7 @@ func.func @abort()
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list)))))
+        (func_arg_list)))))
 ==========================================================================
 Simple function using func, arith dialects
 ==========================================================================
@@ -22,7 +22,7 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -31,7 +31,7 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
           (type
             (builtin_type
               (integer_type))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -70,12 +70,12 @@ func.func @count(%x: i64) -> (i64, i64) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
               (integer_type))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -108,7 +108,7 @@ llvm.func @variadic(...)
     (custom_operation
       (llvm_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (variadic))))))
 ==========================================================================
 Variadic function with other arguments
@@ -120,7 +120,7 @@ llvm.func @variadic_args(i32, i32, ...)
     (custom_operation
       (llvm_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (type
             (builtin_type
               (integer_type)))

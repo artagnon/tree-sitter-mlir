@@ -16,14 +16,14 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
                   (float_type))))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -101,7 +101,7 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -196,7 +196,7 @@ func.func @tensor_reshape_zero_dim(%arg0 : tensor<1x1xf32>, %arg1 : tensor<f32>)
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -209,7 +209,7 @@ func.func @tensor_reshape_zero_dim(%arg0 : tensor<1x1xf32>, %arg1 : tensor<f32>)
               (tensor_type
                 (dim_list
                   (float_type))))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -292,14 +292,14 @@ func.func @legal_collapsing_reshape_dynamic_tensor
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
                   (float_type))))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -369,7 +369,7 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -546,7 +546,7 @@ func.func @slice(%t: tensor<8x16x4xf32>, %idx : index) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -693,7 +693,7 @@ func.func @insert_slice(
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -882,7 +882,7 @@ func.func @extract_from_tensor.generate(%idx: index, %tensor: tensor<*xf32>) -> 
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -893,7 +893,7 @@ func.func @extract_from_tensor.generate(%idx: index, %tensor: tensor<*xf32>) -> 
               (tensor_type
                 (dim_list
                   (float_type))))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -990,7 +990,7 @@ func.func @insert(%arg0: f32, %arg1: index, %arg2: tensor<?x?x?xf32>) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -1043,14 +1043,14 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
               (tensor_type
                 (dim_list
                   (float_type))))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -1152,7 +1152,7 @@ func.func @pad_dynamic(%arg0: tensor<1x2x2x?xf32>, %low: index, %high: index,
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -1171,7 +1171,7 @@ func.func @pad_dynamic(%arg0: tensor<1x2x2x?xf32>, %low: index, %high: index,
           (type
             (builtin_type
               (float_type))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type
@@ -1257,7 +1257,7 @@ func.func @test_splat_op(%s : f32) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -1293,7 +1293,7 @@ func.func @tensor_reshape(%unranked: tensor<*xf32>, %shape: tensor<1xi32>) {
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -1352,7 +1352,7 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
     (custom_operation
       (func_dialect
         (symbol_ref_id)
-        (function_arg_list
+        (func_arg_list
           (value_use)
           (type
             (builtin_type
@@ -1365,7 +1365,7 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
               (tensor_type
                 (dim_list
                   (float_type))))))
-        (function_return
+        (func_return
           (type_list_attr_parens
             (type
               (builtin_type

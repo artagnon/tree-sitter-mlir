@@ -1,6 +1,6 @@
 (region) @local.scope
 
-(function_arg_list (value_use) @local.definition)
+(func_arg_list (value_use) @local.definition)
 (block_arg_list (value_use) @local.definition)
 (op_result (value_use) @local.definition)
 

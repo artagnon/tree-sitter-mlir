@@ -162,8 +162,8 @@ module.exports = grammar({
     type: $ => choice($.type_alias, $.dialect_type, $.builtin_type),
     type_list_no_parens: $ => seq($.type, repeat(seq(',', $.type))),
     type_list_parens: $ => seq('(', optional($.type_list_no_parens), ')'),
-    function_type: $ => seq(choice($.type, $.type_list_parens), '->',
-      choice($.type, $.type_list_parens)),
+    function_type: $ => seq(choice($.type, $.type_list_parens), $._function_return),
+    _function_return: $ => seq('->', choice($.type, $.type_list_parens)),
 
     // Type aliases
     //   type-alias-def ::= '!' alias-name '=' type
@@ -333,8 +333,8 @@ module.exports = grammar({
         field('results', optional($._value_use_type_list)))
     )),
 
-    function_return: $ => seq('->', $.type_list_attr_parens),
-    function_arg_list: $ => seq('(', optional(choice($.variadic,
+    func_return: $ => seq('->', $.type_list_attr_parens),
+    func_arg_list: $ => seq('(', optional(choice($.variadic,
       $._value_id_and_type_attr_list)), ')'),
     _value_id_and_type_attr_list: $ => seq($._value_id_and_type_attr,
       repeat(seq(',', $._value_id_and_type_attr)), optional(seq(',', $.variadic))),
@@ -347,8 +347,8 @@ module.exports = grammar({
     // (func.func|llvm.func) takes arguments, an optional return type, and and optional body
     _op_func: $ => seq(
       field('name', $.symbol_ref_id),
-      field('arguments', $.function_arg_list),
-      field('return', optional($.function_return)),
+      field('arguments', $.func_arg_list),
+      field('return', optional($.func_return)),
       field('attributes', optional(seq('attributes', $.attribute))),
       field('body', optional($.region))),
 
@@ -514,7 +514,7 @@ module.exports = grammar({
     scf_dialect: $ => prec.right(choice(
       seq('scf.if',
         field('condition', $.value_use),
-        optional($.function_return),
+        optional($._function_return),
         field('trueblk', $.region), token('else'),
         field('falseblk', $.region)),
 
@@ -528,7 +528,7 @@ module.exports = grammar({
         field('step', $.value_use),
         field('iter_args', optional(seq(token('iter_args'), '(',
           $.value_use, '=', $.value_use, ')'))),
-        field('return', optional($.function_return)),
+        field('return', optional($._function_return)),
         field('body', $.region)),
 
       // operation ::= `scf.yield` attr-dict ($results^ `:` type($results))?
@@ -755,20 +755,20 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         'ins', '(', field('ins', $._value_use_type_list), ')',
         'outs', '(', field('outs', $._value_use_type_list), ')',
-        optional($.function_return)
+        optional($._function_return)
       ),
 
       seq('linalg.generic',
         field('attributes', $.attribute),
         field('ins', seq('ins', '(', $._value_use_type_list, ')')),
         field('outs', seq('outs', '(', $._value_use_type_list, ')')),
-        field('body', $.region), optional($.function_return)),
+        field('body', $.region), optional($._function_return)),
 
-      seq('linalg.map',
+      seq(choice('linalg.map', 'linalg.reduce'),
         field('ins', optional(seq('ins', '(', $._value_use_type_list, ')'))),
         field('outs', seq('outs', '(', $._value_use_type_list, ')')),
         field('arguments', $.block_arg_list),
-        field('body', $.region), optional($.function_return)),
+        field('body', $.region), optional($._function_return)),
 
       seq('linalg.yield', $._value_use_type_list)
     ),

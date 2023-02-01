@@ -77,7 +77,25 @@
 
   "tensor.empty"
   "tensor.cast"
+  "tensor.dim"
+  "tensor.collapse_shape"
+  "tensor.expand_shape"
   "tensor.extract"
+  "tensor.insert"
+  "tensor.extract_slice"
+  "tensor.insert_slice"
+  "tensor.parallel_insert_slice"
+  "tensor.from_elements"
+  "tensor.gather"
+  "tensor.scatter"
+  "tensor.pad"
+  "tensor.reshape"
+  "tensor.splat"
+  "tensor.pack"
+  "tensor.unpack"
+  "tensor.generate"
+  "tensor.rank"
+  "tensor.yield"
 
   "linalg.batch_matmul"
   "linalg.batch_matmul_transpose_b"
@@ -187,7 +205,7 @@
 (func_dialect name: (symbol_ref_id) @function)
 (llvm_dialect name: (symbol_ref_id) @function)
 
-(function_arg_list (value_use) @variable.parameter)
+(func_arg_list (value_use) @variable.parameter)
 (block_arg_list (value_use) @variable.parameter)
 
 (caret_id) @tag
