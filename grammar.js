@@ -500,22 +500,22 @@ module.exports = grammar({
 
     _fastmath_flags: $ => seq('fastmath', '<',
       seq($.fastmath_flag, repeat(seq(',', $.fastmath_flag))), '>'),
-    fastmath_flag: $ => choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
-      'contract', 'afn', 'fast'),
+    fastmath_flag: $ => token(choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
+      'contract', 'afn', 'fast')),
 
     literal_and_type: $ => seq($.literal, ':', $.type),
     _from_type_to_type: $ => seq(':',
-      field('fromtype', $.type), 'to',
+      field('fromtype', $.type), token('to'),
       field('totype', $.type)),
     _from_type_into_type: $ => seq(':',
-      field('fromtype', $.type), 'into',
+      field('fromtype', $.type), token('into'),
       field('totype', $.type)),
 
     scf_dialect: $ => prec.right(choice(
       seq('scf.if',
         field('condition', $.value_use),
         optional($.function_return),
-        field('trueblk', $.region), 'else',
+        field('trueblk', $.region), token('else'),
         field('falseblk', $.region)),
 
       // scf.for %iv = %lb to %ub step %step {
@@ -523,10 +523,11 @@ module.exports = grammar({
       // }
       seq('scf.for',
         field('iv', $.value_use), '=',
-        field('lb', $.value_use), 'to',
-        field('ub', $.value_use), 'step',
+        field('lb', $.value_use), token('to'),
+        field('ub', $.value_use), token('step'),
         field('step', $.value_use),
-        field('iter_args', optional(seq('iter_args', '(', $.value_use, '=', $.value_use, ')'))),
+        field('iter_args', optional(seq(token('iter_args'), '(',
+          $.value_use, '=', $.value_use, ')'))),
         field('return', optional($.function_return)),
         field('body', $.region)),
 
@@ -540,17 +541,17 @@ module.exports = grammar({
       // operation ::= `memref.view` $source `[` $byte_shift `]` `` `[` $sizes `]` attr-dict
       //         `:` type($source) `to` type(results)
       seq('memref.view',
-        field('source', $.value_use), '[',
-        field('byte_shift', $.value_use), ']', '[',
-        field('sizes', $.value_use_list), ']',
+        field('source', $.value_use),
+        field('byte_shift', seq('[', $.value_use, ']')),
+        field('sizes', seq('[', $.value_use_list, ']')),
         field('attributes', optional($.attribute)),
         $._from_type_to_type)
     ),
 
     tensor_dialect: $ => choice(
       // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)
-      seq('tensor.empty', '(',
-        field('size', optional($.value_use_list)), ')',
+      seq('tensor.empty',
+        field('size', seq('(', optional($.value_use_list), ')')),
         field('attributes', optional($.attribute)), ':',
         field('return', $.type)),
 
@@ -573,12 +574,21 @@ module.exports = grammar({
         field('tensor', $.value_use),
         field('reassociation', $.nested_idx_list),
         field('attributes', optional($.attribute)),
-        ':', $.type, 'into', $.type),
+        $._from_type_into_type),
 
       // operation ::= `tensor.extract` $tensor `[` $indices `]` attr-dict `:` type($tensor)
       seq('tensor.extract',
-        field('tensor', $.value_use), '[',
-        field('indices', optional($.value_use_list)), ']',
+        field('tensor', $.value_use),
+        field('indices', seq('[', optional($.value_use_list), ']')),
+        field('attributes', optional($.attribute)), ':',
+        $.type),
+
+      // operation ::= `tensor.insert` $scalar `into` $dest `[` $indices `]` attr-dict
+      //               `:` type($dest)
+      seq('tensor.insert',
+        field('scalar', $.value_use), token('into'),
+        field('destination', $.value_use),
+        field('indices', seq('[', optional($.value_use_list), ']')),
         field('attributes', optional($.attribute)), ':',
         $.type),
 
@@ -600,8 +610,13 @@ module.exports = grammar({
       //                custom<DynamicIndexList>($sizes, $static_sizes)
       //                custom<DynamicIndexList>($strides, $static_strides)
       //                attr-dict `:` type($source) `into` type($dest)
-      seq('tensor.insert_slice',
-        field('source', $.value_use), 'into',
+      // operation ::= `tensor.parallel_insert_slice` $source `into` $dest ``
+      //                custom<DynamicIndexList>($offsets, $static_offsets)
+      //                custom<DynamicIndexList>($sizes, $static_sizes)
+      //                custom<DynamicIndexList>($strides, $static_strides)
+      //                attr-dict `:` type($source) `into` type($dest)
+      seq(choice('tensor.insert_slice', 'tensor.parallel_insert_slice'),
+        field('source', $.value_use), token('into'),
         field('destination', $.value_use),
         field('offsets', $._dense_idx_list),
         field('sizes', $._dense_idx_list),
@@ -634,12 +649,62 @@ module.exports = grammar({
       //               attr-dict
       //               `:` functional-type(operands, results)
       seq('tensor.scatter',
-        field('source', $.value_use), 'into',
+        field('source', $.value_use), token('into'),
         field('destination', $.value_use),
         field('indices', seq('[', $.value_use, ']')),
         $.scatter_dims_attr,
         field('unique', optional($.unique_attr)),
         field('attributes', optional($.attribute)), ':',
+        $.function_type),
+
+      // operation ::= `tensor.pad` $source
+      //               (`nofold` $nofold^)?
+      //               `low` `` custom<DynamicIndexList>($low, $static_low)
+      //               `high` `` custom<DynamicIndexList>($high, $static_high)
+      //               $region attr-dict `:` type($source) `to` type($result)
+      seq('tensor.pad',
+        field('nofold', optional($.nofold_attr)),
+        field('source', $.value_use), token('low'),
+        field('low', $._dense_idx_list), token('high'),
+        field('high', $._dense_idx_list),
+        field('body', $.region),
+        field('attributes', optional($.attribute)),
+        $._from_type_to_type),
+
+      // operation ::= `tensor.reshape` $source `(` $shape `)` attr-dict
+      //                `:` functional-type(operands, results)
+      seq('tensor.reshape',
+        field('tensor', $.value_use),
+        field('shape', seq('(', $.value_use, ')')),
+        field('attributes', optional($.attribute)), ':',
+        $.function_type),
+
+      // operation ::= `tensor.splat` $input attr-dict `:` type($aggregate)
+      seq('tensor.splat',
+        field('input', $.value_use),
+        field('attributes', optional($.attribute)), ':',
+        $.type),
+
+      // operation ::= `tensor.pack` $source
+      //               (`padding_value` `(` $padding_value^ `:` type($padding_value) `)`)?
+      //               (`outer_dims_perm` `=` $outer_dims_perm^)?
+      //               `inner_dims_pos` `=` $inner_dims_pos
+      //               `inner_tiles` `=`
+      //               custom<DynamicIndexList>($inner_tiles, $static_inner_tiles)
+      //               `into` $dest attr-dict `:` type($source) `->` type($dest)
+      // operation ::= `tensor.unpack` $source
+      //               (`outer_dims_perm` `=` $outer_dims_perm^)?
+      //               `inner_dims_pos` `=` $inner_dims_pos
+      //               `inner_tiles` `=`
+      //               custom<DynamicIndexList>($inner_tiles, $static_inner_tiles)
+      //               `into` $dest attr-dict `:` type($source) `->` type($dest)
+      seq(choice('tensor.pack', 'tensor.unpack'),
+        field('source', $.value_use),
+        field('padding_value', optional(seq('padding_value', '(', $._value_use_and_type, ')'))),
+        field('outer_dims_perm', optional($.outer_dims_perm_attr)),
+        field('inner_dims_pos', $.inner_dims_pos_attr),
+        field('inner_tiles', seq('inner_tiles', '=', $._dense_idx_list)), 'into',
+        field('destination', $.value_use), ':',
         $.function_type),
 
       // operation ::= `tensor.generate` $dynamicExtents $body attr-dict `:` type($result)
@@ -663,6 +728,9 @@ module.exports = grammar({
     gather_dims_attr: $ => seq('gather_dims', '(', $._dense_idx_list, ')'),
     scatter_dims_attr: $ => seq('scatter_dims', '(', $._dense_idx_list, ')'),
     unique_attr: $ => token('unique'),
+    nofold_attr: $ => token('nofold'),
+    outer_dims_perm_attr: $ => seq(token('outer_dims_perm'), '=', $._dense_idx_list),
+    inner_dims_pos_attr: $ => seq(token('inner_dims_pos'), '=', $._dense_idx_list),
 
     linalg_dialect: $ => choice(
       seq(choice('linalg.batch_matmul', 'linalg.batch_matmul_transpose_b', 'linalg.batch_matvec',

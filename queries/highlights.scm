@@ -4,6 +4,9 @@
   "else"
   "loc"
   "attributes"
+  "step"
+  "into"
+  "to"
 ] @keyword
 
 [
@@ -153,7 +156,14 @@
 
 (string_literal) @string
 
-(attribute) @property
+[
+  (attribute)
+  (fastmath_flag)
+  (scatter_dims_attr)
+  (gather_dims_attr)
+  (unique_attr)
+  (nofold_attr)
+] @property
 
 [
   "("

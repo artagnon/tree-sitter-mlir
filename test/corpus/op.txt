@@ -977,3 +977,470 @@ func.func @extract_from_tensor.generate(%idx: index, %tensor: tensor<*xf32>) -> 
                     (type
                       (builtin_type
                         (index_type)))))))))))))
+==========================================================================
+tensor.insert
+==========================================================================
+func.func @insert(%arg0: f32, %arg1: index, %arg2: tensor<?x?x?xf32>) {
+  %0 = tensor.insert %arg0 into %arg2[%arg1, %arg1, %arg1] : tensor<?x?x?xf32>
+  return
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (function_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (float_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type))))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use_list
+                    (value_use)
+                    (value_use)
+                    (value_use))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
+==========================================================================
+tensor.from_elements and tensor.reshape
+==========================================================================
+func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
+  %two = arith.constant 2 : i64
+  %five = arith.constant 5 : i64
+  %shape = tensor.from_elements %two, %two, %five : tensor<3xi64>
+  %reshaped = tensor.reshape %t1(%shape) : (tensor<?x10xf32>, tensor<3xi64>) -> tensor<2x2x5xf32>
+  return %reshaped : tensor<2x2x5xf32>
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (function_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type))))))
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (float_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (arith_dialect
+                  (literal_and_type
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type
+                        (integer_type)))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (arith_dialect
+                  (literal_and_type
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type
+                        (integer_type)))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (tensor_dialect
+                  (value_use_list
+                    (value_use)
+                    (value_use)
+                    (value_use))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (integer_type))))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (value_use)
+                  (function_type
+                    (type_list_parens
+                      (type_list_no_parens
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (float_type)))))
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (integer_type)))))))
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use_list
+                    (value_use))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))))))))
+==========================================================================
+tensor.pad
+==========================================================================
+func.func @pad_dynamic(%arg0: tensor<1x2x2x?xf32>, %low: index, %high: index,
+                  %pad_value: f32) -> tensor<6x?x?x?xf32> {
+  %0 = tensor.pad %arg0 low[2, %low, 3, 3] high[3, 3, %high, 2] {
+    ^bb0(%arg1: index, %arg2: index, %arg3: index, %arg4: index):
+      tensor.yield %pad_value : f32
+    } : tensor<1x2x2x?xf32> to tensor<6x?x?x?xf32>
+  return %0 : tensor<6x?x?x?xf32>
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (function_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (float_type))))
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (float_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (integer_literal)
+                  (value_use)
+                  (integer_literal)
+                  (integer_literal)
+                  (integer_literal)
+                  (integer_literal)
+                  (value_use)
+                  (integer_literal)
+                  (region
+                    (block
+                      (block_label
+                        (caret_id)
+                        (block_arg_list
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (index_type)))
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (index_type)))
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (index_type)))
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (index_type)))))
+                      (operation
+                        (custom_operation
+                          (tensor_dialect
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (float_type))))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use_list
+                    (value_use))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))))))))
+==========================================================================
+tensor.splat
+==========================================================================
+func.func @test_splat_op(%s : f32) {
+  %v = tensor.splat %s : tensor<8xf32>
+  return
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (function_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (float_type))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
+==========================================================================
+tensor.reshape
+==========================================================================
+func.func @tensor_reshape(%unranked: tensor<*xf32>, %shape: tensor<1xi32>) {
+  %dyn_vec = tensor.reshape %unranked(%shape)
+               : (tensor<*xf32>, tensor<1xi32>) -> tensor<?xf32>
+  return
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (function_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (integer_type))))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (value_use)
+                  (function_type
+                    (type_list_parens
+                      (type_list_no_parens
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (float_type)))))
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (integer_type)))))))
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
+==========================================================================
+tensor.pack and tensor.unpack
+==========================================================================
+func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x16xf32>) -> tensor<128x256xf32> {
+  %0 = tensor.pack %source inner_dims_pos = [0, 1] inner_tiles = [32, 16] into %dest : tensor<128x256xf32> -> tensor<4x16x32x16xf32>
+  %1 = tensor.empty() : tensor<128x256xf32>
+  %2 = tensor.unpack %0 inner_dims_pos = [0, 1] inner_tiles = [32, 16] into %1 : tensor<4x16x32x16xf32> -> tensor<128x256xf32>
+  return %2 : tensor<128x256xf32>
+}
+---
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (function_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type))))))
+        (function_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (float_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (inner_dims_pos_attr
+                    (integer_literal)
+                    (integer_literal))
+                  (integer_literal)
+                  (integer_literal)
+                  (value_use)
+                  (function_type
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (tensor_dialect
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (inner_dims_pos_attr
+                    (integer_literal)
+                    (integer_literal))
+                  (integer_literal)
+                  (integer_literal)
+                  (value_use)
+                  (function_type
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use_list
+                    (value_use))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))))))))
