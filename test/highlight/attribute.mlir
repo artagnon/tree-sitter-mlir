@@ -2,27 +2,27 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
 // <- function.builtin
 //        ^ function
 //                                   ^ variable.parameter
-//                                           ^ type
+//                                           ^ type.builtin
 //                                                               ^ variable.parameter
-//                                                                        ^ type
+//                                                                        ^ type.builtin
   -> tensor<1x10x8x8xf32> {
 // ^ operator
-//   ^ type
+//   ^ type.builtin
   %zero = arith.constant 0.000000e+00 : f32
 // ^ variable
 //        ^ function.builtin
 //                       ^ number
-//                                      ^ type
+//                                      ^ type.builtin
   %init = tensor.empty() : tensor<1x10x8x8xf32>
 // ^ variable
 //        ^ function.builtin
-//                         ^ type
+//                         ^ type.builtin
   %fill = linalg.fill ins(%zero : f32) outs(%init : tensor<1x10x8x8xf32>) -> tensor<1x10x8x8xf32>
 // ^ variable
 //        ^ function.builtin
 //                    ^ keyword
 //                        ^ variable
-//                                ^ type
+//                                ^ type.builtin
 //                                     ^ keyword
   %0 = linalg.depthwise_conv_1d_nwc_wcm {dilations = dense<1> : tensor<1xi64>,
 // ^ variable

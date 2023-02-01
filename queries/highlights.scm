@@ -136,7 +136,8 @@
   "linalg.yield"
 ] @function.builtin
 
-(type) @type
+(type) @type.builtin
+(type_alias) @type
 
 [
   (integer_literal)
