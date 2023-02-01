@@ -7,6 +7,7 @@
   "step"
   "into"
   "to"
+  "default"
 ] @keyword
 
 [

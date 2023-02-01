@@ -37,7 +37,7 @@ module.exports = grammar({
     unit_literal: $ => token('unit'),
     complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal), ',',
       choice($.integer_literal, $.float_literal), ')'),
-    tensor_literal: $ => seq(choice('dense', 'sparse'), '<',
+    tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
       choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
         $._primitive_idx_literal), '>'),
     literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
@@ -112,7 +112,7 @@ module.exports = grammar({
       optional(seq($.attribute_entry,
         repeat(seq(',', $.attribute_entry)))),
       '}'),
-    trailing_location: $ => seq('loc', '(', $.location, ')'),
+    trailing_location: $ => seq(token('loc'), '(', $.location, ')'),
     // TODO: Complete location forms.
     location: $ => $.string_literal,
 
@@ -223,7 +223,7 @@ module.exports = grammar({
       'f8E4M3FN', 'f8E5M2')),
     index_type: $ => token('index'),
     none_type: $ => token('none'),
-    complex_type: $ => seq('complex<', $._prim_type, '>'),
+    complex_type: $ => seq(token('complex'), '<', $._prim_type, '>'),
     _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
       $.complex_type, $.none_type, $.memref_type),
 
@@ -231,7 +231,7 @@ module.exports = grammar({
     //                 (`,` layout-specification)? (`,` memory-space)? `>`
     // layout-specification ::= attribute-value
     // memory-space ::= attribute-value
-    memref_type: $ => seq('memref', '<',
+    memref_type: $ => seq(token('memref'), '<',
       field('dimension_list', $.dim_list),
       optional(seq(',', $.attribute_value)),
       optional(seq(',', $.attribute_value)), '>'),
@@ -243,7 +243,7 @@ module.exports = grammar({
     // dimension ::= `?` | decimal-literal
     // encoding ::= attribute-value
     // tensor-type ::= `tensor` `<` `*` `x` type `>`
-    tensor_type: $ => seq('tensor', '<', $.dim_list,
+    tensor_type: $ => seq(token('tensor'), '<', $.dim_list,
       optional(seq(',', $.tensor_encoding)), '>'),
     tensor_encoding: $ => $.attribute_value,
 
@@ -251,13 +251,13 @@ module.exports = grammar({
     // vector-element-type ::= float-type | integer-type | index-type
     // vector-dim-list := (static-dim-list `x`)? (`[` static-dim-list `]` `x`)?
     // static-dim-list ::= decimal-literal (`x` decimal-literal)*
-    vector_type: $ => seq('vector', '<', $.vector_dim_list, $._prim_type, '>'),
+    vector_type: $ => seq(token('vector'), '<', $.vector_dim_list, $._prim_type, '>'),
     vector_dim_list: $ => choice(seq($._static_dim_list, 'x',
       optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x')),
     _static_dim_list: $ => prec.left(seq(repeat1($._digit), repeat(seq('x', repeat1($._digit))))),
 
     // tuple-type ::= `tuple` `<` (type ( `,` type)*)? `>`
-    tuple_type: $ => seq('tuple', '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
+    tuple_type: $ => seq(token('tuple'), '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
     tuple_dim: $ => choice($._prim_type, $.tensor_type, $.vector_type),
 
     // Attributes
@@ -286,10 +286,10 @@ module.exports = grammar({
       $.strided_layout,
       $._affine_map_list,
     ),
-    strided_layout: $ => seq('strided', '<', '[', $.dim_list, ']',
+    strided_layout: $ => seq(token('strided'), '<', '[', $.dim_list, ']',
       ',', 'offset', ':', choice($.integer_literal, '?', '*'), '>'),
     _affine_map_list: $ => seq('[', $.affine_map, repeat(seq(',', $.affine_map)), ']'),
-    affine_map: $ => seq('affine_map', '<', '(', $._loop_indices, ')',
+    affine_map: $ => seq(token('affine_map'), '<', '(', $._loop_indices, ')',
       '->', '(', $._loop_indices, ')', '>'),
     _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
     _loop_index: $ => token(seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/))),
@@ -349,7 +349,7 @@ module.exports = grammar({
       field('name', $.symbol_ref_id),
       field('arguments', $.func_arg_list),
       field('return', optional($.func_return)),
-      field('attributes', optional(seq('attributes', $.attribute))),
+      field('attributes', optional(seq(token('attributes'), $.attribute))),
       field('body', optional($.region))),
 
     llvm_dialect: $ => prec.right(choice(
@@ -361,17 +361,18 @@ module.exports = grammar({
 
     cf_dialect: $ => choice(
       // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
-      seq('cf.br', field('successor', $.successor),
+      seq('cf.br',
+        field('successor', $.successor),
         field('attributes', optional($.attribute))),
 
       // operation ::= `cf.cond_br` $condition `,`
       // $trueDest(`(` $trueDestOperands ^ `:` type($trueDestOperands)`)`)? `,`
       // $falseDest(`(` $falseDestOperands ^ `:` type($falseDestOperands)`)`)? attr-dict
-      seq('cf.cond_br', seq(
+      seq('cf.cond_br',
         field('condition', $.value_use), ',',
         field('trueDest', $.successor), ',',
-        field('falseDest', $.successor)),
-        optional($.attribute)),
+        field('falseDest', $.successor),
+        field('attributes', optional($.attribute))),
 
       // operation ::= `cf.switch` $flag `:` type($flag) `,` `[` `\n`
       //               custom<SwitchOpCases>(ref(type($flag)),$defaultDestination,
@@ -383,12 +384,13 @@ module.exports = grammar({
       //               type($caseOperands))
       //               `]`
       //               attr-dict
-      seq('cf.switch', field('flag', $._value_use_and_type), ',', '[',
+      seq('cf.switch',
+        field('flag', $._value_use_and_type), ',', '[',
         $.case_label, $.successor, repeat(seq(',', $.case_label, $.successor)), ']',
         field('attributes', optional($.attribute))),
     ),
 
-    case_label: $ => seq(choice($.integer_literal, 'default'), ':'),
+    case_label: $ => seq(choice($.integer_literal, token('default')), ':'),
 
     arith_dialect: $ => choice(
       // operation ::= `arith.constant` attr-dict $value
@@ -498,7 +500,7 @@ module.exports = grammar({
         ':', $.type_list_no_parens)
     ),
 
-    _fastmath_flags: $ => seq('fastmath', '<',
+    _fastmath_flags: $ => seq(token('fastmath'), '<',
       seq($.fastmath_flag, repeat(seq(',', $.fastmath_flag))), '>'),
     fastmath_flag: $ => token(choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
       'contract', 'afn', 'fast')),
@@ -700,10 +702,11 @@ module.exports = grammar({
       //               `into` $dest attr-dict `:` type($source) `->` type($dest)
       seq(choice('tensor.pack', 'tensor.unpack'),
         field('source', $.value_use),
-        field('padding_value', optional(seq('padding_value', '(', $._value_use_and_type, ')'))),
+        field('padding_value', optional(seq(token('padding_value'),
+          '(', $._value_use_and_type, ')'))),
         field('outer_dims_perm', optional($.outer_dims_perm_attr)),
         field('inner_dims_pos', $.inner_dims_pos_attr),
-        field('inner_tiles', seq('inner_tiles', '=', $._dense_idx_list)), 'into',
+        field('inner_tiles', seq(token('inner_tiles'), '=', $._dense_idx_list)), token('into'),
         field('destination', $.value_use), ':',
         $.function_type),
 
@@ -725,8 +728,8 @@ module.exports = grammar({
 
     _dense_idx_list: $ => seq('[', choice($.integer_literal, $.value_use),
       repeat(seq(',', choice($.integer_literal, $.value_use))), ']'),
-    gather_dims_attr: $ => seq('gather_dims', '(', $._dense_idx_list, ')'),
-    scatter_dims_attr: $ => seq('scatter_dims', '(', $._dense_idx_list, ')'),
+    gather_dims_attr: $ => seq(token('gather_dims'), '(', $._dense_idx_list, ')'),
+    scatter_dims_attr: $ => seq(token('scatter_dims'), '(', $._dense_idx_list, ')'),
     unique_attr: $ => token('unique'),
     nofold_attr: $ => token('nofold'),
     outer_dims_perm_attr: $ => seq(token('outer_dims_perm'), '=', $._dense_idx_list),
@@ -760,13 +763,13 @@ module.exports = grammar({
 
       seq('linalg.generic',
         field('attributes', $.attribute),
-        field('ins', seq('ins', '(', $._value_use_type_list, ')')),
-        field('outs', seq('outs', '(', $._value_use_type_list, ')')),
+        field('ins', seq(token('ins'), '(', $._value_use_type_list, ')')),
+        field('outs', seq(token('outs'), '(', $._value_use_type_list, ')')),
         field('body', $.region), optional($._function_return)),
 
       seq(choice('linalg.map', 'linalg.reduce'),
-        field('ins', optional(seq('ins', '(', $._value_use_type_list, ')'))),
-        field('outs', seq('outs', '(', $._value_use_type_list, ')')),
+        field('ins', optional(seq(token('ins'), '(', $._value_use_type_list, ')'))),
+        field('outs', seq(token('outs'), '(', $._value_use_type_list, ')')),
         field('arguments', $.block_arg_list),
         field('body', $.region), optional($._function_return)),
 
