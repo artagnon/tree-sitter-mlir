@@ -68,8 +68,7 @@ module.exports = grammar({
     _alias_or_dialect_id: $ => token(seq(/[a-zA-Z_]/, repeat(/[a-zA-Z0-9_$]/))),
     bare_id_list: $ => seq($.bare_id, repeat(seq(',', $.bare_id))),
     value_use: $ => seq('%', $._suffix_id),
-    _suffix_id: $ => token(choice(repeat1(/[0-9]/), seq(/[a-zA-Z_$.]/,
-      repeat(/[a-zA-Z0-9_$.]/)))),
+    _suffix_id: $ => token(choice(repeat1(/[0-9]/), seq(/[a-zA-Z_$.]/, repeat(/[a-zA-Z0-9_$.]/)))),
     symbol_ref_id: $ => seq('@', choice($._suffix_id, $.string_literal),
       optional(seq('::', $.symbol_ref_id))),
     value_use_list: $ => seq($.value_use, repeat(seq(',', $.value_use))),
@@ -508,6 +507,9 @@ module.exports = grammar({
     _from_type_to_type: $ => seq(':',
       field('fromtype', $.type), 'to',
       field('totype', $.type)),
+    _from_type_into_type: $ => seq(':',
+      field('fromtype', $.type), 'into',
+      field('totype', $.type)),
 
     scf_dialect: $ => prec.right(choice(
       seq('scf.if',
@@ -558,6 +560,13 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         $._from_type_to_type),
 
+      // operation ::= `tensor.dim` attr-dict $source `,` $index `:` type($source)
+      seq('tensor.dim',
+        field('attributes', optional($.attribute)),
+        field('tensor', $.value_use), ',',
+        field('index', $.value_use), ':',
+        $.type),
+
       // operation ::= `tensor.collapse_shape` $src $reassociation attr-dict `:` type($src)
       //                `into` type($result)
       seq(choice('tensor.collapse_shape', 'tensor.expand_shape'),
@@ -571,8 +580,89 @@ module.exports = grammar({
         field('tensor', $.value_use), '[',
         field('indices', optional($.value_use_list)), ']',
         field('attributes', optional($.attribute)), ':',
+        $.type),
+
+      // operation ::= `tensor.extract_slice` $source ``
+      //                custom<DynamicIndexList>($offsets, $static_offsets)
+      //                custom<DynamicIndexList>($sizes, $static_sizes)
+      //                custom<DynamicIndexList>($strides, $static_strides)
+      //                attr-dict `:` type($source) `to` type($result)
+      seq('tensor.extract_slice',
+        field('tensor', $.value_use),
+        field('offsets', $._dense_idx_list),
+        field('sizes', $._dense_idx_list),
+        field('strides', $._dense_idx_list),
+        field('attributes', optional($.attribute)),
+        $._from_type_to_type),
+
+      // operation ::= `tensor.insert_slice` $source `into` $dest ``
+      //                custom<DynamicIndexList>($offsets, $static_offsets)
+      //                custom<DynamicIndexList>($sizes, $static_sizes)
+      //                custom<DynamicIndexList>($strides, $static_strides)
+      //                attr-dict `:` type($source) `into` type($dest)
+      seq('tensor.insert_slice',
+        field('source', $.value_use), 'into',
+        field('destination', $.value_use),
+        field('offsets', $._dense_idx_list),
+        field('sizes', $._dense_idx_list),
+        field('strides', $._dense_idx_list),
+        field('attributes', optional($.attribute)),
+        $._from_type_into_type),
+
+      // operation ::= `tensor.from_elements` $elements attr-dict `:` type($result)
+      seq('tensor.from_elements',
+        field('elements', $.value_use_list),
+        field('attributes', optional($.attribute)), ':',
+        $.type),
+
+      // operation ::= `tensor.gather` $source `[` $indices `]`
+      //               `gather_dims` `(` $gather_dims `)`
+      //               (`unique` $unique^)?
+      //               attr-dict
+      //               `:` functional-type(operands, results)
+      seq('tensor.gather',
+        field('source', $.value_use),
+        field('indices', seq('[', $.value_use, ']')),
+        $.gather_dims_attr,
+        field('unique', optional($.unique_attr)),
+        field('attributes', optional($.attribute)), ':',
+        $.function_type),
+
+      // operation ::= `tensor.scatter` $source `into` $dest `[` $indices `]`
+      //               `scatter_dims` `(` $scatter_dims `)`
+      //               (`unique` $unique^)?
+      //               attr-dict
+      //               `:` functional-type(operands, results)
+      seq('tensor.scatter',
+        field('source', $.value_use), 'into',
+        field('destination', $.value_use),
+        field('indices', seq('[', $.value_use, ']')),
+        $.scatter_dims_attr,
+        field('unique', optional($.unique_attr)),
+        field('attributes', optional($.attribute)), ':',
+        $.function_type),
+
+      // operation ::= `tensor.generate` $dynamicExtents $body attr-dict `:` type($result)
+      seq('tensor.generate',
+        field('dynamicExtents', $.value_use_list),
+        field('body', $.region),
+        field('attributes', optional($.attribute)), ':',
+        $.type),
+
+
+      // operation ::= `tensor.rank` $tensor attr-dict `:` type($tensor)
+      // operation ::= `tensor.yield` $value attr-dict `:` type($value)
+      seq(choice('tensor.rank', 'tensor.yield'),
+        field('tensor', $.value_use),
+        field('attributes', optional($.attribute)), ':',
         $.type)
     ),
+
+    _dense_idx_list: $ => seq('[', choice($.integer_literal, $.value_use),
+      repeat(seq(',', choice($.integer_literal, $.value_use))), ']'),
+    gather_dims_attr: $ => seq('gather_dims', '(', $._dense_idx_list, ')'),
+    scatter_dims_attr: $ => seq('scatter_dims', '(', $._dense_idx_list, ')'),
+    unique_attr: $ => token('unique'),
 
     linalg_dialect: $ => choice(
       seq(choice('linalg.batch_matmul', 'linalg.batch_matmul_transpose_b', 'linalg.batch_matvec',
