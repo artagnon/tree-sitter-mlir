@@ -177,12 +177,12 @@
 
 [
   (attribute)
-  (fastmath_flag)
+  (fastmath_attr)
   (scatter_dims_attr)
   (gather_dims_attr)
   (unique_attr)
   (nofold_attr)
-] @property
+] @attribute
 
 [
   "("

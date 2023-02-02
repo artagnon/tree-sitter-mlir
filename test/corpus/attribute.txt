@@ -1,11 +1,11 @@
-==========================================================================
+================================================================================
 func.func with attribute
-==========================================================================
+================================================================================
 func.func @count(%x: i64) -> (i64, i64)
   attributes { fruit: "banana" } {
   return %x, %x: i64, i64
 }
----
+--------------------------------------------------------------------------------
 (toplevel
   (operation
     (custom_operation
@@ -45,11 +45,11 @@ func.func @count(%x: i64) -> (i64, i64)
                     (type
                       (builtin_type
                         (integer_type)))))))))))))
-==========================================================================
+================================================================================
 func.func with result attribute
-==========================================================================
+================================================================================
 func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
----
+--------------------------------------------------------------------------------
 (toplevel
   (operation
     (custom_operation
@@ -70,11 +70,11 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
                   (type
                     (builtin_type
                       (integer_type))))))))))))
-==========================================================================
+================================================================================
 func.func with argument attribute
-==========================================================================
+================================================================================
 func.func @example_fn_arg(%x: i32 {swift.self = unit})
----
+--------------------------------------------------------------------------------
 (toplevel
   (operation
     (custom_operation
@@ -91,9 +91,9 @@ func.func @example_fn_arg(%x: i32 {swift.self = unit})
                 (bare_id)
                 (literal
                   (unit_literal))))))))))
-==========================================================================
+================================================================================
 strided attribute in memref
-==========================================================================
+================================================================================
 func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
   %arg1: memref<?xf32, strided<[1], offset: ?>>, %arg2: memref<f32>) {
   linalg.dot ins(%arg0, %arg1 : memref<?xf32, strided<[1], offset: ?>>,
@@ -101,7 +101,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
              outs(%arg2:  memref<f32>)
   return
 }
----
+--------------------------------------------------------------------------------
 (toplevel
   (operation
     (custom_operation
@@ -172,9 +172,9 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (operation
               (custom_operation
                 (func_dialect)))))))))
-==========================================================================
+================================================================================
 affine_map attribute in linalg.generic
-==========================================================================
+================================================================================
 func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
   %arg1: memref<?xf32, strided<[1], offset: ?>>) {
   linalg.generic {
@@ -187,7 +187,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
   }
   return
 }
----
+--------------------------------------------------------------------------------
 (toplevel
   (operation
     (custom_operation
@@ -280,9 +280,9 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (operation
               (custom_operation
                 (func_dialect)))))))))
-==========================================================================
+================================================================================
 dense attribute in linalg.depthwise_conv_1d_nwc_wcm
-==========================================================================
+================================================================================
 func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor<3x8x8xf32>)
   -> tensor<1x10x8x8xf32> {
   %zero = arith.constant 0.000000e+00 : f32
@@ -294,7 +294,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
     outs(%fill : tensor<1x10x8x8xf32>) -> tensor<1x10x8x8xf32>
   return %0 : tensor<1x10x8x8xf32>
 }
----
+--------------------------------------------------------------------------------
 (toplevel
   (operation
     (custom_operation
@@ -436,9 +436,9 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (tensor_type
                           (dim_list
                             (float_type)))))))))))))))
-==========================================================================
+================================================================================
 fastmath attribute in arith
-==========================================================================
+================================================================================
 func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
   %0 = arith.addf %arg0, %arg1 fastmath<fast> : f32
   %1 = arith.subf %arg0, %arg1 fastmath<fast> : f32
@@ -451,7 +451,7 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
   %8 = arith.mulf %arg0, %arg1 fastmath<reassoc,nnan,ninf,nsz,arcp,contract,afn> : f32
   return
 }
----
+--------------------------------------------------------------------------------
 (toplevel
   (operation
     (custom_operation
@@ -480,7 +480,7 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                 (arith_dialect
                   (value_use)
                   (value_use)
-                  (fastmath_flag)
+                  (fastmath_attr)
                   (type
                     (builtin_type
                       (float_type))))))
@@ -492,7 +492,7 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                 (arith_dialect
                   (value_use)
                   (value_use)
-                  (fastmath_flag)
+                  (fastmath_attr)
                   (type
                     (builtin_type
                       (float_type))))))
@@ -504,7 +504,7 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                 (arith_dialect
                   (value_use)
                   (value_use)
-                  (fastmath_flag)
+                  (fastmath_attr)
                   (type
                     (builtin_type
                       (float_type))))))
@@ -516,7 +516,7 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                 (arith_dialect
                   (value_use)
                   (value_use)
-                  (fastmath_flag)
+                  (fastmath_attr)
                   (type
                     (builtin_type
                       (float_type))))))
@@ -528,7 +528,7 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                 (arith_dialect
                   (value_use)
                   (value_use)
-                  (fastmath_flag)
+                  (fastmath_attr)
                   (type
                     (builtin_type
                       (float_type))))))
@@ -539,19 +539,7 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
               (custom_operation
                 (arith_dialect
                   (value_use)
-                  (fastmath_flag)
-                  (type
-                    (builtin_type
-                      (float_type))))))
-            (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
-              (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (value_use)
-                  (fastmath_flag)
+                  (fastmath_attr)
                   (type
                     (builtin_type
                       (float_type))))))
@@ -563,8 +551,7 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                 (arith_dialect
                   (value_use)
                   (value_use)
-                  (fastmath_flag)
-                  (fastmath_flag)
+                  (fastmath_attr)
                   (type
                     (builtin_type
                       (float_type))))))
@@ -576,13 +563,19 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                 (arith_dialect
                   (value_use)
                   (value_use)
-                  (fastmath_flag)
-                  (fastmath_flag)
-                  (fastmath_flag)
-                  (fastmath_flag)
-                  (fastmath_flag)
-                  (fastmath_flag)
-                  (fastmath_flag)
+                  (fastmath_attr)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (fastmath_attr)
                   (type
                     (builtin_type
                       (float_type))))))

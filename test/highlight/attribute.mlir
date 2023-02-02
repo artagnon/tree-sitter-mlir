@@ -27,7 +27,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
   %0 = linalg.depthwise_conv_1d_nwc_wcm {dilations = dense<1> : tensor<1xi64>,
 // ^ variable
 //     ^ function.builtin
-//                                       ^ property
+//                                       ^ attribute
 //                                                   ^ constant.builtin
     strides = dense<1> : tensor<1xi64>}
 //            ^ constant.builtin
@@ -39,4 +39,24 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
   return %0 : tensor<1x10x8x8xf32>
 // ^ function.builtin
 //       ^ variable
+}
+
+func.func @fastmath(%arg0: f32, %arg1: f32) {
+// <- function.builtin
+//        ^ function
+//                  ^ variable.parameter
+//                         ^ type.builtin
+//                              ^ variable.parameter
+//                                     ^ type.builtin
+  %5 = arith.negf %arg0 fastmath<fast> : f32
+//     ^ function.builtin
+//                      ^ attribute
+  %6 = arith.addf %arg0, %arg1 fastmath<none> : f32
+//     ^ function.builtin
+//                             ^ attribute
+  %8 = arith.mulf %arg0, %arg1 fastmath<reassoc,nnan,ninf,nsz,arcp,contract,afn> : f32
+//     ^ function.builtin
+//                             ^ attribute
+  return
+// ^ function.builtin
 }

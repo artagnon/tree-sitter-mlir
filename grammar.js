@@ -454,7 +454,7 @@ module.exports = grammar({
         'arith.remf', 'arith.subf'),
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
-        field('fastmath', optional($._fastmath_flags)),
+        field('fastmath', optional($.fastmath_attr)),
         field('attributes', optional($.attribute)), ':',
         $.type),
 
@@ -462,7 +462,7 @@ module.exports = grammar({
       //                attr-dict `:` type($result)
       seq(choice('arith.negf'),
         field('operand', $.value_use),
-        field('fastmath', optional($._fastmath_flags)),
+        field('fastmath', optional($.fastmath_attr)),
         field('attributes', optional($.attribute)), ':',
         $.type),
 
@@ -500,9 +500,9 @@ module.exports = grammar({
         ':', $.type_list_no_parens)
     ),
 
-    _fastmath_flags: $ => seq(token('fastmath'), '<',
-      seq($.fastmath_flag, repeat(seq(',', $.fastmath_flag))), '>'),
-    fastmath_flag: $ => token(choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
+    fastmath_attr: $ => seq(token('fastmath'), '<',
+      seq($._fastmath_flag, repeat(seq(',', $._fastmath_flag))), '>'),
+    _fastmath_flag: $ => token(choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
       'contract', 'afn', 'fast')),
 
     literal_and_type: $ => seq($.literal, ':', $.type),
