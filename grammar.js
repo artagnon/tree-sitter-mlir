@@ -286,13 +286,14 @@ module.exports = grammar({
       $.strided_layout,
       $._affine_map_list,
     ),
-    strided_layout: $ => seq(token('strided'), '<', '[', $.dim_list, ']',
-      ',', 'offset', ':', choice($.integer_literal, '?', '*'), '>'),
+    strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
+      optional(seq(',', 'offset', ':', choice($.integer_literal, '?', '*'))), '>'),
     _affine_map_list: $ => seq('[', $.affine_map, repeat(seq(',', $.affine_map)), ']'),
     affine_map: $ => seq(token('affine_map'), '<', '(', $._loop_indices, ')',
       '->', '(', $._loop_indices, ')', '>'),
     _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
     _loop_index: $ => token(seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/))),
+    _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
 
     // Comment (standard BCPL)
     comment: $ => token(seq('//', /.*/)),
@@ -540,6 +541,38 @@ module.exports = grammar({
     )),
 
     memref_dialect: $ => choice(
+      // operation ::= `memref.alloc` `(`$dynamicSizes`)` (`` `[` $symbolOperands^ `]`)? attr-dict
+      //               `:` type($memref)
+      seq('memref.alloc',
+        field('dyanmicSizes', seq('(', optional($.value_use), ')')),
+        field('symbolOperands', optional(seq('[', $.value_use, ']'))),
+        field('attributes', optional($.attribute)),
+        ':', $.type),
+
+      // operation ::= `memref.cast` $source attr-dict `:` type($source) `to` type($dest)
+      seq('memref.cast',
+        field('in', $.value_use),
+        field('atttributes', optional($.attribute)),
+        $._from_type_to_type),
+
+      // operation ::= `memref.copy` $source `,` $target attr-dict
+      // `:` type($source) `to` type($target)
+      seq('memref.copy',
+        field('source', $.value_use), ',',
+        field('target', $.value_use),
+        field('attributes', optional($.attribute)),
+        $._from_type_to_type),
+
+      // operation ::= `memref.collapse_shape` $src $reassociation attr-dict
+      //               `:` type($src) `into` type($result)
+      // operation ::= `memref.expand_shape` $src $reassociation attr-dict
+      //               `:` type($src) `into` type($result)
+      seq(choice('memref.collapse_shape', 'memref.expand_shape'),
+        field('source', $.value_use),
+        field('reassociation', $.nested_idx_list),
+        field('attributes', optional($.attribute)),
+        $._from_type_into_type),
+
       // operation ::= `memref.view` $source `[` $byte_shift `]` `` `[` $sizes `]` attr-dict
       //         `:` type($source) `to` type(results)
       seq('memref.view',

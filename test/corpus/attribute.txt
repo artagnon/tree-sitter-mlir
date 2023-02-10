@@ -6,6 +6,7 @@ func.func @count(%x: i64) -> (i64, i64)
   return %x, %x: i64, i64
 }
 --------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -45,11 +46,13 @@ func.func @count(%x: i64) -> (i64, i64)
                     (type
                       (builtin_type
                         (integer_type)))))))))))))
+
 ================================================================================
 func.func with result attribute
 ================================================================================
 func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
 --------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -70,11 +73,13 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
                   (type
                     (builtin_type
                       (integer_type))))))))))))
+
 ================================================================================
 func.func with argument attribute
 ================================================================================
 func.func @example_fn_arg(%x: i32 {swift.self = unit})
 --------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -91,6 +96,7 @@ func.func @example_fn_arg(%x: i32 {swift.self = unit})
                 (bare_id)
                 (literal
                   (unit_literal))))))))))
+
 ================================================================================
 strided attribute in memref
 ================================================================================
@@ -102,6 +108,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
   return
 }
 --------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -116,8 +123,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (float_type))
                 (attribute_value
                   (builtin_attribute
-                    (strided_layout
-                      (dim_list)))))))
+                    (strided_layout))))))
           (value_use)
           (type
             (builtin_type
@@ -126,8 +132,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (float_type))
                 (attribute_value
                   (builtin_attribute
-                    (strided_layout
-                      (dim_list)))))))
+                    (strided_layout))))))
           (value_use)
           (type
             (builtin_type
@@ -150,8 +155,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                             (float_type))
                           (attribute_value
                             (builtin_attribute
-                              (strided_layout
-                                (dim_list)))))))
+                              (strided_layout))))))
                     (type
                       (builtin_type
                         (memref_type
@@ -159,8 +163,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                             (float_type))
                           (attribute_value
                             (builtin_attribute
-                              (strided_layout
-                                (dim_list))))))))
+                              (strided_layout)))))))
                   (value_use_list
                     (value_use))
                   (type_list_no_parens
@@ -172,6 +175,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
 ================================================================================
 affine_map attribute in linalg.generic
 ================================================================================
@@ -188,6 +192,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
   return
 }
 --------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -202,8 +207,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (float_type))
                 (attribute_value
                   (builtin_attribute
-                    (strided_layout
-                      (dim_list)))))))
+                    (strided_layout))))))
           (value_use)
           (type
             (builtin_type
@@ -212,8 +216,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (float_type))
                 (attribute_value
                   (builtin_attribute
-                    (strided_layout
-                      (dim_list))))))))
+                    (strided_layout)))))))
         (region
           (entry_block
             (operation
@@ -241,8 +244,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                             (float_type))
                           (attribute_value
                             (builtin_attribute
-                              (strided_layout
-                                (dim_list))))))))
+                              (strided_layout)))))))
                   (value_use_list
                     (value_use))
                   (type_list_no_parens
@@ -253,8 +255,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                             (float_type))
                           (attribute_value
                             (builtin_attribute
-                              (strided_layout
-                                (dim_list))))))))
+                              (strided_layout)))))))
                   (region
                     (block
                       (block_label
@@ -280,6 +281,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
 ================================================================================
 dense attribute in linalg.depthwise_conv_1d_nwc_wcm
 ================================================================================
@@ -295,6 +297,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
   return %0 : tensor<1x10x8x8xf32>
 }
 --------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -436,6 +439,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (tensor_type
                           (dim_list
                             (float_type)))))))))))))))
+
 ================================================================================
 fastmath attribute in arith
 ================================================================================
@@ -452,6 +456,7 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
   return
 }
 --------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
