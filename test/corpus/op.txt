@@ -1864,3 +1864,67 @@ func.func @expand_collapse_shape_dynamic(%arg0: memref<?x?x?xf32>,
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
+================================================================================
+memref.realloc
+================================================================================
+func.func @memref_realloc_sd(%src : memref<2xf32>, %d : index) -> memref<?xf32>{
+  %0 = memref.realloc %src(%d) : memref<2xf32> to memref<?xf32>
+  return %0 : memref<?xf32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (memref_type
+                  (dim_list
+                    (float_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (memref_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use_list
+                    (value_use))
+                  (type_list_no_parens
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type)))))))))))))))

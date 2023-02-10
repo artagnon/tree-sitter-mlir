@@ -573,6 +573,14 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         $._from_type_into_type),
 
+      // operation ::= `memref.realloc` $source (`(` $dynamicResultSize^ `)`)? attr-dict
+      //               `:` type($source) `to` type(results)
+      seq('memref.realloc',
+        field('source', $.value_use),
+        field('dynamicResultSize', optional(seq('(', $.value_use, ')'))),
+        field('attributes', optional($.attribute)),
+        $._from_type_to_type),
+
       // operation ::= `memref.view` $source `[` $byte_shift `]` `` `[` $sizes `]` attr-dict
       //         `:` type($source) `to` type(results)
       seq('memref.view',
