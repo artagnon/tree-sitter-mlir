@@ -573,6 +573,21 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         $._from_type_into_type),
 
+      seq('memref.prefetch',
+        field('source', $.value_use),
+        field('indices', optional(seq('[', $.value_use_list, ']'))), ',',
+        field('isWrite', $.isWrite_attr), ',',
+        field('localityHint', $.localityHint_attr), ',',
+        field('isDataCache', $.isDataCache_attr),
+        field('attributes', optional($.attribute)),
+        ':', $.type),
+
+      // operation ::= `memref.rank` $memref attr-dict `:` type($memref)
+      seq('memref.rank',
+        field('value', $.value_use),
+        field('attributes', optional($.attribute)),
+        ':', $.type),
+
       // operation ::= `memref.realloc` $source (`(` $dynamicResultSize^ `)`)? attr-dict
       //               `:` type($source) `to` type(results)
       seq('memref.realloc',
@@ -590,6 +605,10 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         $._from_type_to_type)
     ),
+
+    isWrite_attr: $ => choice('read', 'write'),
+    localityHint_attr: $ => seq('locality', '<', $.integer_literal, '>'),
+    isDataCache_attr: $ => choice('data', 'instr'),
 
     tensor_dialect: $ => choice(
       // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)

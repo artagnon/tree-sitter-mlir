@@ -182,6 +182,9 @@
   (gather_dims_attr)
   (unique_attr)
   (nofold_attr)
+  (isWrite_attr)
+  (localityHint_attr)
+  (isDataCache_attr)
 ] @attribute
 
 [
