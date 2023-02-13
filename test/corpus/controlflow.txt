@@ -1,6 +1,6 @@
-==========================================================================
+================================================================================
 Branching written with cf.br, cf.cond_br
-==========================================================================
+================================================================================
 func.func @simple(i64, i1) -> i64 {
 ^bb0(%a: i64, %cond: i1): // Code dominated by ^bb0 may refer to %a
   cf.cond_br %cond, ^bb1, ^bb2
@@ -23,7 +23,8 @@ func.func @simple(i64, i1) -> i64 {
   %0 = arith.addi %d, %e : i64
   return %0 : i64   // Return is also a terminator.
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -73,10 +74,9 @@ func.func @simple(i64, i1) -> i64 {
                     (caret_id)
                     (value_use_list
                       (value_use))
-                    (type_list_no_parens
-                      (type
-                        (builtin_type
-                          (integer_type)))))))))
+                    (type
+                      (builtin_type
+                        (integer_type))))))))
           (comment)
           (block
             (block_label
@@ -99,10 +99,9 @@ func.func @simple(i64, i1) -> i64 {
                     (caret_id)
                     (value_use_list
                       (value_use))
-                    (type_list_no_parens
-                      (type
-                        (builtin_type
-                          (integer_type)))))))))
+                    (type
+                      (builtin_type
+                        (integer_type))))))))
           (comment)
           (comment)
           (comment)
@@ -124,13 +123,12 @@ func.func @simple(i64, i1) -> i64 {
                     (value_use_list
                       (value_use)
                       (value_use))
-                    (type_list_no_parens
-                      (type
-                        (builtin_type
-                          (integer_type)))
-                      (type
-                        (builtin_type
-                          (integer_type)))))))))
+                    (type
+                      (builtin_type
+                        (integer_type)))
+                    (type
+                      (builtin_type
+                        (integer_type))))))))
           (block
             (block_label
               (caret_id)
@@ -159,14 +157,14 @@ func.func @simple(i64, i1) -> i64 {
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (integer_type))))))))
+                  (type
+                    (builtin_type
+                      (integer_type)))))))
           (comment))))))
-==========================================================================
+
+================================================================================
 Switch statement written with cf.switch
-==========================================================================
+================================================================================
 func.func @switch(%flag : i32, %caseOperand : i32) {
   cf.switch %flag : i32, [
     default: ^bb1(%caseOperand : i32),
@@ -181,7 +179,8 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
   ^bb3(%bb3arg : i32):
     return
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -210,30 +209,27 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                     (caret_id)
                     (value_use_list
                       (value_use))
-                    (type_list_no_parens
-                      (type
-                        (builtin_type
-                          (integer_type)))))
+                    (type
+                      (builtin_type
+                        (integer_type))))
                   (case_label
                     (integer_literal))
                   (successor
                     (caret_id)
                     (value_use_list
                       (value_use))
-                    (type_list_no_parens
-                      (type
-                        (builtin_type
-                          (integer_type)))))
+                    (type
+                      (builtin_type
+                        (integer_type))))
                   (case_label
                     (integer_literal))
                   (successor
                     (caret_id)
                     (value_use_list
                       (value_use))
-                    (type_list_no_parens
-                      (type
-                        (builtin_type
-                          (integer_type)))))))))
+                    (type
+                      (builtin_type
+                        (integer_type))))))))
           (block
             (block_label
               (caret_id)
@@ -267,9 +263,10 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
             (operation
               (custom_operation
                 (func_dialect)))))))))
-==========================================================================
+
+================================================================================
 Simple for-loop written with scf.for
-==========================================================================
+================================================================================
 func.func @for_loop_with_increasing_arg() -> i1 {
   %c0 = arith.constant 0 : index
   %c1 = arith.constant 1 : index
@@ -282,7 +279,8 @@ func.func @for_loop_with_increasing_arg() -> i1 {
   %1 = arith.cmpi ule, %0, %c16 : index
   func.return %1 : i1
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -377,10 +375,9 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                           (scf_dialect
                             (value_use_list
                               (value_use))
-                            (type_list_no_parens
-                              (type
-                                (builtin_type
-                                  (index_type))))))))))))
+                            (type
+                              (builtin_type
+                                (index_type)))))))))))
             (operation
               (op_result_list
                 (op_result
@@ -397,13 +394,13 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (integer_type)))))))))))))
-==========================================================================
+                  (type
+                    (builtin_type
+                      (integer_type))))))))))))
+
+================================================================================
 Nested for-loop written using scf.for
-==========================================================================
+================================================================================
 func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
   scf.for %i0 = %arg0 to %arg1 step %arg2 {
     scf.for %i1 = %arg0 to %arg1 step %arg2 {
@@ -417,7 +414,8 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
   }
   return
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -476,10 +474,9 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                       (value_use)
                                       (value_use)
                                       (value_use)
-                                      (type_list_no_parens
-                                        (type
-                                          (builtin_type
-                                            (index_type)))))))
+                                      (type
+                                        (builtin_type
+                                          (index_type))))))
                                 (operation
                                   (op_result_list
                                     (op_result
@@ -500,10 +497,9 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                       (value_use)
                                       (value_use)
                                       (value_use)
-                                      (type_list_no_parens
-                                        (type
-                                          (builtin_type
-                                            (index_type)))))))
+                                      (type
+                                        (builtin_type
+                                          (index_type))))))
                                 (operation
                                   (custom_operation
                                     (scf_dialect
@@ -515,9 +511,10 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
             (operation
               (custom_operation
                 (func_dialect)))))))))
-==========================================================================
+
+================================================================================
 Conditional written with scf.if and scf.yield
-==========================================================================
+================================================================================
 func.func @std_if_yield(%arg0: i1, %arg1: f32)
 {
   %x, %y = scf.if %arg0 -> (f32, f32) {
@@ -531,7 +528,8 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
   }
   return
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -558,13 +556,12 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                 (scf_dialect
                   (value_use)
                   (type_list_parens
-                    (type_list_no_parens
-                      (type
-                        (builtin_type
-                          (float_type)))
-                      (type
-                        (builtin_type
-                          (float_type)))))
+                    (type
+                      (builtin_type
+                        (float_type)))
+                    (type
+                      (builtin_type
+                        (float_type))))
                   (region
                     (entry_block
                       (operation
@@ -595,13 +592,12 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                             (value_use_list
                               (value_use)
                               (value_use))
-                            (type_list_no_parens
-                              (type
-                                (builtin_type
-                                  (float_type)))
-                              (type
-                                (builtin_type
-                                  (float_type)))))))))
+                            (type
+                              (builtin_type
+                                (float_type)))
+                            (type
+                              (builtin_type
+                                (float_type))))))))
                   (region
                     (entry_block
                       (operation
@@ -632,13 +628,12 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                             (value_use_list
                               (value_use)
                               (value_use))
-                            (type_list_no_parens
-                              (type
-                                (builtin_type
-                                  (float_type)))
-                              (type
-                                (builtin_type
-                                  (float_type))))))))))))
+                            (type
+                              (builtin_type
+                                (float_type)))
+                            (type
+                              (builtin_type
+                                (float_type)))))))))))
             (operation
               (custom_operation
                 (func_dialect)))))))))

@@ -39,13 +39,12 @@ func.func @count(%x: i64) -> (i64, i64)
                   (value_use_list
                     (value_use)
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (integer_type)))
-                    (type
-                      (builtin_type
-                        (integer_type)))))))))))))
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
+                      (integer_type))))))))))))
 
 ================================================================================
 func.func with result attribute
@@ -147,31 +146,29 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                   (value_use_list
                     (value_use)
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type))
-                          (attribute_value
-                            (builtin_attribute
-                              (strided_layout))))))
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type))
-                          (attribute_value
-                            (builtin_attribute
-                              (strided_layout)))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout))))))
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type)))))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
             (operation
               (custom_operation
                 (func_dialect)))))))))
@@ -236,26 +233,24 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                             (affine_map))))))
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type))
-                          (attribute_value
-                            (builtin_attribute
-                              (strided_layout)))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout))))))
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type))
-                          (attribute_value
-                            (builtin_attribute
-                              (strided_layout)))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout))))))
                   (region
                     (block
                       (block_label
@@ -274,10 +269,9 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                           (linalg_dialect
                             (value_use_list
                               (value_use))
-                            (type_list_no_parens
-                              (type
-                                (builtin_type
-                                  (float_type))))))))))))
+                            (type
+                              (builtin_type
+                                (float_type)))))))))))
             (operation
               (custom_operation
                 (func_dialect)))))))))
@@ -356,18 +350,16 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                 (linalg_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (float_type))))
+                  (type
+                    (builtin_type
+                      (float_type)))
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
                   (type
                     (builtin_type
                       (tensor_type
@@ -404,25 +396,23 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (value_use_list
                     (value_use)
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
                   (type
                     (builtin_type
                       (tensor_type
@@ -433,12 +423,11 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))
 
 ================================================================================
 fastmath attribute in arith

@@ -10,8 +10,7 @@ module.exports = grammar({
     toplevel: $ => seq(choice(
       $.operation,
       $.attribute_alias_def,
-      $.type_alias_def
-    )),
+      $.type_alias_def)),
 
     // Common syntax (lang-ref)
     //  digit     ::= [0-9]
@@ -136,7 +135,7 @@ module.exports = grammar({
       repeat(seq(',', $._value_use_and_type))),
     block_arg_list: $ => seq('(', optional($._value_use_and_type_list), ')'),
     _value_arg_list: $ => seq('(', optional($._value_use_type_list), ')'),
-    _value_use_type_list: $ => seq($.value_use_list, ':', $.type_list_no_parens),
+    _value_use_type_list: $ => seq($.value_use_list, ':', $._type_list_no_parens),
 
     // Regions
     //   region      ::= `{` entry-block? block* `}`
@@ -160,8 +159,8 @@ module.exports = grammar({
     //   function-type ::= (type | type-list-parens) `->` (type |
     //   type-list-parens)
     type: $ => choice($.type_alias, $.dialect_type, $.builtin_type),
-    type_list_no_parens: $ => seq($.type, repeat(seq(',', $.type))),
-    type_list_parens: $ => seq('(', optional($.type_list_no_parens), ')'),
+    _type_list_no_parens: $ => seq($.type, repeat(seq(',', $.type))),
+    type_list_parens: $ => seq('(', optional($._type_list_no_parens), ')'),
     function_type: $ => seq(choice($.type, $.type_list_parens), $._function_return),
     _function_return: $ => seq('->', choice($.type, $.type_list_parens)),
 
@@ -322,7 +321,7 @@ module.exports = grammar({
       //                `to` type($outputs) attr-dict
       seq('unrealized_cast_conversion',
         field('inputs', $._value_use_type_list), 'to',
-        field('outputs', $.type_list_no_parens),
+        field('outputs', $._type_list_no_parens),
         field('attributes', optional($.attribute)))
     ),
 
@@ -498,7 +497,7 @@ module.exports = grammar({
         field('cond', $.value_use), ',',
         field('truebr', $.value_use), ',',
         field('falsebr', $.value_use),
-        ':', $.type_list_no_parens)
+        ':', $._type_list_no_parens)
     ),
 
     fastmath_attr: $ => seq(token('fastmath'), '<',

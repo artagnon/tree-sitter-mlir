@@ -1,11 +1,12 @@
-==========================================================================
+================================================================================
 Tensor type of known dimensions
-==========================================================================
+================================================================================
 func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) -> tensor<8x8xi64> {
   %0 = arith.addi %arg0, %arg1 : tensor<8x8xi64>
   return %0 : tensor<8x8xi64>
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -51,20 +52,21 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (integer_type)))))))))))))))
-==========================================================================
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (integer_type))))))))))))))
+
+================================================================================
 Vector type
-==========================================================================
+================================================================================
 func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vector<8xi64> {
   %0 = arith.addi %arg0, %arg1 : vector<8xi64>
   return %0 : vector<8xi64>
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -110,21 +112,22 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (vector_type
-                          (vector_dim_list)
-                          (integer_type))))))))))))))
-==========================================================================
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))))))))
+
+================================================================================
 Scalable vector type
-==========================================================================
+================================================================================
 func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]xi64>)
   -> vector<[8]xi64> {
   %0 = arith.addi %arg0, %arg1 : vector<[8]xi64>
   return %0 : vector<[8]xi64>
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -170,19 +173,20 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (vector_type
-                          (vector_dim_list)
-                          (integer_type))))))))))))))
-==========================================================================
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))))))))
+
+================================================================================
 !llvm.ptr dialect type
-==========================================================================
+================================================================================
 llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
   llvm.return
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -205,9 +209,10 @@ llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {
             (operation
               (custom_operation
                 (llvm_dialect)))))))))
-==========================================================================
+
+================================================================================
 Linalg matmul with memref of unknown dimensions
-==========================================================================
+================================================================================
 func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
   %c0 = arith.constant 0 : index
   %c1 = arith.constant 1 : index
@@ -218,7 +223,8 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                 outs(%C: memref<?x?xf32>)
   return
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -338,31 +344,30 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                   (value_use_list
                     (value_use)
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type)))))
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type)))))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))
             (operation
               (custom_operation
                 (func_dialect)))))))))
-==========================================================================
+
+================================================================================
 Various tensors of dimensions `?` and `*` using tensor.cast
-==========================================================================
+================================================================================
 func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?xf32>) {
   %0 = tensor.cast %arg0 : tensor<*xf32> to tensor<?x?xf32>
   %1 = tensor.cast %arg1 : tensor<4x4xf32> to tensor<*xf32>
@@ -370,7 +375,8 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
   %3 = tensor.cast %2 : tensor<4x?xf32> to tensor<?x?xf32>
   return
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -468,9 +474,10 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
             (operation
               (custom_operation
                 (func_dialect)))))))))
-==========================================================================
+
+================================================================================
 Dense and sparse matrix literals
-==========================================================================
+================================================================================
 func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
   %const_0 = arith.constant 0 : index
   %const_1 = arith.constant 1 : index
@@ -497,7 +504,8 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
 
   return %ext_1, %ext_2, %ext_3, %ext_4, %ext_5 : f32, f16, f16, i32, complex<f32>
 }
----
+--------------------------------------------------------------------------------
+
 (toplevel
   (operation
     (custom_operation
@@ -759,20 +767,19 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                     (value_use)
                     (value_use)
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (float_type)))
-                    (type
-                      (builtin_type
-                        (float_type)))
-                    (type
-                      (builtin_type
-                        (float_type)))
-                    (type
-                      (builtin_type
-                        (integer_type)))
-                    (type
-                      (builtin_type
-                        (complex_type
-                          (float_type))))))))))))))
+                  (type
+                    (builtin_type
+                      (float_type)))
+                  (type
+                    (builtin_type
+                      (float_type)))
+                  (type
+                    (builtin_type
+                      (float_type)))
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
+                      (complex_type
+                        (float_type)))))))))))))

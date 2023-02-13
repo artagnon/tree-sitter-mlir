@@ -41,12 +41,11 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
                 (linalg_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
                   (block_arg_list)
                   (region
                     (entry_block
@@ -67,21 +66,19 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
                           (linalg_dialect
                             (value_use_list
                               (value_use))
-                            (type_list_no_parens
-                              (type
-                                (builtin_type
-                                  (float_type))))))))))))
+                            (type
+                              (builtin_type
+                                (float_type)))))))))))
             (operation
               (custom_operation
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))
 
 ================================================================================
 linalg.map with ins and outs
@@ -131,25 +128,23 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                   (value_use_list
                     (value_use)
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type)))))
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
                   (block_arg_list
                     (value_use)
                     (type
@@ -177,10 +172,9 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                           (linalg_dialect
                             (value_use_list
                               (value_use))
-                            (type_list_no_parens
-                              (type
-                                (builtin_type
-                                  (float_type))))))))))))
+                            (type
+                              (builtin_type
+                                (float_type)))))))))))
             (operation
               (custom_operation
                 (func_dialect)))))))))
@@ -270,17 +264,16 @@ func.func @tensor_reshape_zero_dim(%arg0 : tensor<1x1xf32>, %arg1 : tensor<f32>)
                   (value_use_list
                     (value_use)
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))
 
 ================================================================================
 tensor.collapse_shape with reassocation
@@ -346,12 +339,11 @@ func.func @legal_collapsing_reshape_dynamic_tensor
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))
 
 ================================================================================
 tensor.gather and tensor.scatter
@@ -413,17 +405,16 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
                   (unique_attr)
                   (function_type
                     (type_list_parens
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (float_type)))))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (integer_type)))))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type)))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (integer_type))))))
                     (type
                       (builtin_type
                         (tensor_type
@@ -443,17 +434,16 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
                   (unique_attr)
                   (function_type
                     (type_list_parens
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (float_type)))))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (index_type)))))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type)))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (index_type))))))
                     (type
                       (builtin_type
                         (tensor_type
@@ -474,22 +464,21 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
                   (unique_attr)
                   (function_type
                     (type_list_parens
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (float_type)))))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (float_type)))))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (index_type)))))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type)))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type)))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (index_type))))))
                     (type
                       (builtin_type
                         (tensor_type
@@ -510,22 +499,21 @@ func.func @gather_scatter(%dest : tensor<4x5x6xf32>, %indices: tensor<1x3x2xinde
                   (unique_attr)
                   (function_type
                     (type_list_parens
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (float_type)))))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (float_type)))))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (integer_type)))))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type)))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type)))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (integer_type))))))
                     (type
                       (builtin_type
                         (tensor_type
@@ -988,10 +976,9 @@ func.func @extract_from_tensor.generate(%idx: index, %tensor: tensor<*xf32>) -> 
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (index_type)))))))))))))
+                  (type
+                    (builtin_type
+                      (index_type))))))))))))
 
 ================================================================================
 tensor.insert
@@ -1127,17 +1114,16 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
                   (value_use)
                   (function_type
                     (type_list_parens
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (float_type)))))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (integer_type)))))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type)))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (integer_type))))))
                     (type
                       (builtin_type
                         (tensor_type
@@ -1148,12 +1134,11 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))
 
 ================================================================================
 tensor.pad
@@ -1259,12 +1244,11 @@ func.func @pad_dynamic(%arg0: tensor<1x2x2x?xf32>, %low: index, %high: index,
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))
 
 ================================================================================
 tensor.splat
@@ -1343,17 +1327,16 @@ func.func @tensor_reshape(%unranked: tensor<*xf32>, %shape: tensor<1xi32>) {
                   (value_use)
                   (function_type
                     (type_list_parens
-                      (type_list_no_parens
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (float_type)))))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (integer_type)))))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (float_type)))))
+                      (type
+                        (builtin_type
+                          (tensor_type
+                            (dim_list
+                              (integer_type))))))
                     (type
                       (builtin_type
                         (tensor_type
@@ -1465,12 +1448,11 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (tensor_type
-                          (dim_list
-                            (float_type)))))))))))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))
 
 ================================================================================
 memref.alloc, memref.cast, and memref.copy
@@ -1922,12 +1904,11 @@ func.func @memref_realloc_sd(%src : memref<2xf32>, %d : index) -> memref<?xf32>{
                 (func_dialect
                   (value_use_list
                     (value_use))
-                  (type_list_no_parens
-                    (type
-                      (builtin_type
-                        (memref_type
-                          (dim_list
-                            (float_type)))))))))))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))))))))))))))
 
 ================================================================================
 memref.prefetch
