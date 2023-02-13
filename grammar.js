@@ -39,10 +39,8 @@ module.exports = grammar({
     tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
       choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
         $._primitive_idx_literal), '>'),
-    ptr_literal: $ => seq(token('ptr'), '<', $.type, '>'),
-    struct_literal: $ => seq(token('struct'), '<', $.type_list_parens, '>'),
     literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
-      $.tensor_literal, $.complex_literal, $.unit_literal, $.ptr_literal, $.struct_literal),
+      $.tensor_literal, $.complex_literal, $.unit_literal),
 
     nested_idx_list: $ => seq('[', optional(choice($.nested_idx_list, $._idx_list)),
       repeat(seq(',', $.nested_idx_list)), ']'),

@@ -773,3 +773,28 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                     (builtin_type
                       (complex_type
                         (float_type)))))))))))))
+
+================================================================================
+!llvm.struct dialect type
+================================================================================
+llvm.func @return_s_long() ->
+  !llvm.struct<"long", (i32, struct<(i32, i1)>, f32, ptr<func<void ()>>)>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (llvm_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens
+            (type
+              (dialect_type
+                (pretty_dialect_item
+                  (dialect_namespace)
+                  (dialect_ident)
+                  (pretty_dialect_item_body
+                    (pretty_dialect_item_body)
+                    (pretty_dialect_item_body
+                      (pretty_dialect_item_body))))))))))))
