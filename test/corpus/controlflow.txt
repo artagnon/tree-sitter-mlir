@@ -300,48 +300,44 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (index_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
             (operation
               (op_result_list
                 (op_result
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (index_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
             (operation
               (op_result_list
                 (op_result
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (index_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
             (operation
               (op_result_list
                 (op_result
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (index_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
             (operation
               (op_result_list
                 (op_result

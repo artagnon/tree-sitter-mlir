@@ -55,12 +55,11 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
                             (value_use)))
                         (custom_operation
                           (arith_dialect
-                            (literal_and_type
-                              (literal
-                                (float_literal))
-                              (type
-                                (builtin_type
-                                  (float_type)))))))
+                            (literal
+                              (float_literal))
+                            (type
+                              (builtin_type
+                                (float_type))))))
                       (operation
                         (custom_operation
                           (linalg_dialect
@@ -564,24 +563,22 @@ func.func @slice(%t: tensor<8x16x4xf32>, %idx : index) {
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (index_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
             (operation
               (op_result_list
                 (op_result
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (index_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
             (operation
               (op_result_list
                 (op_result
@@ -735,24 +732,22 @@ func.func @insert_slice(
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (index_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
             (operation
               (op_result_list
                 (op_result
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (index_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
             (operation
               (op_result_list
                 (op_result
@@ -1071,24 +1066,22 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (integer_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (op_result_list
                 (op_result
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (integer_literal))
-                    (type
-                      (builtin_type
-                        (integer_type)))))))
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (integer_type))))))
             (operation
               (op_result_list
                 (op_result

@@ -39,8 +39,10 @@ module.exports = grammar({
     tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
       choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
         $._primitive_idx_literal), '>'),
+    ptr_literal: $ => seq(token('ptr'), '<', $.type, '>'),
+    struct_literal: $ => seq(token('struct'), '<', $.type_list_parens, '>'),
     literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
-      $.tensor_literal, $.complex_literal, $.unit_literal),
+      $.tensor_literal, $.complex_literal, $.unit_literal, $.ptr_literal, $.struct_literal),
 
     nested_idx_list: $ => seq('[', optional(choice($.nested_idx_list, $._idx_list)),
       repeat(seq(',', $.nested_idx_list)), ']'),
@@ -97,7 +99,7 @@ module.exports = grammar({
       seq($.string_literal, '(', optional($.value_use_list),
         ')', optional($.successor_list),
         optional($.region_list),
-        optional($.dictionary_attribute), ':',
+        optional($.attribute), ':',
         $.function_type),
     // custom-operation rule is defined later in the grammar, post the generic.
     op_result_list: $ => seq($.op_result, repeat(seq(',', $.op_result)), '='),
@@ -106,11 +108,8 @@ module.exports = grammar({
       ']'),
     successor: $ => seq($.caret_id, optional($._value_arg_list)),
     region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
-    dictionary_attribute: $ => seq(
-      '{',
-      optional(seq($.attribute_entry,
-        repeat(seq(',', $.attribute_entry)))),
-      '}'),
+    dictionary_attribute: $ => seq('{', optional($.attribute_entry),
+      repeat(seq(',', $.attribute_entry)), '}'),
     trailing_location: $ => seq(token('loc'), '(', $.location, ')'),
     // TODO: Complete location forms.
     location: $ => $.string_literal,
@@ -195,10 +194,10 @@ module.exports = grammar({
     opaque_dialect_item: $ => seq($.dialect_namespace, '<', $.string_literal,
       '>'),
     pretty_dialect_item: $ => seq($.dialect_namespace, '.', $.dialect_ident,
-      optional(seq('<', $.pretty_dialect_item_contents, '>'))),
-    pretty_dialect_item_contents: $ => prec.left(choice(
-      repeat1(/[^<>]/),
-      seq('<', repeat1($.pretty_dialect_item_contents), '>'))),
+      optional($.pretty_dialect_item_body)),
+    pretty_dialect_item_body: $ => seq('<', repeat1($._pretty_dialect_item_contents), '>'),
+    _pretty_dialect_item_contents: $ => prec.left(choice($.pretty_dialect_item_body,
+      repeat1(/[^<>]/))),
 
     // Builtin types
     builtin_type: $ => choice(
@@ -264,11 +263,13 @@ module.exports = grammar({
     //   attribute-value ::= attribute-alias | dialect-attribute |
     //   builtin-attribute
     attribute_entry: $ => seq(choice($.bare_id, $.string_literal),
-      optional(seq(choice('=', ':'), $._attribute_value))),
-    _attribute_value: $ => choice(seq($.literal, optional(seq(':', $.type))),
-      $.type, $.attribute_value, seq('[', $.literal, repeat(seq(',', $.literal)), ']')),
-    attribute_value: $ => choice($.attribute_alias, $.dialect_attribute, $.builtin_attribute),
-    attribute: $ => choice($.attribute_value, $.dictionary_attribute),
+      optional(seq('=', $.attribute_value))),
+    attribute_value: $ => choice(seq('[', $._attribute_value_nobracket,
+      repeat(seq(',', $._attribute_value_nobracket)), ']'), $._attribute_value_nobracket),
+    _attribute_value_nobracket: $ => choice($.attribute_alias, $.dialect_attribute,
+      $.builtin_attribute, $.dictionary_attribute, $._literal_and_type, $.type),
+    attribute: $ => choice($.attribute_alias, $.dialect_attribute,
+      $.builtin_attribute, $.dictionary_attribute),
 
     // Attribute Value Aliases
     //   attribute-alias-def ::= '#' alias-name '=' attribute-value
@@ -394,7 +395,9 @@ module.exports = grammar({
 
     arith_dialect: $ => choice(
       // operation ::= `arith.constant` attr-dict $value
-      seq('arith.constant', optional($.attribute), $.literal_and_type),
+      seq('arith.constant',
+        field('attributes', optional($.attribute)),
+        field('value', $._literal_and_type)),
 
       // operation ::= `arith.addi` $lhs `,` $rhs attr-dict `:` type($result)
       // operation ::= `arith.subi` $lhs `,` $rhs attr-dict `:` type($result)
@@ -505,7 +508,7 @@ module.exports = grammar({
     _fastmath_flag: $ => token(choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
       'contract', 'afn', 'fast')),
 
-    literal_and_type: $ => seq($.literal, ':', $.type),
+    _literal_and_type: $ => seq($.literal, optional(seq(':', $.type))),
     _from_type_to_type: $ => seq(':',
       field('fromtype', $.type), token('to'),
       field('totype', $.type)),

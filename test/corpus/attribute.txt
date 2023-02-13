@@ -1,52 +1,4 @@
 ================================================================================
-func.func with attribute
-================================================================================
-func.func @count(%x: i64) -> (i64, i64)
-  attributes { fruit: "banana" } {
-  return %x, %x: i64, i64
-}
---------------------------------------------------------------------------------
-
-(toplevel
-  (operation
-    (custom_operation
-      (func_dialect
-        (symbol_ref_id)
-        (func_arg_list
-          (value_use)
-          (type
-            (builtin_type
-              (integer_type))))
-        (func_return
-          (type_list_attr_parens
-            (type
-              (builtin_type
-                (integer_type)))
-            (type
-              (builtin_type
-                (integer_type)))))
-        (attribute
-          (dictionary_attribute
-            (attribute_entry
-              (bare_id)
-              (literal
-                (string_literal)))))
-        (region
-          (entry_block
-            (operation
-              (custom_operation
-                (func_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use))
-                  (type
-                    (builtin_type
-                      (integer_type)))
-                  (type
-                    (builtin_type
-                      (integer_type))))))))))))
-
-================================================================================
 func.func with result attribute
 ================================================================================
 func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
@@ -67,11 +19,12 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
               (dictionary_attribute
                 (attribute_entry
                   (bare_id)
-                  (literal
-                    (integer_literal))
-                  (type
-                    (builtin_type
-                      (integer_type))))))))))))
+                  (attribute_value
+                    (literal
+                      (integer_literal))
+                    (type
+                      (builtin_type
+                        (integer_type)))))))))))))
 
 ================================================================================
 func.func with argument attribute
@@ -93,8 +46,9 @@ func.func @example_fn_arg(%x: i32 {swift.self = unit})
             (dictionary_attribute
               (attribute_entry
                 (bare_id)
-                (literal
-                  (unit_literal))))))))))
+                (attribute_value
+                  (literal
+                    (unit_literal)))))))))))
 
 ================================================================================
 strided attribute in memref
@@ -223,8 +177,9 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                     (dictionary_attribute
                       (attribute_entry
                         (bare_id)
-                        (literal
-                          (string_literal)))
+                        (attribute_value
+                          (literal
+                            (string_literal))))
                       (attribute_entry
                         (bare_id)
                         (attribute_value
@@ -325,12 +280,11 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (value_use)))
               (custom_operation
                 (arith_dialect
-                  (literal_and_type
-                    (literal
-                      (float_literal))
-                    (type
-                      (builtin_type
-                        (float_type)))))))
+                  (literal
+                    (float_literal))
+                  (type
+                    (builtin_type
+                      (float_type))))))
             (operation
               (op_result_list
                 (op_result
@@ -375,24 +329,26 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                     (dictionary_attribute
                       (attribute_entry
                         (bare_id)
-                        (literal
-                          (tensor_literal
-                            (integer_literal)))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (integer_type))))))
+                        (attribute_value
+                          (literal
+                            (tensor_literal
+                              (integer_literal)))
+                          (type
+                            (builtin_type
+                              (tensor_type
+                                (dim_list
+                                  (integer_type)))))))
                       (attribute_entry
                         (bare_id)
-                        (literal
-                          (tensor_literal
-                            (integer_literal)))
-                        (type
-                          (builtin_type
-                            (tensor_type
-                              (dim_list
-                                (integer_type))))))))
+                        (attribute_value
+                          (literal
+                            (tensor_literal
+                              (integer_literal)))
+                          (type
+                            (builtin_type
+                              (tensor_type
+                                (dim_list
+                                  (integer_type)))))))))
                   (value_use_list
                     (value_use)
                     (value_use))
@@ -576,3 +532,54 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
+================================================================================
+Generic function bracketed attributes
+================================================================================
+"llvm.func"() ({
+}) {sym_name = "qux", function_type = !llvm.func<void (ptr<i64>, i64)>,
+    arg_attrs = [{llvm.noalias}, {}], xxx = {yyy = 42}} : () -> ()
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (generic_operation
+      (string_literal)
+      (region_list
+        (region))
+      (attribute
+        (dictionary_attribute
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (literal
+                (string_literal))))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (type
+                (dialect_type
+                  (pretty_dialect_item
+                    (dialect_namespace)
+                    (dialect_ident)
+                    (pretty_dialect_item_body
+                      (pretty_dialect_item_body)))))))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (dictionary_attribute
+                (attribute_entry
+                  (bare_id)))
+              (dictionary_attribute)))
+          (attribute_entry
+            (bare_id)
+            (attribute_value
+              (dictionary_attribute
+                (attribute_entry
+                  (bare_id)
+                  (attribute_value
+                    (literal
+                      (integer_literal)))))))))
+      (function_type
+        (type_list_parens)
+        (type_list_parens)))))

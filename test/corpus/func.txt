@@ -156,19 +156,22 @@ module {
                 (string_literal)
                 (region_list
                   (region))
-                (dictionary_attribute
-                  (attribute_entry
-                    (bare_id)
-                    (literal
-                      (string_literal)))
-                  (attribute_entry
-                    (bare_id)
-                    (type
-                      (dialect_type
-                        (pretty_dialect_item
-                          (dialect_namespace)
-                          (dialect_ident)
-                          (pretty_dialect_item_contents))))))
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (literal
+                          (string_literal))))
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (type
+                          (dialect_type
+                            (pretty_dialect_item
+                              (dialect_namespace)
+                              (dialect_ident)
+                              (pretty_dialect_item_body))))))))
                 (function_type
                   (type_list_parens)
                   (type_list_parens))))))))))
