@@ -7,8 +7,8 @@ module.exports = grammar({
   rules: {
     // Top level production:
     //   (operation | attribute-alias-def | type-alias-def)
-    toplevel: $ => seq(choice($.operation, $.attribute_alias_def, $.type_alias_def),
-      repeat(choice($.operation, $.attribute_alias_def, $.type_alias_def))),
+    toplevel: $ => seq($._toplevel, repeat($._toplevel)),
+    _toplevel: $ => choice($.operation, $.attribute_alias_def, $.type_alias_def),
 
     // Common syntax (lang-ref)
     //  digit     ::= [0-9]
@@ -283,7 +283,7 @@ module.exports = grammar({
       $.affine_map,
     ),
     strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
-      optional(seq(',', 'offset', ':', choice($.integer_literal, '?', '*'))), '>'),
+      optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
     affine_map: $ => seq(token('affine_map'), '<', '(', $._loop_indices, ')',
       '->', '(', $._loop_indices, ')', '>'),
     _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
@@ -603,9 +603,9 @@ module.exports = grammar({
         $._from_type_to_type)
     ),
 
-    isWrite_attr: $ => choice('read', 'write'),
-    localityHint_attr: $ => seq('locality', '<', $.integer_literal, '>'),
-    isDataCache_attr: $ => choice('data', 'instr'),
+    isWrite_attr: $ => token(choice('read', 'write')),
+    localityHint_attr: $ => seq(token('locality'), '<', $.integer_literal, '>'),
+    isDataCache_attr: $ => token(choice('data', 'instr')),
 
     tensor_dialect: $ => choice(
       // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)

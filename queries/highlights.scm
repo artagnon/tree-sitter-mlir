@@ -4,9 +4,18 @@
   "else"
   "loc"
   "attributes"
-  "step"
   "into"
   "to"
+  "step"
+  "low"
+  "high"
+  "iter_args"
+  "padding_value"
+  "inner_tiles"
+  "gather_dims"
+  "scatter_dims"
+  "outer_dims_perm"
+  "inner_dims_pos"
   "default"
 ] @keyword
 
@@ -74,6 +83,14 @@
   "scf.for"
   "scf.yield"
 
+  "memref.alloc"
+  "memref.cast"
+  "memref.copy"
+  "memref.collapse_shape"
+  "memref.expand_shape"
+  "memref.prefetch"
+  "memref.rank"
+  "memref.realloc"
   "memref.view"
 
   "tensor.empty"
@@ -158,8 +175,15 @@
   "linalg.yield"
 ] @function.builtin
 
-(type) @type.builtin
-(type_alias) @type
+(generic_operation) @function
+
+(builtin_type) @type.builtin
+
+[
+  (type_alias)
+  (dialect_type)
+  (type_alias_def)
+] @type
 
 [
   (integer_literal)
@@ -176,10 +200,14 @@
 (string_literal) @string
 
 [
+  (attribute_alias_def)
+  (attribute_alias)
   (attribute)
   (fastmath_attr)
   (scatter_dims_attr)
   (gather_dims_attr)
+  (outer_dims_perm_attr)
+  (inner_dims_pos_attr)
   (unique_attr)
   (nofold_attr)
   (isWrite_attr)
