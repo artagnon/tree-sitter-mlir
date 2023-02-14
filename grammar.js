@@ -7,10 +7,8 @@ module.exports = grammar({
   rules: {
     // Top level production:
     //   (operation | attribute-alias-def | type-alias-def)
-    toplevel: $ => seq(choice(
-      $.operation,
-      $.attribute_alias_def,
-      $.type_alias_def)),
+    toplevel: $ => seq(choice($.operation, $.attribute_alias_def, $.type_alias_def),
+      repeat(choice($.operation, $.attribute_alias_def, $.type_alias_def))),
 
     // Common syntax (lang-ref)
     //  digit     ::= [0-9]
@@ -282,11 +280,10 @@ module.exports = grammar({
     builtin_attribute: $ => choice(
       // TODO
       $.strided_layout,
-      $._affine_map_list,
+      $.affine_map,
     ),
     strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
       optional(seq(',', 'offset', ':', choice($.integer_literal, '?', '*'))), '>'),
-    _affine_map_list: $ => seq('[', $.affine_map, repeat(seq(',', $.affine_map)), ']'),
     affine_map: $ => seq(token('affine_map'), '<', '(', $._loop_indices, ')',
       '->', '(', $._loop_indices, ')', '>'),
     _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
@@ -309,7 +306,7 @@ module.exports = grammar({
       $.linalg_dialect
     ),
 
-    builtin_dialect: $ => choice(
+    builtin_dialect: $ => prec.left(choice(
       // operation ::= `builtin.module` ($sym_name^)? attr-dict-with-keyword $bodyRegion
       seq('module',
         field('name', optional($.bare_id)),
@@ -322,7 +319,7 @@ module.exports = grammar({
         field('inputs', $._value_use_type_list), 'to',
         field('outputs', $._type_list_no_parens),
         field('attributes', optional($.attribute)))
-    ),
+    )),
 
     func_dialect: $ => prec.right(choice(
       seq('func.func', $._op_func),
@@ -358,7 +355,7 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         field('results', optional($._value_use_type_list))))),
 
-    cf_dialect: $ => choice(
+    cf_dialect: $ => prec.left(choice(
       // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
       seq('cf.br',
         field('successor', $.successor),
@@ -387,7 +384,7 @@ module.exports = grammar({
         field('flag', $._value_use_and_type), ',', '[',
         $.case_label, $.successor, repeat(seq(',', $.case_label, $.successor)), ']',
         field('attributes', optional($.attribute))),
-    ),
+    )),
 
     case_label: $ => seq(choice($.integer_literal, token('default')), ':'),
 
@@ -552,7 +549,7 @@ module.exports = grammar({
       // operation ::= `memref.cast` $source attr-dict `:` type($source) `to` type($dest)
       seq('memref.cast',
         field('in', $.value_use),
-        field('atttributes', optional($.attribute)),
+        field('attributes', optional($.attribute)),
         $._from_type_to_type),
 
       // operation ::= `memref.copy` $source `,` $target attr-dict
