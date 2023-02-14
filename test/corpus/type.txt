@@ -798,3 +798,66 @@ llvm.func @return_s_long() ->
                     (pretty_dialect_item_body)
                     (pretty_dialect_item_body
                       (pretty_dialect_item_body))))))))))))
+
+================================================================================
+Type alias definition
+================================================================================
+!baz = i64
+!qux = !llvm.struct<(!baz)>
+!rec = !llvm.struct<"a", (ptr<struct<"a">>)>
+llvm.func @aliases() {
+  "some.op"() : () -> !llvm.struct<(i32, f32, !qux)>
+  "some.op"() : () -> !rec
+  llvm.return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (type_alias_def
+    (type
+      (builtin_type
+        (integer_type))))
+  (type_alias_def
+    (type
+      (dialect_type
+        (pretty_dialect_item
+          (dialect_namespace)
+          (dialect_ident)
+          (pretty_dialect_item_body)))))
+  (type_alias_def
+    (type
+      (dialect_type
+        (pretty_dialect_item
+          (dialect_namespace)
+          (dialect_ident)
+          (pretty_dialect_item_body
+            (pretty_dialect_item_body
+              (pretty_dialect_item_body)))))))
+  (operation
+    (custom_operation
+      (llvm_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type_list_parens)
+                  (type
+                    (dialect_type
+                      (pretty_dialect_item
+                        (dialect_namespace)
+                        (dialect_ident)
+                        (pretty_dialect_item_body)))))))
+            (operation
+              (generic_operation
+                (string_literal)
+                (function_type
+                  (type_list_parens)
+                  (type
+                    (type_alias)))))
+            (operation
+              (custom_operation
+                (llvm_dialect)))))))))
