@@ -633,3 +633,144 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
+================================================================================
+scf.index_switch
+================================================================================
+func.func @switch(%arg0: index) -> i32 {
+  %0 = scf.index_switch %arg0 -> i32
+  case 2 {
+    %c10_i32 = arith.constant 10 : i32
+    scf.yield %c10_i32 : i32
+  }
+  case 5 {
+    %c20_i32 = arith.constant 20 : i32
+    scf.yield %c20_i32 : i32
+  }
+  default {
+    %c30_i32 = arith.constant 30 : i32
+    scf.yield %c30_i32 : i32
+  }
+
+  scf.index_switch %arg0
+  default {
+    scf.yield
+  }
+
+  return %0 : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (scf_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (scf_case_label
+                    (integer_literal))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result_list
+                          (op_result
+                            (value_use)))
+                        (custom_operation
+                          (arith_dialect
+                            (literal
+                              (integer_literal))
+                            (type
+                              (builtin_type
+                                (integer_type))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use_list
+                              (value_use))
+                            (type
+                              (builtin_type
+                                (integer_type))))))))
+                  (scf_case_label
+                    (integer_literal))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result_list
+                          (op_result
+                            (value_use)))
+                        (custom_operation
+                          (arith_dialect
+                            (literal
+                              (integer_literal))
+                            (type
+                              (builtin_type
+                                (integer_type))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use_list
+                              (value_use))
+                            (type
+                              (builtin_type
+                                (integer_type))))))))
+                  (scf_case_label)
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result_list
+                          (op_result
+                            (value_use)))
+                        (custom_operation
+                          (arith_dialect
+                            (literal
+                              (integer_literal))
+                            (type
+                              (builtin_type
+                                (integer_type))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use_list
+                              (value_use))
+                            (type
+                              (builtin_type
+                                (integer_type)))))))))))
+            (operation
+              (custom_operation
+                (scf_dialect
+                  (value_use)
+                  (scf_case_label)
+                  (region
+                    (entry_block
+                      (operation
+                        (custom_operation
+                          (scf_dialect))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use_list
+                    (value_use))
+                  (type
+                    (builtin_type
+                      (integer_type))))))))))))

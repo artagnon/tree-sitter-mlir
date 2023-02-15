@@ -551,6 +551,15 @@ module.exports = grammar({
         field('trueblk', $.region),
         field('falseblk', optional(seq(token('else'), $.region)))),
 
+      // operation ::= `scf.index_switch` $arg attr-dict (`->` type($results)^)?
+      //               custom<SwitchCases>($cases, $caseRegions) `\n`
+      //               `` `default` $defaultRegion
+      seq('scf.index_switch',
+        field('flag', $._value_use_and_type),
+        field('attributes', optional($.attribute)),
+        field('result', optional($._function_return)),
+        $.scf_case_label, $.region, repeat(seq($.scf_case_label, $.region))),
+
       // scf.for %iv = %lb to %ub step %step {
       // ... // body
       // }
@@ -569,6 +578,8 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         field('results', optional($._value_use_type_list))),
     )),
+
+    scf_case_label: $ => choice(seq(token('case'), $.integer_literal), token('default')),
 
     memref_dialect: $ => choice(
       // operation ::= `memref.alloc` `(`$dynamicSizes`)` (`` `[` $symbolOperands^ `]`)? attr-dict
