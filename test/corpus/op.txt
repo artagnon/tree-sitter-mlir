@@ -1993,3 +1993,154 @@ func.func @rank(%t : memref<4x4x?xf32>) {
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
+================================================================================
+affine.for with attribute aliseses
+================================================================================
+#map_simple0 = affine_map<()[] -> (10)>
+#map_simple1 = affine_map<()[s0] -> (s0)>
+#map_non_simple0 = affine_map<(d0)[] -> (d0)>
+#map_non_simple1 = affine_map<(d0)[s0] -> (d0 + s0)>
+#map_non_simple2 = affine_map<()[s0, s1] -> (s0 + s1)>
+#map_non_simple3 = affine_map<()[s0] -> (s0 + 3)>
+func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
+  affine.for %i0 = 0 to #map_simple0()[] {
+    affine.for %i1 = 0 to #map_simple1()[%arg1] {
+      affine.for %i2 = 0 to #map_non_simple0(%i0)[] {
+        affine.for %i3 = 0 to #map_non_simple1(%i0)[%arg1] {
+          affine.for %i4 = 0 to #map_non_simple2()[%arg1, %arg0] {
+            affine.for %i5 = 0 to #map_non_simple3()[%arg0] {
+              %c42_i32 = arith.constant 42 : i32
+            }
+          }
+        }
+      }
+    }
+  }
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map))))
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map))))
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map))))
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map))))
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map))))
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map))))
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (affine_dialect
+                  (value_use)
+                  (integer_literal)
+                  (attribute
+                    (attribute_alias))
+                  (region
+                    (entry_block
+                      (operation
+                        (custom_operation
+                          (affine_dialect
+                            (value_use)
+                            (integer_literal)
+                            (attribute
+                              (attribute_alias))
+                            (value_use_list
+                              (value_use))
+                            (region
+                              (entry_block
+                                (operation
+                                  (custom_operation
+                                    (affine_dialect
+                                      (value_use)
+                                      (integer_literal)
+                                      (attribute
+                                        (attribute_alias))
+                                      (value_use_list
+                                        (value_use))
+                                      (region
+                                        (entry_block
+                                          (operation
+                                            (custom_operation
+                                              (affine_dialect
+                                                (value_use)
+                                                (integer_literal)
+                                                (attribute
+                                                  (attribute_alias))
+                                                (value_use_list
+                                                  (value_use))
+                                                (value_use_list
+                                                  (value_use))
+                                                (region
+                                                  (entry_block
+                                                    (operation
+                                                      (custom_operation
+                                                        (affine_dialect
+                                                          (value_use)
+                                                          (integer_literal)
+                                                          (attribute
+                                                            (attribute_alias))
+                                                          (value_use_list
+                                                            (value_use)
+                                                            (value_use))
+                                                          (region
+                                                            (entry_block
+                                                              (operation
+                                                                (custom_operation
+                                                                  (affine_dialect
+                                                                    (value_use)
+                                                                    (integer_literal)
+                                                                    (attribute
+                                                                      (attribute_alias))
+                                                                    (value_use_list
+                                                                      (value_use))
+                                                                    (region
+                                                                      (entry_block
+                                                                        (operation
+                                                                          (op_result_list
+                                                                            (op_result
+                                                                              (value_use)))
+                                                                          (custom_operation
+                                                                            (arith_dialect
+                                                                              (literal
+                                                                                (integer_literal))
+                                                                              (type
+                                                                                (builtin_type
+                                                                                  (integer_type))))))))))))))))))))))))))))))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))

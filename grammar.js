@@ -286,9 +286,11 @@ module.exports = grammar({
     strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
       optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
     affine_map: $ => seq(token('affine_map'), '<', '(', optional($._loop_indices), ')',
-      optional(seq('[', $._loop_indices, ']')), '->', '(', optional($._loop_indices), ')', '>'),
+      optional(seq('[', optional($._loop_indices), ']')),
+      '->', '(', optional($._loop_indices), ')', '>'),
     affine_set: $ => seq(token('affine_set'), '<', '(', optional($._loop_indices), ')',
-      optional(seq('[', $._loop_indices, ']')), ':', '(', optional($._loop_indices), ')', '>'),
+      optional(seq('[', optional($._loop_indices), ']')),
+      ':', '(', optional($._loop_indices), ')', '>'),
     _loop_indices: $ => seq($._loop_index,
       repeat(seq(choice(',', '+', '-', '==', '>='), $._loop_index))),
     _loop_index: $ => choice($._decimal_literal, seq(optional('-'),
@@ -308,6 +310,7 @@ module.exports = grammar({
       $.scf_dialect,
       $.memref_dialect,
       $.tensor_dialect,
+      $.affine_dialect,
       $.linalg_dialect
     ),
 
@@ -796,6 +799,33 @@ module.exports = grammar({
     nofold_attr: $ => token('nofold'),
     outer_dims_perm_attr: $ => seq(token('outer_dims_perm'), '=', $._dense_idx_list),
     inner_dims_pos_attr: $ => seq(token('inner_dims_pos'), '=', $._dense_idx_list),
+
+    affine_dialect: $ => choice(
+      // operation   ::= `affine.for` ssa-id `=` lower-bound `to` upper-bound
+      //                 (`step` integer-literal)? `{` op* `}`
+      seq('affine.for',
+        $.value_use, '=',
+        field('lowerBound', $._lower_bound), token('to'),
+        field('upperBound', $._upper_bound),
+        field('step', optional(seq(token('step'), $.integer_literal))),
+        field('body', $.region))
+    ),
+
+    // dim-use-list ::= `(` ssa-use-list? `)`
+    // symbol-use-list ::= `[` ssa-use-list? `]`
+    // dim-and-symbol-use-list ::= dim-use-list symbol-use-list?
+    _dim_use_list: $ => seq('(', optional($.value_use_list), ')'),
+    _symbol_use_list: $ => seq('[', optional($.value_use_list), ']'),
+    _dim_and_symbol_use_list: $ => seq($._dim_use_list, optional($._symbol_use_list)),
+
+    // lower-bound ::= `max`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
+    // upper-bound ::= `min`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
+    // shorthand-bound ::= ssa-id | `-`? integer-literal
+    _lower_bound: $ => seq(optional(token('max')),
+      choice(seq($.attribute, $._dim_and_symbol_use_list), $._shorthand_bound)),
+    _upper_bound: $ => seq(optional(token('min')),
+      choice(seq($.attribute, $._dim_and_symbol_use_list), $._shorthand_bound)),
+    _shorthand_bound: $ => choice($.value_use, $.integer_literal),
 
     linalg_dialect: $ => choice(
       seq(choice('linalg.batch_matmul', 'linalg.batch_matmul_transpose_b', 'linalg.batch_matvec',
