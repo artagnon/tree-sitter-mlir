@@ -621,7 +621,7 @@ module.exports = grammar({
       seq('tensor.empty',
         field('size', seq('(', optional($.value_use_list), ')')),
         field('attributes', optional($.attribute)), ':',
-        field('return', $.type)),
+        $.type),
 
       // operation ::= `tensor.cast` $source attr-dict `:` type($source) `to` type($dest)
       seq('tensor.cast',
@@ -868,8 +868,7 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         'ins', '(', field('ins', $._value_use_type_list), ')',
         'outs', '(', field('outs', $._value_use_type_list), ')',
-        optional($._function_return)
-      ),
+        optional($._function_return)),
 
       seq('linalg.generic',
         field('attributes', $.attribute),
@@ -881,7 +880,8 @@ module.exports = grammar({
         field('ins', optional(seq(token('ins'), '(', $._value_use_type_list, ')'))),
         field('outs', seq(token('outs'), '(', $._value_use_type_list, ')')),
         field('arguments', $.block_arg_list),
-        field('body', $.region), optional($._function_return)),
+        field('body', $.region),
+        optional($._function_return)),
 
       seq('linalg.yield',
         field('attributes', optional($.attribute)),
