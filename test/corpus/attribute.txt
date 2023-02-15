@@ -933,3 +933,15 @@ affine_map with indexing and sum
     (attribute_value
       (builtin_attribute
         (affine_map)))))
+
+================================================================================
+affine_set
+================================================================================
+#set0 = affine_set<(i)[N, M] : (i >= 0, -i + N >= 0, N - 5 == 0, -i + M + 1 >= 0)>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_set)))))

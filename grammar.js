@@ -281,13 +281,18 @@ module.exports = grammar({
       // TODO
       $.strided_layout,
       $.affine_map,
+      $.affine_set
     ),
     strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
       optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
     affine_map: $ => seq(token('affine_map'), '<', '(', optional($._loop_indices), ')',
-      optional(seq('[', $._loop_index, ']')), '->', '(', optional($._loop_indices), ')', '>'),
-    _loop_indices: $ => seq($._loop_index, repeat(seq(choice(',', '+', '-'), $._loop_index))),
-    _loop_index: $ => choice($._decimal_literal, token(seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/)))),
+      optional(seq('[', $._loop_indices, ']')), '->', '(', optional($._loop_indices), ')', '>'),
+    affine_set: $ => seq(token('affine_set'), '<', '(', optional($._loop_indices), ')',
+      optional(seq('[', $._loop_indices, ']')), ':', '(', optional($._loop_indices), ')', '>'),
+    _loop_indices: $ => seq($._loop_index,
+      repeat(seq(choice(',', '+', '-', '==', '>='), $._loop_index))),
+    _loop_index: $ => choice($._decimal_literal, seq(optional('-'),
+      token(seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/))))),
     _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
 
     // Comment (standard BCPL)
