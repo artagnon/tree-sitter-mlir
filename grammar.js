@@ -292,7 +292,7 @@ module.exports = grammar({
       optional(seq('[', optional($._loop_indices), ']')),
       ':', '(', optional($._loop_indices), ')', '>'),
     _loop_indices: $ => seq($._loop_index,
-      repeat(seq(choice(',', '+', '-', '*', 'ceildiv', 'floordiv', 'mod', '==', '>=', '<='),
+      repeat(seq(token(choice(',', '+', '-', '*', 'ceildiv', 'floordiv', 'mod', '==', '>=', '<=')),
         $._loop_index))),
     _loop_index: $ => choice($._decimal_literal, token(seq(optional('-'), /[a-zA-Z]/,
       repeat(/[a-zA-Z0-9]/)))),
@@ -325,7 +325,7 @@ module.exports = grammar({
       // operation ::= `builtin.unrealized_conversion_cast` ($inputs^ `:` type($inputs))?
       //                `to` type($outputs) attr-dict
       seq('unrealized_cast_conversion',
-        field('inputs', $._value_use_type_list), 'to',
+        field('inputs', $._value_use_type_list), token('to'),
         field('outputs', $._type_list_no_parens),
         field('attributes', optional($.attribute)))
     )),
@@ -363,7 +363,7 @@ module.exports = grammar({
     _function_arg: $ => choice(seq($.value_use, ':', $.type), $.value_use, $.type),
     type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.attribute),
       repeat(seq(',', $.type, optional($.attribute))), ')'), seq('(', ')')),
-    variadic: $ => '...',
+    variadic: $ => token('...'),
 
     // (func.func|llvm.func) takes arguments, an optional return type, and and optional body
     _op_func: $ => seq(
