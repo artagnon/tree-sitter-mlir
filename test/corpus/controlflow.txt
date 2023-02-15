@@ -204,7 +204,7 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                   (type
                     (builtin_type
                       (integer_type)))
-                  (case_label)
+                  (cf_case_label)
                   (successor
                     (caret_id)
                     (value_use_list
@@ -212,7 +212,7 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                     (type
                       (builtin_type
                         (integer_type))))
-                  (case_label
+                  (cf_case_label
                     (integer_literal))
                   (successor
                     (caret_id)
@@ -221,7 +221,7 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                     (type
                       (builtin_type
                         (integer_type))))
-                  (case_label
+                  (cf_case_label
                     (integer_literal))
                   (successor
                     (caret_id)

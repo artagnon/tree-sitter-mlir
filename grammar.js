@@ -306,8 +306,8 @@ module.exports = grammar({
       $.builtin_dialect,
       $.func_dialect,
       $.llvm_dialect,
-      $.cf_dialect,
       $.arith_dialect,
+      $.cf_dialect,
       $.scf_dialect,
       $.memref_dialect,
       $.tensor_dialect,
@@ -380,45 +380,6 @@ module.exports = grammar({
       seq('llvm.return',
         field('attributes', optional($.attribute)),
         field('results', optional($._value_use_type_list))))),
-
-    cf_dialect: $ => prec.left(choice(
-      // operation ::= `cf.assert` $arg `,` $msg attr-dict
-      seq('cf.assert',
-        field('argument', $.value_use), ',',
-        field('message', $.string_literal),
-        field('attributes', optional($.attribute))),
-
-      // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
-      seq('cf.br',
-        field('successor', $.successor),
-        field('attributes', optional($.attribute))),
-
-      // operation ::= `cf.cond_br` $condition `,`
-      // $trueDest(`(` $trueDestOperands ^ `:` type($trueDestOperands)`)`)? `,`
-      // $falseDest(`(` $falseDestOperands ^ `:` type($falseDestOperands)`)`)? attr-dict
-      seq('cf.cond_br',
-        field('condition', $.value_use), ',',
-        field('trueblk', $.successor), ',',
-        field('falseblk', $.successor),
-        field('attributes', optional($.attribute))),
-
-      // operation ::= `cf.switch` $flag `:` type($flag) `,` `[` `\n`
-      //               custom<SwitchOpCases>(ref(type($flag)),$defaultDestination,
-      //               $defaultOperands,
-      //               type($defaultOperands),
-      //               $case_values,
-      //               $caseDestinations,
-      //               $caseOperands,
-      //               type($caseOperands))
-      //               `]`
-      //               attr-dict
-      seq('cf.switch',
-        field('flag', $._value_use_and_type), ',', '[',
-        $.case_label, $.successor, repeat(seq(',', $.case_label, $.successor)), ']',
-        field('attributes', optional($.attribute))),
-    )),
-
-    case_label: $ => seq(choice($.integer_literal, token('default')), ':'),
 
     arith_dialect: $ => choice(
       // operation ::= `arith.constant` attr-dict $value
@@ -543,6 +504,45 @@ module.exports = grammar({
     _from_type_into_type: $ => seq(':',
       field('fromtype', $.type), token('into'),
       field('totype', $.type)),
+
+    cf_dialect: $ => prec.left(choice(
+      // operation ::= `cf.assert` $arg `,` $msg attr-dict
+      seq('cf.assert',
+        field('argument', $.value_use), ',',
+        field('message', $.string_literal),
+        field('attributes', optional($.attribute))),
+
+      // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
+      seq('cf.br',
+        field('successor', $.successor),
+        field('attributes', optional($.attribute))),
+
+      // operation ::= `cf.cond_br` $condition `,`
+      // $trueDest(`(` $trueDestOperands ^ `:` type($trueDestOperands)`)`)? `,`
+      // $falseDest(`(` $falseDestOperands ^ `:` type($falseDestOperands)`)`)? attr-dict
+      seq('cf.cond_br',
+        field('condition', $.value_use), ',',
+        field('trueblk', $.successor), ',',
+        field('falseblk', $.successor),
+        field('attributes', optional($.attribute))),
+
+      // operation ::= `cf.switch` $flag `:` type($flag) `,` `[` `\n`
+      //               custom<SwitchOpCases>(ref(type($flag)),$defaultDestination,
+      //               $defaultOperands,
+      //               type($defaultOperands),
+      //               $case_values,
+      //               $caseDestinations,
+      //               $caseOperands,
+      //               type($caseOperands))
+      //               `]`
+      //               attr-dict
+      seq('cf.switch',
+        field('flag', $._value_use_and_type), ',', '[',
+        $.cf_case_label, $.successor, repeat(seq(',', $.cf_case_label, $.successor)), ']',
+        field('attributes', optional($.attribute))),
+    )),
+
+    cf_case_label: $ => seq(choice($.integer_literal, token('default')), ':'),
 
     scf_dialect: $ => prec.right(choice(
       seq('scf.if',
