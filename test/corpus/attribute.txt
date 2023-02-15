@@ -911,3 +911,25 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (tensor_type
                         (dim_list
                           (float_type))))))))))))))
+
+================================================================================
+affine_map with indexing and sum
+================================================================================
+#inline_map_minmax_loop2 = affine_map<()[s0] -> (100, s0 + 1)>
+#map0 = affine_map<(i) -> ()>
+#bound_map1 = affine_map<(i, j)[s] -> (i + j + s)>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map))))
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map))))
+  (attribute_alias_def
+    (attribute_value
+      (builtin_attribute
+        (affine_map)))))

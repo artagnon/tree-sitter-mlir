@@ -284,10 +284,10 @@ module.exports = grammar({
     ),
     strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
       optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
-    affine_map: $ => seq(token('affine_map'), '<', '(', $._loop_indices, ')',
-      '->', '(', $._loop_indices, ')', '>'),
-    _loop_indices: $ => seq($._loop_index, repeat(seq(',', $._loop_index))),
-    _loop_index: $ => token(seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/))),
+    affine_map: $ => seq(token('affine_map'), '<', '(', optional($._loop_indices), ')',
+      optional(seq('[', $._loop_index, ']')), '->', '(', optional($._loop_indices), ')', '>'),
+    _loop_indices: $ => seq($._loop_index, repeat(seq(choice(',', '+', '-'), $._loop_index))),
+    _loop_index: $ => choice($._decimal_literal, token(seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/)))),
     _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
 
     // Comment (standard BCPL)
