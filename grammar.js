@@ -35,8 +35,8 @@ module.exports = grammar({
     complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal), ',',
       choice($.integer_literal, $.float_literal), ')'),
     tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
-      choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
-        $._primitive_idx_literal), '>'),
+      optional(choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
+        $._primitive_idx_literal)), '>'),
     literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
       $.tensor_literal, $.complex_literal, $.unit_literal),
 
@@ -342,7 +342,7 @@ module.exports = grammar({
     _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute)),
     _function_arg: $ => choice(seq($.value_use, ':', $.type), $.value_use, $.type),
     type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.attribute),
-      repeat(seq(',', $.type, optional($.attribute))), ')')),
+      repeat(seq(',', $.type, optional($.attribute))), ')'), seq('(', ')')),
     variadic: $ => '...',
 
     // (func.func|llvm.func) takes arguments, an optional return type, and and optional body

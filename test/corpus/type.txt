@@ -775,6 +775,47 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (float_type)))))))))))))
 
 ================================================================================
+Empty dense literal
+================================================================================
+func.func @empty_dense_literal() -> () {
+  "foo2"(){bar = dense<> : tensor<0xi32>} : () -> ()
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens))
+        (region
+          (entry_block
+            (operation
+              (generic_operation
+                (string_literal)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (literal
+                          (tensor_literal))
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (integer_type)))))))))
+                (function_type
+                  (type_list_parens)
+                  (type_list_parens))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
+
+================================================================================
 !llvm.struct dialect type
 ================================================================================
 llvm.func @return_s_long() ->
