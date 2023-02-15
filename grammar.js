@@ -819,6 +819,10 @@ module.exports = grammar({
         field('trueblk', $.region),
         field('falseblk', optional(seq(token('else'), $.region)))),
 
+      // operation ::= ssa-id `=` `affine.min` affine-map-attribute dim-and-symbol-use-list
+      seq(choice('affine.min', 'affine.max'),
+        field('operand', seq($.attribute, $._dim_and_symbol_use_list))),
+
       // operation ::= `affine.yield` attr-dict ($operands^ `:` type($operands))?
       seq('affine.yield',
         field('attributes', optional($.attribute)),
