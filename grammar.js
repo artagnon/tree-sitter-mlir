@@ -566,8 +566,8 @@ module.exports = grammar({
       seq('scf.for',
         field('iv', $.value_use), '=',
         field('lb', $.value_use), token('to'),
-        field('ub', $.value_use), token('step'),
-        field('step', $.value_use),
+        field('ub', $.value_use),
+        field('step', seq(token('step'), $.value_use)),
         field('iter_args', optional(seq(token('iter_args'), '(',
           $.value_use, '=', $.value_use, ')'))),
         field('return', optional($._function_return)),
@@ -767,9 +767,9 @@ module.exports = grammar({
       //               $region attr-dict `:` type($source) `to` type($result)
       seq('tensor.pad',
         field('nofold', optional($.nofold_attr)),
-        field('source', $.value_use), token('low'),
-        field('low', $._dense_idx_list), token('high'),
-        field('high', $._dense_idx_list),
+        field('source', $.value_use),
+        field('low', seq(token('low'), $._dense_idx_list)),
+        field('high', seq(token('high'), $._dense_idx_list)),
         field('body', $.region),
         field('attributes', optional($.attribute)),
         $._from_type_to_type),
@@ -840,9 +840,9 @@ module.exports = grammar({
       // operation   ::= `affine.for` ssa-id `=` lower-bound `to` upper-bound
       //                 (`step` integer-literal)? `{` op* `}`
       seq('affine.for',
-        $.value_use, '=',
-        field('lowerBound', $._lower_bound), token('to'),
-        field('upperBound', $._upper_bound),
+        field('iv', $.value_use), '=',
+        field('lowerBound', seq(optional(token('max')), $._bound)), token('to'),
+        field('upperBound', seq(optional(token('min')), $._bound)),
         field('step', optional(seq(token('step'), $.integer_literal))),
         field('body', $.region)),
 
@@ -874,10 +874,7 @@ module.exports = grammar({
     // lower-bound ::= `max`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
     // upper-bound ::= `min`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
     // shorthand-bound ::= ssa-id | `-`? integer-literal
-    _lower_bound: $ => seq(optional(token('max')),
-      choice(seq($.attribute, $._dim_and_symbol_use_list), $._shorthand_bound)),
-    _upper_bound: $ => seq(optional(token('min')),
-      choice(seq($.attribute, $._dim_and_symbol_use_list), $._shorthand_bound)),
+    _bound: $ => choice(seq($.attribute, $._dim_and_symbol_use_list), $._shorthand_bound),
     _shorthand_bound: $ => choice($.value_use, $.integer_literal),
 
     linalg_dialect: $ => choice(
