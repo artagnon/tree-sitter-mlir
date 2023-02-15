@@ -331,6 +331,22 @@ module.exports = grammar({
     )),
 
     func_dialect: $ => prec.right(choice(
+      // operation ::= `func.call_indirect` $callee `(` $callee_operands `)` attr-dict
+      //               `:` type($callee)
+      // operation ::= `func.call` $callee `(` $operands `)` attr-dict
+      //               `:` functional-type($operands, results)
+      seq(choice('func.call_indirect', 'call_indirect', 'func.call', 'call'),
+        field('callee', $.symbol_ref_id),
+        field('operands', seq('(', optional($.value_use_list), ')')),
+        field('attributes', optional($.attribute)), ':',
+        $.function_type),
+
+      // operation ::= `func.constant` attr-dict $value `:` type(results)
+      seq(choice('func.constant', 'constant'),
+        field('attributes', optional($.attribute)),
+        field('value', $.symbol_ref_id), ':',
+        $.function_type),
+
       seq('func.func', $._op_func),
 
       seq(choice('func.return', 'return'),
@@ -351,6 +367,7 @@ module.exports = grammar({
 
     // (func.func|llvm.func) takes arguments, an optional return type, and and optional body
     _op_func: $ => seq(
+      field('visibility', optional('private')),
       field('name', $.symbol_ref_id),
       field('arguments', $.func_arg_list),
       field('return', optional($.func_return)),
@@ -480,7 +497,8 @@ module.exports = grammar({
           choice('eq', 'oeq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')), ',',
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
-        field('attributes', optional($.attribute)), ':', $.type),
+        field('attributes', optional($.attribute)), ':',
+        $.type),
 
       // operation ::= `arith.extf` $in attr-dict `:` type($in) `to` type($out)
       // operation ::= `arith.extsi` $in attr-dict `:` type($in) `to` type($out)
@@ -503,8 +521,8 @@ module.exports = grammar({
       seq('arith.select',
         field('cond', $.value_use), ',',
         field('trueblk', $.value_use), ',',
-        field('falseblk', $.value_use),
-        ':', $._type_list_no_parens)
+        field('falseblk', $.value_use), ':',
+        $._type_list_no_parens)
     ),
 
     fastmath_attr: $ => seq(token('fastmath'), '<',
@@ -552,8 +570,8 @@ module.exports = grammar({
       seq('memref.alloc',
         field('dyanmicSizes', seq('(', optional($.value_use), ')')),
         field('symbolOperands', optional(seq('[', $.value_use, ']'))),
-        field('attributes', optional($.attribute)),
-        ':', $.type),
+        field('attributes', optional($.attribute)), ':',
+        $.type),
 
       // operation ::= `memref.cast` $source attr-dict `:` type($source) `to` type($dest)
       seq('memref.cast',
@@ -585,14 +603,14 @@ module.exports = grammar({
         field('isWrite', $.isWrite_attr), ',',
         field('localityHint', $.localityHint_attr), ',',
         field('isDataCache', $.isDataCache_attr),
-        field('attributes', optional($.attribute)),
-        ':', $.type),
+        field('attributes', optional($.attribute)), ':',
+        $.type),
 
       // operation ::= `memref.rank` $memref attr-dict `:` type($memref)
       seq('memref.rank',
         field('value', $.value_use),
-        field('attributes', optional($.attribute)),
-        ':', $.type),
+        field('attributes', optional($.attribute)), ':',
+        $.type),
 
       // operation ::= `memref.realloc` $source (`(` $dynamicResultSize^ `)`)? attr-dict
       //               `:` type($source) `to` type(results)

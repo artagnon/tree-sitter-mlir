@@ -211,3 +211,65 @@ func.func @terminator_with_regions() {
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
+================================================================================
+Function with private specifier, and func.call
+================================================================================
+func.func private @source() -> tensor<f32>
+func.func @call_source() -> tensor<f32> {
+  %0 = call @source() : () -> tensor<f32>
+  return %0 : tensor<f32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (float_type))))))))))
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (float_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (func_dialect
+                  (symbol_ref_id)
+                  (function_type
+                    (type_list_parens)
+                    (type
+                      (builtin_type
+                        (tensor_type
+                          (dim_list
+                            (float_type)))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use_list
+                    (value_use))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))
