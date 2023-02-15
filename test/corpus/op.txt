@@ -2144,3 +2144,82 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
+================================================================================
+affine.if and affine.yield
+================================================================================
+func.func @affine_if() -> f32 {
+  %zero = arith.constant 0.0 : f32
+  %0 = affine.if affine_set<() : ()> () -> f32 {
+    affine.yield %zero : f32
+  } else {
+    affine.yield %zero : f32
+  }
+  return %0 : f32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (float_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (arith_dialect
+                  (literal
+                    (float_literal))
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (affine_dialect
+                  (attribute
+                    (builtin_attribute
+                      (affine_set)))
+                  (type
+                    (builtin_type
+                      (float_type)))
+                  (region
+                    (entry_block
+                      (operation
+                        (custom_operation
+                          (affine_dialect
+                            (value_use_list
+                              (value_use))
+                            (type
+                              (builtin_type
+                                (float_type))))))))
+                  (region
+                    (entry_block
+                      (operation
+                        (custom_operation
+                          (affine_dialect
+                            (value_use_list
+                              (value_use))
+                            (type
+                              (builtin_type
+                                (float_type)))))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use_list
+                    (value_use))
+                  (type
+                    (builtin_type
+                      (float_type))))))))))))

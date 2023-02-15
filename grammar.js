@@ -292,9 +292,10 @@ module.exports = grammar({
       optional(seq('[', optional($._loop_indices), ']')),
       ':', '(', optional($._loop_indices), ')', '>'),
     _loop_indices: $ => seq($._loop_index,
-      repeat(seq(choice(',', '+', '-', '==', '>='), $._loop_index))),
-    _loop_index: $ => choice($._decimal_literal, seq(optional('-'),
-      token(seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9]/))))),
+      repeat(seq(choice(',', '+', '-', '*', 'ceildiv', 'floordiv', 'mod', '==', '>=', '<='),
+        $._loop_index))),
+    _loop_index: $ => choice($._decimal_literal, token(seq(optional('-'), /[a-zA-Z]/,
+      repeat(/[a-zA-Z0-9]/)))),
     _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
 
     // Comment (standard BCPL)
@@ -374,8 +375,8 @@ module.exports = grammar({
       // $falseDest(`(` $falseDestOperands ^ `:` type($falseDestOperands)`)`)? attr-dict
       seq('cf.cond_br',
         field('condition', $.value_use), ',',
-        field('trueDest', $.successor), ',',
-        field('falseDest', $.successor),
+        field('trueblk', $.successor), ',',
+        field('falseblk', $.successor),
         field('attributes', optional($.attribute))),
 
       // operation ::= `cf.switch` $flag `:` type($flag) `,` `[` `\n`
@@ -501,8 +502,8 @@ module.exports = grammar({
 
       seq('arith.select',
         field('cond', $.value_use), ',',
-        field('truebr', $.value_use), ',',
-        field('falsebr', $.value_use),
+        field('trueblk', $.value_use), ',',
+        field('falseblk', $.value_use),
         ':', $._type_list_no_parens)
     ),
 
@@ -523,8 +524,8 @@ module.exports = grammar({
       seq('scf.if',
         field('condition', $.value_use),
         optional($._function_return),
-        field('trueblk', $.region), token('else'),
-        field('falseblk', $.region)),
+        field('trueblk', $.region),
+        field('falseblk', optional(seq(token('else'), $.region)))),
 
       // scf.for %iv = %lb to %ub step %step {
       // ... // body
@@ -808,7 +809,20 @@ module.exports = grammar({
         field('lowerBound', $._lower_bound), token('to'),
         field('upperBound', $._upper_bound),
         field('step', optional(seq(token('step'), $.integer_literal))),
-        field('body', $.region))
+        field('body', $.region)),
+
+      // operation  ::= `affine.if` if-op-cond `{` op* `}` (`else` `{` op* `}`)?
+      // if-op-cond ::= integer-set-attr dim-and-symbol-use-list
+      seq('affine.if',
+        field('condition', seq($.attribute, $._dim_and_symbol_use_list)),
+        optional($._function_return),
+        field('trueblk', $.region),
+        field('falseblk', optional(seq(token('else'), $.region)))),
+
+      // operation ::= `affine.yield` attr-dict ($operands^ `:` type($operands))?
+      seq('affine.yield',
+        field('attributes', optional($.attribute)),
+        field('results', $._value_use_type_list))
     ),
 
     // dim-use-list ::= `(` ssa-use-list? `)`
@@ -865,7 +879,9 @@ module.exports = grammar({
         field('arguments', $.block_arg_list),
         field('body', $.region), optional($._function_return)),
 
-      seq('linalg.yield', $._value_use_type_list)
+      seq('linalg.yield',
+        field('attributes', optional($.attribute)),
+        field('results', $._value_use_type_list))
     ),
   }
 });
