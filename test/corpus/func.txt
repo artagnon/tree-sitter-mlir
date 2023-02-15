@@ -137,7 +137,7 @@ llvm.func @variadic_args(i32, i32, ...)
           (variadic))))))
 
 ================================================================================
-Generic function in a module, with attributes
+Generic operation in a module, with attributes
 ================================================================================
 module {
   "llvm.func"() ({
@@ -175,3 +175,39 @@ module {
                 (function_type
                   (type_list_parens)
                   (type_list_parens))))))))))
+
+================================================================================
+Generic operation with successor and region
+================================================================================
+func.func @terminator_with_regions() {
+  "region"()[^bb2] ({}) : () -> ()
+^bb2:
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (generic_operation
+                (string_literal)
+                (successor_list
+                  (successor
+                    (caret_id)))
+                (region_list
+                  (region))
+                (function_type
+                  (type_list_parens)
+                  (type_list_parens)))))
+          (block
+            (block_label
+              (caret_id))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
