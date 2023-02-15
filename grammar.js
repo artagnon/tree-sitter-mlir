@@ -382,6 +382,12 @@ module.exports = grammar({
         field('results', optional($._value_use_type_list))))),
 
     cf_dialect: $ => prec.left(choice(
+      // operation ::= `cf.assert` $arg `,` $msg attr-dict
+      seq('cf.assert',
+        field('argument', $.value_use), ',',
+        field('message', $.string_literal),
+        field('attributes', optional($.attribute))),
+
       // operation ::= `cf.br` $dest (`(` $destOperands^ `:` type($destOperands) `)`)? attr-dict
       seq('cf.br',
         field('successor', $.successor),
@@ -884,8 +890,8 @@ module.exports = grammar({
         'linalg.pooling_nwc_min_unsigned', 'linalg.pooling_nwc_sum',
         'linalg.quantized_batch_matmul', 'linalg.quantized_matmul', 'linalg.vecmat'),
         field('attributes', optional($.attribute)),
-        'ins', '(', field('ins', $._value_use_type_list), ')',
-        'outs', '(', field('outs', $._value_use_type_list), ')',
+        field('ins', seq(token('ins'), '(', $._value_use_type_list, ')')),
+        field('outs', seq(token('outs'), '(', $._value_use_type_list, ')')),
         optional($._function_return)),
 
       seq('linalg.generic',

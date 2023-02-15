@@ -2385,3 +2385,33 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
+================================================================================
+cf.assert
+================================================================================
+func.func @assert(%arg : i1) {
+  cf.assert %arg, "Some message in case this assertion fails."
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (cf_dialect
+                  (value_use)
+                  (string_literal))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
