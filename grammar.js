@@ -157,7 +157,7 @@ module.exports = grammar({
     _type_list_no_parens: $ => seq($.type, repeat(seq(',', $.type))),
     type_list_parens: $ => seq('(', optional($._type_list_no_parens), ')'),
     function_type: $ => seq(choice($.type, $.type_list_parens), $._function_return),
-    _function_return: $ => seq('->', choice($.type, $.type_list_parens)),
+    _function_return: $ => seq(token('->'), choice($.type, $.type_list_parens)),
 
     // Type aliases
     //   type-alias-def ::= '!' alias-name '=' type
@@ -285,17 +285,17 @@ module.exports = grammar({
     ),
     strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
       optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
-    affine_map: $ => seq(token('affine_map'), '<', '(', optional($._loop_indices), ')',
-      optional(seq('[', optional($._loop_indices), ']')),
-      '->', '(', optional($._loop_indices), ')', '>'),
-    affine_set: $ => seq(token('affine_set'), '<', '(', optional($._loop_indices), ')',
-      optional(seq('[', optional($._loop_indices), ']')),
-      ':', '(', optional($._loop_indices), ')', '>'),
+    affine_map: $ => seq(token('affine_map'), '<', $._loop_indices_parens,
+      optional($._loop_indices_sq), token('->'), $._loop_indices_parens, '>'),
+    affine_set: $ => seq(token('affine_set'), '<', $._loop_indices_parens,
+      optional($._loop_indices_sq), ':', $._loop_indices_parens, '>'),
+    _loop_indices_parens: $ => seq('(', optional($._loop_indices), ')'),
+    _loop_indices_sq: $ => seq('[', optional($._loop_indices), ']'),
     _loop_indices: $ => seq($._loop_index,
       repeat(seq(token(choice(',', '+', '-', '*', 'ceildiv', 'floordiv', 'mod', '==', '>=', '<=')),
         $._loop_index))),
-    _loop_index: $ => choice($._decimal_literal, token(seq(optional('-'), /[a-zA-Z]/,
-      repeat(/[a-zA-Z0-9]/)))),
+    _loop_index: $ => choice($._decimal_literal, token(seq(optional('-'), seq(/[a-zA-Z_]/,
+      repeat(/[a-zA-Z0-9_$.]/))))),
     _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
 
     // Comment (standard BCPL)
@@ -354,7 +354,7 @@ module.exports = grammar({
         field('results', optional($._value_use_type_list)))
     )),
 
-    func_return: $ => seq('->', $.type_list_attr_parens),
+    func_return: $ => seq(token('->'), $.type_list_attr_parens),
     func_arg_list: $ => seq('(', optional(choice($.variadic,
       $._value_id_and_type_attr_list)), ')'),
     _value_id_and_type_attr_list: $ => seq($._value_id_and_type_attr,
