@@ -169,7 +169,7 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                 (func_dialect)))))))))
 
 ================================================================================
-linalg.broadcast with dimensions attribute
+linalg.broadcast with _attribute_entry_list
 ================================================================================
 func.func @broadcast(%input: tensor<8x32xf32>,
                      %init: tensor<8x16x32xf32>) -> tensor<8x16x32xf32> {
@@ -240,7 +240,7 @@ func.func @broadcast(%input: tensor<8x32xf32>,
                           (float_type))))))))))))))
 
 ================================================================================
-linalg.generic with attributes
+linalg.generic with attribute dictionary
 ================================================================================
 func.func @gather_like(
     %arg0 : tensor<?x?xf32> {bufferization.writable = false},
@@ -319,19 +319,20 @@ func.func @gather_like(
                 (value_use))
               (custom_operation
                 (linalg_dialect
-                  (dictionary_attribute
-                    (attribute_entry
-                      (bare_id)
-                      (attribute_value
-                        (builtin_attribute
-                          (affine_map))
-                        (builtin_attribute
-                          (affine_map))))
-                    (attribute_entry
-                      (bare_id)
-                      (attribute_value
-                        (string_literal)
-                        (string_literal))))
+                  (attribute
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (builtin_attribute
+                            (affine_map))
+                          (builtin_attribute
+                            (affine_map))))
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (string_literal)
+                          (string_literal)))))
                   (value_use)
                   (type
                     (builtin_type

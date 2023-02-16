@@ -106,8 +106,8 @@ module.exports = grammar({
       ']'),
     successor: $ => seq($.caret_id, optional($._value_arg_list)),
     _region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
-    dictionary_attribute: $ => seq('{', optional($.attribute_entry),
-      repeat(seq(',', $.attribute_entry)), '}'),
+    dictionary_attribute: $ => prec(1, seq('{', optional($.attribute_entry),
+      repeat(seq(',', $.attribute_entry)), '}')),
     trailing_location: $ => seq(token('loc'), '(', $.location, ')'),
     // TODO: Complete location forms.
     location: $ => $.string_literal,
@@ -262,7 +262,7 @@ module.exports = grammar({
     //   builtin-attribute
     attribute_entry: $ => seq(choice($.bare_id, $.string_literal),
       optional(seq('=', $.attribute_value))),
-    attribute_value: $ => choice(seq('[', $._attribute_value_nobracket,
+    attribute_value: $ => choice(seq('[', optional($._attribute_value_nobracket),
       repeat(seq(',', $._attribute_value_nobracket)), ']'), $._attribute_value_nobracket),
     _attribute_value_nobracket: $ => choice($.attribute_alias, $.dialect_attribute,
       $.builtin_attribute, $.dictionary_attribute, $._literal_and_type, $.type),
@@ -920,7 +920,7 @@ module.exports = grammar({
     _bound: $ => choice(seq($.attribute, $._dim_and_symbol_use_list), $._shorthand_bound),
     _shorthand_bound: $ => choice($.value_use, $.integer_literal),
 
-    linalg_dialect: $ => choice(
+    linalg_dialect: $ => prec.left(choice(
       seq(choice('linalg.batch_matmul', 'linalg.batch_matmul_transpose_b', 'linalg.batch_matvec',
         'linalg.batch_reduce_matmul', 'linalg.broadcast', 'linalg.conv_1d_ncw_fcw',
         'linalg.conv_1d_nwc_wcf', 'linalg.conv_1d', 'linalg.conv_2d_nchw_fchw',
@@ -963,9 +963,9 @@ module.exports = grammar({
       seq('linalg.yield',
         field('attributes', optional($.attribute)),
         field('results', $._value_use_type_list))
-    ),
+    )),
 
-    _ins_outs_attributes: $ => choice($._ins, $._outs, $.dictionary_attribute,
+    _ins_outs_attributes: $ => choice($._ins, $._outs, $.attribute,
       $._attribute_entry_list),
     _ins: $ => seq(token('ins'), '(', $._value_use_type_list, ')'),
     _outs: $ => seq(token('outs'), '(', $._value_use_type_list, ')'),

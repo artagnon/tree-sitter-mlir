@@ -211,7 +211,6 @@
 [
   (attribute_alias_def)
   (attribute_alias)
-  (dictionary_attribute)
   (bare_attribute_entry)
   (attribute)
   (fastmath_attr)
