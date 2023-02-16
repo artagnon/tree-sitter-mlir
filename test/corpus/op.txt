@@ -39,8 +39,7 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
                   (value_use)))
               (custom_operation
                 (linalg_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -63,16 +62,14 @@ func.func @map_no_inputs(%init: tensor<64xf32>) -> tensor<64xf32> {
                       (operation
                         (custom_operation
                           (linalg_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type)))))))))))
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -124,9 +121,8 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
             (operation
               (custom_operation
                 (linalg_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -137,8 +133,7 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                       (memref_type
                         (dim_list
                           (float_type)))))
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -169,8 +164,7 @@ func.func @map_binary_memref(%lhs: memref<64xf32>, %rhs: memref<64xf32>,
                       (operation
                         (custom_operation
                           (linalg_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type)))))))))))
@@ -260,9 +254,8 @@ func.func @tensor_reshape_zero_dim(%arg0 : tensor<1x1xf32>, %arg1 : tensor<f32>)
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -336,8 +329,7 @@ func.func @legal_collapsing_reshape_dynamic_tensor
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -916,8 +908,7 @@ func.func @extract_from_tensor.generate(%idx: index, %tensor: tensor<*xf32>) -> 
                   (value_use)))
               (custom_operation
                 (tensor_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (region
                     (block
                       (block_label
@@ -959,8 +950,7 @@ func.func @extract_from_tensor.generate(%idx: index, %tensor: tensor<*xf32>) -> 
               (custom_operation
                 (tensor_dialect
                   (value_use)
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -969,8 +959,7 @@ func.func @extract_from_tensor.generate(%idx: index, %tensor: tensor<*xf32>) -> 
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (index_type))))))))))))
@@ -1014,10 +1003,9 @@ func.func @insert(%arg0: f32, %arg1: index, %arg2: tensor<?x?x?xf32>) {
                 (tensor_dialect
                   (value_use)
                   (value_use)
-                  (value_use_list
-                    (value_use)
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -1088,10 +1076,9 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
                   (value_use)))
               (custom_operation
                 (tensor_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -1125,8 +1112,7 @@ func.func @tensor.reshape(%t1: tensor<?x10xf32>) -> tensor<2x2x5xf32> {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -1235,8 +1221,7 @@ func.func @pad_dynamic(%arg0: tensor<1x2x2x?xf32>, %low: index, %high: index,
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -1439,8 +1424,7 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -1895,8 +1879,7 @@ func.func @memref_realloc_sd(%src : memref<2xf32>, %d : index) -> memref<?xf32>{
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -1940,8 +1923,7 @@ func.func @prefetch_locality_hint(%i : index) {
               (custom_operation
                 (memref_dialect
                   (value_use)
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (isWrite_attr)
                   (localityHint_attr
                     (integer_literal))
@@ -2079,8 +2061,7 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
                             (integer_literal)
                             (attribute
                               (attribute_alias))
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (region
                               (entry_block
                                 (operation
@@ -2090,8 +2071,7 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
                                       (integer_literal)
                                       (attribute
                                         (attribute_alias))
-                                      (value_use_list
-                                        (value_use))
+                                      (value_use)
                                       (region
                                         (entry_block
                                           (operation
@@ -2101,10 +2081,8 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
                                                 (integer_literal)
                                                 (attribute
                                                   (attribute_alias))
-                                                (value_use_list
-                                                  (value_use))
-                                                (value_use_list
-                                                  (value_use))
+                                                (value_use)
+                                                (value_use)
                                                 (region
                                                   (entry_block
                                                     (operation
@@ -2114,9 +2092,8 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
                                                           (integer_literal)
                                                           (attribute
                                                             (attribute_alias))
-                                                          (value_use_list
-                                                            (value_use)
-                                                            (value_use))
+                                                          (value_use)
+                                                          (value_use)
                                                           (region
                                                             (entry_block
                                                               (operation
@@ -2126,8 +2103,7 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
                                                                     (integer_literal)
                                                                     (attribute
                                                                       (attribute_alias))
-                                                                    (value_use_list
-                                                                      (value_use))
+                                                                    (value_use)
                                                                     (region
                                                                       (entry_block
                                                                         (operation
@@ -2200,8 +2176,7 @@ func.func @affine_if() -> f32 {
                       (operation
                         (custom_operation
                           (affine_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))))))
@@ -2210,16 +2185,14 @@ func.func @affine_if() -> f32 {
                       (operation
                         (custom_operation
                           (affine_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type)))))))))))
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (float_type))))))))))))
@@ -2273,10 +2246,8 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                   (attribute
                     (builtin_attribute
                       (affine_map)))
-                  (value_use_list
-                    (value_use))
-                  (value_use_list
-                    (value_use)))))
+                  (value_use)
+                  (value_use))))
             (operation
               (op_result_list
                 (op_result
@@ -2286,11 +2257,9 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                   (attribute
                     (builtin_attribute
                       (affine_map)))
-                  (value_use_list
-                    (value_use)
-                    (value_use))
-                  (value_use_list
-                    (value_use)))))
+                  (value_use)
+                  (value_use)
+                  (value_use))))
             (operation
               (op_result_list
                 (op_result
@@ -2300,9 +2269,8 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                   (attribute
                     (builtin_attribute
                       (affine_map)))
-                  (value_use_list
-                    (value_use)
-                    (value_use)))))
+                  (value_use)
+                  (value_use))))
             (operation
               (op_result_list
                 (op_result
@@ -2343,10 +2311,8 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                   (attribute
                     (builtin_attribute
                       (affine_map)))
-                  (value_use_list
-                    (value_use))
-                  (value_use_list
-                    (value_use)))))
+                  (value_use)
+                  (value_use))))
             (operation
               (op_result_list
                 (op_result
@@ -2356,11 +2322,9 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                   (attribute
                     (builtin_attribute
                       (affine_map)))
-                  (value_use_list
-                    (value_use)
-                    (value_use))
-                  (value_use_list
-                    (value_use)))))
+                  (value_use)
+                  (value_use)
+                  (value_use))))
             (operation
               (op_result_list
                 (op_result
@@ -2370,9 +2334,8 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                   (attribute
                     (builtin_attribute
                       (affine_map)))
-                  (value_use_list
-                    (value_use)
-                    (value_use)))))
+                  (value_use)
+                  (value_use))))
             (operation
               (op_result_list
                 (op_result

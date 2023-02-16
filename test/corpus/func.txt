@@ -55,8 +55,7 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))))))))
@@ -92,9 +91,8 @@ func.func @count(%x: i64) -> (i64, i64) {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type)))
@@ -266,8 +264,7 @@ func.func @call_source() -> tensor<f32> {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type

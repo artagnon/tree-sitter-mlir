@@ -70,7 +70,7 @@ module.exports = grammar({
       optional(seq(choice(':', '#'), repeat1(/[0-9]/))))),
     symbol_ref_id: $ => seq('@', choice($._suffix_id, $.string_literal),
       optional(seq('::', $.symbol_ref_id))),
-    value_use_list: $ => seq($.value_use, repeat(seq(',', $.value_use))),
+    _value_use_list: $ => seq($.value_use, repeat(seq(',', $.value_use))),
 
     // Operations
     //   operation            ::= op-result-list? (generic-operation |
@@ -94,7 +94,7 @@ module.exports = grammar({
       field('rhs', choice($.generic_operation, $.custom_operation)),
       field('location', optional($.trailing_location))),
     generic_operation: $ =>
-      seq($.string_literal, '(', optional($.value_use_list),
+      seq($.string_literal, '(', optional($._value_use_list),
         ')', optional($.successor_list),
         optional($.region_list),
         optional($.attribute), ':',
@@ -132,7 +132,7 @@ module.exports = grammar({
       repeat(seq(',', $._value_use_and_type))),
     block_arg_list: $ => seq('(', optional($._value_use_and_type_list), ')'),
     _value_arg_list: $ => seq('(', optional($._value_use_type_list), ')'),
-    _value_use_type_list: $ => seq($.value_use_list, ':', $._type_list_no_parens),
+    _value_use_type_list: $ => seq($._value_use_list, ':', $._type_list_no_parens),
 
     // Regions
     //   region      ::= `{` entry-block? block* `}`
@@ -339,7 +339,7 @@ module.exports = grammar({
       //               `:` functional-type($operands, results)
       seq(choice('func.call_indirect', 'call_indirect', 'func.call', 'call'),
         field('callee', $.symbol_ref_id),
-        field('operands', seq('(', optional($.value_use_list), ')')),
+        field('operands', seq('(', optional($._value_use_list), ')')),
         field('attributes', optional($.attribute)),
         field('return', seq(':', $.function_type))),
 
@@ -547,6 +547,12 @@ module.exports = grammar({
     cf_case_label: $ => seq(choice($.integer_literal, token('default')), ':'),
 
     scf_dialect: $ => prec.right(choice(
+      // operation ::= `scf.condition` `(` $condition `)` attr-dict ($args^ `:` type($args))?
+      seq('scf.condition',
+        field('condition', seq('(', $._value_use_list, ')')),
+        field('attributes', optional($.attribute)),
+        $._value_use_type_list),
+
       seq('scf.if',
         field('condition', $.value_use),
         optional($._function_return),
@@ -570,24 +576,33 @@ module.exports = grammar({
         field('lb', $.value_use), token('to'),
         field('ub', $.value_use),
         field('step', seq(token('step'), $.value_use)),
-        field('iter_args', optional(seq(token('iter_args'), '(',
-          $.value_use, '=', $.value_use, ')'))),
+        field('iter_args', optional(seq(token('iter_args'), $._value_assignments))),
         field('return', optional($._function_return)),
         field('body', $.region)),
 
       seq('scf.parallel',
-        field('iv', seq('(', $.value_use_list, ')')), '=',
-        field('lb', seq('(', $.value_use_list, ')')), 'to',
-        field('ub', seq('(', $.value_use_list, ')')),
-        field('step', seq(token('step'), '(', $.value_use_list, ')')),
-        field('init', seq(token('init'), '(', $.value_use_list, ')')),
+        field('iv', seq('(', $._value_use_list, ')')), '=',
+        field('lb', seq('(', $._value_use_list, ')')), 'to',
+        field('ub', seq('(', $._value_use_list, ')')),
+        field('step', seq(token('step'), '(', $._value_use_list, ')')),
+        field('init', seq(token('init'), '(', $._value_use_list, ')')),
         field('return', optional($._function_return)),
         field('body', $.region)),
 
       seq('scf.reduce',
-        field('operand', seq('(', $.value_use, ')')),
+        field('operand', seq('(', $._value_use_list, ')')),
         field('return', seq(':', $.type)),
         field('body', $.region)),
+
+      // op ::= `scf.while` assignments `:` function-type region `do` region
+      //        `attributes` attribute-dict
+      // initializer ::= /* empty */ | `(` assignment-list `)`
+      seq('scf.while',
+        field('assignments', $._value_assignments),
+        field('return', seq(':', $.function_type)),
+        field('condblk', $.region), 'do',
+        field('doblk', $.region),
+        field('attributes', optional(seq('attributes', $.attribute)))),
 
       // operation ::= `scf.yield` attr-dict ($results^ `:` type($results))?
       seq(choice('scf.reduce.return', 'scf.yield'),
@@ -597,12 +612,18 @@ module.exports = grammar({
 
     scf_case_label: $ => choice(seq(token('case'), $.integer_literal), token('default')),
 
+    // assignment-list ::= assignment | assignment `,` assignment-list
+    // assignment ::= ssa-value `=` ssa-value
+    _value_assignments: $ => seq('(', optional($._value_assignment),
+      repeat(seq(',', $._value_assignment)), ')'),
+    _value_assignment: $ => seq($.value_use, '=', $.value_use),
+
     memref_dialect: $ => choice(
       // operation ::= `memref.alloc` `(`$dynamicSizes`)` (`` `[` $symbolOperands^ `]`)? attr-dict
       //               `:` type($memref)
       seq('memref.alloc',
-        field('dyanmicSizes', seq('(', optional($.value_use), ')')),
-        field('symbolOperands', optional(seq('[', $.value_use, ']'))),
+        field('dyanmicSizes', seq('(', optional($._value_use_list), ')')),
+        field('symbolOperands', optional(seq('[', $._value_use_list, ']'))),
         field('attributes', optional($.attribute)),
         field('return', seq(':', $.type))),
 
@@ -632,7 +653,7 @@ module.exports = grammar({
 
       seq('memref.prefetch',
         field('source', $.value_use),
-        field('indices', optional(seq('[', $.value_use_list, ']'))), ',',
+        field('indices', optional(seq('[', $._value_use_list, ']'))), ',',
         field('isWrite', $.isWrite_attr), ',',
         field('localityHint', $.localityHint_attr), ',',
         field('isDataCache', $.isDataCache_attr),
@@ -649,7 +670,7 @@ module.exports = grammar({
       //               `:` type($source) `to` type(results)
       seq('memref.realloc',
         field('source', $.value_use),
-        field('dynamicResultSize', optional(seq('(', $.value_use, ')'))),
+        field('dynamicResultSize', optional(seq('(', $._value_use_list, ')'))),
         field('attributes', optional($.attribute)),
         $._from_type_to_type),
 
@@ -657,8 +678,8 @@ module.exports = grammar({
       //         `:` type($source) `to` type(results)
       seq('memref.view',
         field('source', $.value_use),
-        field('byte_shift', seq('[', $.value_use, ']')),
-        field('sizes', seq('[', $.value_use_list, ']')),
+        field('byte_shift', seq('[', $._value_use_list, ']')),
+        field('sizes', seq('[', $._value_use_list, ']')),
         field('attributes', optional($.attribute)),
         $._from_type_to_type)
     ),
@@ -670,7 +691,7 @@ module.exports = grammar({
     tensor_dialect: $ => choice(
       // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)
       seq('tensor.empty',
-        field('size', seq('(', optional($.value_use_list), ')')),
+        field('dynamicSizes', seq('(', optional($._value_use_list), ')')),
         field('attributes', optional($.attribute)),
         field('return', seq(':', $.type))),
 
@@ -698,7 +719,7 @@ module.exports = grammar({
       // operation ::= `tensor.extract` $tensor `[` $indices `]` attr-dict `:` type($tensor)
       seq('tensor.extract',
         field('tensor', $.value_use),
-        field('indices', seq('[', optional($.value_use_list), ']')),
+        field('indices', seq('[', optional($._value_use_list), ']')),
         field('attributes', optional($.attribute)),
         field('return', seq(':', $.type))),
 
@@ -707,7 +728,7 @@ module.exports = grammar({
       seq('tensor.insert',
         field('scalar', $.value_use), token('into'),
         field('destination', $.value_use),
-        field('indices', seq('[', optional($.value_use_list), ']')),
+        field('indices', seq('[', optional($._value_use_list), ']')),
         field('attributes', optional($.attribute)),
         field('return', seq(':', $.type))),
 
@@ -745,7 +766,7 @@ module.exports = grammar({
 
       // operation ::= `tensor.from_elements` $elements attr-dict `:` type($result)
       seq('tensor.from_elements',
-        field('elements', $.value_use_list),
+        field('elements', $._value_use_list),
         field('attributes', optional($.attribute)),
         field('return', seq(':', $.type))),
 
@@ -756,7 +777,7 @@ module.exports = grammar({
       //               `:` functional-type(operands, results)
       seq('tensor.gather',
         field('source', $.value_use),
-        field('indices', seq('[', $.value_use, ']')),
+        field('indices', seq('[', $._value_use_list, ']')),
         $.gather_dims_attr,
         field('unique', optional($.unique_attr)),
         field('attributes', optional($.attribute)),
@@ -770,7 +791,7 @@ module.exports = grammar({
       seq('tensor.scatter',
         field('source', $.value_use), token('into'),
         field('destination', $.value_use),
-        field('indices', seq('[', $.value_use, ']')),
+        field('indices', seq('[', $._value_use_list, ']')),
         $.scatter_dims_attr,
         field('unique', optional($.unique_attr)),
         field('attributes', optional($.attribute)),
@@ -794,7 +815,7 @@ module.exports = grammar({
       //                `:` functional-type(operands, results)
       seq('tensor.reshape',
         field('tensor', $.value_use),
-        field('shape', seq('(', $.value_use, ')')),
+        field('shape', seq('(', $._value_use_list, ')')),
         field('attributes', optional($.attribute)),
         field('return', seq(':', $.function_type))),
 
@@ -829,7 +850,7 @@ module.exports = grammar({
 
       // operation ::= `tensor.generate` $dynamicExtents $body attr-dict `:` type($result)
       seq('tensor.generate',
-        field('dynamicExtents', $.value_use_list),
+        field('dynamicExtents', $._value_use_list),
         field('body', $.region),
         field('attributes', optional($.attribute)),
         field('return', seq(':', $.type))),
@@ -883,8 +904,8 @@ module.exports = grammar({
     // dim-use-list ::= `(` ssa-use-list? `)`
     // symbol-use-list ::= `[` ssa-use-list? `]`
     // dim-and-symbol-use-list ::= dim-use-list symbol-use-list?
-    _dim_use_list: $ => seq('(', optional($.value_use_list), ')'),
-    _symbol_use_list: $ => seq('[', optional($.value_use_list), ']'),
+    _dim_use_list: $ => seq('(', optional($._value_use_list), ')'),
+    _symbol_use_list: $ => seq('[', optional($._value_use_list), ']'),
     _dim_and_symbol_use_list: $ => seq($._dim_use_list, optional($._symbol_use_list)),
 
     // lower-bound ::= `max`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound

@@ -97,9 +97,8 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (operation
               (custom_operation
                 (linalg_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -116,8 +115,7 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                         (attribute_value
                           (builtin_attribute
                             (strided_layout))))))
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -187,8 +185,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                             (affine_map))
                           (builtin_attribute
                             (affine_map))))))
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -197,8 +194,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                         (attribute_value
                           (builtin_attribute
                             (strided_layout))))))
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -223,8 +219,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                       (operation
                         (custom_operation
                           (linalg_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type)))))))))))
@@ -303,13 +298,11 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                   (value_use)))
               (custom_operation
                 (linalg_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (float_type)))
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -350,9 +343,8 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                               (tensor_type
                                 (dim_list
                                   (integer_type)))))))))
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -363,8 +355,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                       (tensor_type
                         (dim_list
                           (float_type)))))
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -378,8 +369,7 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -705,8 +695,7 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (value_use)))
               (custom_operation
                 (tensor_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -731,9 +720,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                         (attribute_value
                           (literal
                             (string_literal))))))
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -744,8 +732,7 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (tensor_type
                         (dim_list
                           (float_type)))))
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -782,8 +769,7 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (operation
                         (custom_operation
                           (linalg_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))))))
@@ -811,9 +797,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                   (value_use)))
               (custom_operation
                 (tensor_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -840,9 +825,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                             (string_literal))
                           (literal
                             (string_literal))))))
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -853,8 +837,7 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (tensor_type
                         (dim_list
                           (float_type)))))
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -891,8 +874,7 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (operation
                         (custom_operation
                           (linalg_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type))))))))
@@ -904,8 +886,7 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type

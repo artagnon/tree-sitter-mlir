@@ -50,8 +50,7 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -110,8 +109,7 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (vector_type
@@ -171,8 +169,7 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (vector_type
@@ -281,9 +278,8 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                 (memref_dialect
                   (value_use)
                   (value_use)
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -302,9 +298,8 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                 (memref_dialect
                   (value_use)
                   (value_use)
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -323,9 +318,8 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                 (memref_dialect
                   (value_use)
                   (value_use)
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -339,9 +333,8 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
             (operation
               (custom_operation
                 (linalg_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -352,8 +345,7 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                       (memref_type
                         (dim_list
                           (float_type)))))
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (memref_type
@@ -588,8 +580,7 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
               (custom_operation
                 (tensor_dialect
                   (value_use)
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -628,10 +619,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
               (custom_operation
                 (tensor_dialect
                   (value_use)
-                  (value_use_list
-                    (value_use)
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -665,10 +655,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
               (custom_operation
                 (tensor_dialect
                   (value_use)
-                  (value_use_list
-                    (value_use)
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -708,10 +697,9 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
               (custom_operation
                 (tensor_dialect
                   (value_use)
-                  (value_use_list
-                    (value_use)
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (tensor_type
@@ -751,12 +739,11 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use)
-                    (value_use)
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (float_type)))

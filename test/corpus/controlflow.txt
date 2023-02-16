@@ -72,8 +72,7 @@ func.func @simple(i64, i1) -> i64 {
                 (cf_dialect
                   (successor
                     (caret_id)
-                    (value_use_list
-                      (value_use))
+                    (value_use)
                     (type
                       (builtin_type
                         (integer_type))))))))
@@ -97,8 +96,7 @@ func.func @simple(i64, i1) -> i64 {
                 (cf_dialect
                   (successor
                     (caret_id)
-                    (value_use_list
-                      (value_use))
+                    (value_use)
                     (type
                       (builtin_type
                         (integer_type))))))))
@@ -120,9 +118,8 @@ func.func @simple(i64, i1) -> i64 {
                 (cf_dialect
                   (successor
                     (caret_id)
-                    (value_use_list
-                      (value_use)
-                      (value_use))
+                    (value_use)
+                    (value_use)
                     (type
                       (builtin_type
                         (integer_type)))
@@ -155,8 +152,7 @@ func.func @simple(i64, i1) -> i64 {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type)))))))
@@ -207,8 +203,7 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                   (cf_case_label)
                   (successor
                     (caret_id)
-                    (value_use_list
-                      (value_use))
+                    (value_use)
                     (type
                       (builtin_type
                         (integer_type))))
@@ -216,8 +211,7 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                     (integer_literal))
                   (successor
                     (caret_id)
-                    (value_use_list
-                      (value_use))
+                    (value_use)
                     (type
                       (builtin_type
                         (integer_type))))
@@ -225,8 +219,7 @@ func.func @switch(%flag : i32, %caseOperand : i32) {
                     (integer_literal))
                   (successor
                     (caret_id)
-                    (value_use_list
-                      (value_use))
+                    (value_use)
                     (type
                       (builtin_type
                         (integer_type))))))))
@@ -369,8 +362,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                       (operation
                         (custom_operation
                           (scf_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (index_type)))))))))))
@@ -388,8 +380,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))))))))
@@ -585,9 +576,8 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                       (operation
                         (custom_operation
                           (scf_dialect
-                            (value_use_list
-                              (value_use)
-                              (value_use))
+                            (value_use)
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type)))
@@ -621,9 +611,8 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                       (operation
                         (custom_operation
                           (scf_dialect
-                            (value_use_list
-                              (value_use)
-                              (value_use))
+                            (value_use)
+                            (value_use)
                             (type
                               (builtin_type
                                 (float_type)))
@@ -706,8 +695,7 @@ func.func @switch(%arg0: index) -> i32 {
                       (operation
                         (custom_operation
                           (scf_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (integer_type))))))))
@@ -729,8 +717,7 @@ func.func @switch(%arg0: index) -> i32 {
                       (operation
                         (custom_operation
                           (scf_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (integer_type))))))))
@@ -751,8 +738,7 @@ func.func @switch(%arg0: index) -> i32 {
                       (operation
                         (custom_operation
                           (scf_dialect
-                            (value_use_list
-                              (value_use))
+                            (value_use)
                             (type
                               (builtin_type
                                 (integer_type)))))))))))
@@ -769,8 +755,7 @@ func.func @switch(%arg0: index) -> i32 {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use))
+                  (value_use)
                   (type
                     (builtin_type
                       (integer_type))))))))))))
@@ -886,21 +871,16 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
                   (value_use)))
               (custom_operation
                 (scf_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use))
-                  (value_use_list
-                    (value_use)
-                    (value_use))
-                  (value_use_list
-                    (value_use)
-                    (value_use))
-                  (value_use_list
-                    (value_use)
-                    (value_use))
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
                   (type_list_parens
                     (type
                       (builtin_type
@@ -944,8 +924,7 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
                                 (operation
                                   (custom_operation
                                     (scf_dialect
-                                      (value_use_list
-                                        (value_use))
+                                      (value_use)
                                       (type
                                         (builtin_type
                                           (index_type)))))))))))
@@ -983,8 +962,7 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
                                 (operation
                                   (custom_operation
                                     (scf_dialect
-                                      (value_use_list
-                                        (value_use))
+                                      (value_use)
                                       (type
                                         (builtin_type
                                           (index_type)))))))))))
@@ -994,12 +972,224 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
             (operation
               (custom_operation
                 (func_dialect
-                  (value_use_list
-                    (value_use)
-                    (value_use))
+                  (value_use)
+                  (value_use)
                   (type
                     (builtin_type
                       (index_type)))
                   (type
                     (builtin_type
                       (index_type))))))))))))
+
+================================================================================
+While loop written using scf.while and scf.condition
+================================================================================
+func.func @while_cond_true() -> i1 {
+  %0 = scf.while () : () -> i1 {
+    %condition = "test.condition"() : () -> i1
+    scf.condition(%condition) %condition : i1
+  } do {
+  ^bb0(%arg0: i1):
+    "test.use"(%arg0) : (i1) -> ()
+    scf.yield
+  }
+  return %0 : i1
+}
+
+func.func @while_unused_arg(%x : i32, %y : f64) -> i32 {
+  %0 = scf.while (%arg1 = %x, %arg2 = %y) : (i32, f64) -> (i32) {
+    %condition = "test.condition"(%arg1) : (i32) -> i1
+    scf.condition(%condition) %arg1 : i32
+  } do {
+  ^bb0(%arg1: i32):
+    %next = "test.use"(%arg1) : (i32) -> (i32)
+    scf.yield %next, %y : i32, f64
+  }
+  return %0 : i32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (scf_dialect
+                  (function_type
+                    (type_list_parens)
+                    (type
+                      (builtin_type
+                        (integer_type))))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result_list
+                          (op_result
+                            (value_use)))
+                        (generic_operation
+                          (string_literal)
+                          (function_type
+                            (type_list_parens)
+                            (type
+                              (builtin_type
+                                (integer_type))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use)
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (integer_type))))))))
+                  (region
+                    (block
+                      (block_label
+                        (caret_id)
+                        (block_arg_list
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (integer_type)))))
+                      (operation
+                        (generic_operation
+                          (string_literal)
+                          (value_use)
+                          (function_type
+                            (type_list_parens
+                              (type
+                                (builtin_type
+                                  (integer_type))))
+                            (type_list_parens))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type)))))))))))
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (float_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (scf_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (function_type
+                    (type_list_parens
+                      (type
+                        (builtin_type
+                          (integer_type)))
+                      (type
+                        (builtin_type
+                          (float_type))))
+                    (type_list_parens
+                      (type
+                        (builtin_type
+                          (integer_type)))))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result_list
+                          (op_result
+                            (value_use)))
+                        (generic_operation
+                          (string_literal)
+                          (value_use)
+                          (function_type
+                            (type_list_parens
+                              (type
+                                (builtin_type
+                                  (integer_type))))
+                            (type
+                              (builtin_type
+                                (integer_type))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use)
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (integer_type))))))))
+                  (region
+                    (block
+                      (block_label
+                        (caret_id)
+                        (block_arg_list
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (integer_type)))))
+                      (operation
+                        (op_result_list
+                          (op_result
+                            (value_use)))
+                        (generic_operation
+                          (string_literal)
+                          (value_use)
+                          (function_type
+                            (type_list_parens
+                              (type
+                                (builtin_type
+                                  (integer_type))))
+                            (type_list_parens
+                              (type
+                                (builtin_type
+                                  (integer_type)))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use)
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (integer_type)))
+                            (type
+                              (builtin_type
+                                (float_type)))))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))))))))))
