@@ -2,6 +2,7 @@
   "ins"
   "outs"
   "else"
+  "do"
   "loc"
   "attributes"
   "into"
@@ -80,7 +81,13 @@
   "arith.truncf"
   "arith.select"
 
+  "scf.condition"
+  "scf.if"
+  "scf.index_switch"
   "scf.for"
+  "scf.parallel"
+  "scf.reduce"
+  "scf.reduce.return"
   "scf.yield"
 
   "memref.alloc"
