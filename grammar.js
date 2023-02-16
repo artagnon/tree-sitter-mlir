@@ -340,14 +340,14 @@ module.exports = grammar({
       seq(choice('func.call_indirect', 'call_indirect', 'func.call', 'call'),
         field('callee', $.symbol_ref_id),
         field('operands', seq('(', optional($.value_use_list), ')')),
-        field('attributes', optional($.attribute)), ':',
-        $.function_type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.function_type))),
 
       // operation ::= `func.constant` attr-dict $value `:` type(results)
       seq(choice('func.constant', 'constant'),
         field('attributes', optional($.attribute)),
-        field('value', $.symbol_ref_id), ':',
-        $.function_type),
+        field('value', $.symbol_ref_id),
+        field('return', seq(':', $.function_type))),
 
       seq('func.func', $._op_func),
 
@@ -418,8 +418,8 @@ module.exports = grammar({
         'arith.shli', 'arith.shrsi', 'arith.shrui'),
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `arith.addui_extended` $lhs `,` $rhs attr-dict `:` type($sum)
       //                `,` type($overflow)
@@ -427,7 +427,7 @@ module.exports = grammar({
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
         field('attributes', optional($.attribute)),
-        ':', $.type, ',', $.type),
+        field('return', seq(':', $.type, ',', $.type))),
 
       // operation ::= `arith.addf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
       //                attr-dict `:` type($result)
@@ -448,16 +448,16 @@ module.exports = grammar({
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
         field('fastmath', optional($.fastmath_attr)),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `arith.negf` $operand (`fastmath` `` $fastmath^)?
       //                attr-dict `:` type($result)
       seq(choice('arith.negf'),
         field('operand', $.value_use),
         field('fastmath', optional($.fastmath_attr)),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `arith.cmpi` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
       // operation ::= `arith.cmpf` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
@@ -466,8 +466,8 @@ module.exports = grammar({
           choice('eq', 'oeq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')), ',',
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `arith.extf` $in attr-dict `:` type($in) `to` type($out)
       // operation ::= `arith.extsi` $in attr-dict `:` type($in) `to` type($out)
@@ -490,8 +490,8 @@ module.exports = grammar({
       seq('arith.select',
         field('cond', $.value_use), ',',
         field('trueblk', $.value_use), ',',
-        field('falseblk', $.value_use), ':',
-        $._type_list_no_parens)
+        field('falseblk', $.value_use),
+        field('return', seq(':', $._type_list_no_parens)))
     ),
 
     fastmath_attr: $ => seq(token('fastmath'), '<',
@@ -585,8 +585,8 @@ module.exports = grammar({
         field('body', $.region)),
 
       seq('scf.reduce',
-        field('operand', seq('(', $.value_use, ')')), ':',
-        $.type,
+        field('operand', seq('(', $.value_use, ')')),
+        field('return', seq(':', $.type)),
         field('body', $.region)),
 
       // operation ::= `scf.yield` attr-dict ($results^ `:` type($results))?
@@ -603,8 +603,8 @@ module.exports = grammar({
       seq('memref.alloc',
         field('dyanmicSizes', seq('(', optional($.value_use), ')')),
         field('symbolOperands', optional(seq('[', $.value_use, ']'))),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `memref.cast` $source attr-dict `:` type($source) `to` type($dest)
       seq('memref.cast',
@@ -636,14 +636,14 @@ module.exports = grammar({
         field('isWrite', $.isWrite_attr), ',',
         field('localityHint', $.localityHint_attr), ',',
         field('isDataCache', $.isDataCache_attr),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `memref.rank` $memref attr-dict `:` type($memref)
       seq('memref.rank',
         field('value', $.value_use),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `memref.realloc` $source (`(` $dynamicResultSize^ `)`)? attr-dict
       //               `:` type($source) `to` type(results)
@@ -671,8 +671,8 @@ module.exports = grammar({
       // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)
       seq('tensor.empty',
         field('size', seq('(', optional($.value_use_list), ')')),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `tensor.cast` $source attr-dict `:` type($source) `to` type($dest)
       seq('tensor.cast',
@@ -684,8 +684,8 @@ module.exports = grammar({
       seq('tensor.dim',
         field('attributes', optional($.attribute)),
         field('tensor', $.value_use), ',',
-        field('index', $.value_use), ':',
-        $.type),
+        field('index', $.value_use),
+        field('return', seq(':', $.type))),
 
       // operation ::= `tensor.collapse_shape` $src $reassociation attr-dict `:` type($src)
       //                `into` type($result)
@@ -699,8 +699,8 @@ module.exports = grammar({
       seq('tensor.extract',
         field('tensor', $.value_use),
         field('indices', seq('[', optional($.value_use_list), ']')),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `tensor.insert` $scalar `into` $dest `[` $indices `]` attr-dict
       //               `:` type($dest)
@@ -708,8 +708,8 @@ module.exports = grammar({
         field('scalar', $.value_use), token('into'),
         field('destination', $.value_use),
         field('indices', seq('[', optional($.value_use_list), ']')),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `tensor.extract_slice` $source ``
       //                custom<DynamicIndexList>($offsets, $static_offsets)
@@ -746,8 +746,8 @@ module.exports = grammar({
       // operation ::= `tensor.from_elements` $elements attr-dict `:` type($result)
       seq('tensor.from_elements',
         field('elements', $.value_use_list),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `tensor.gather` $source `[` $indices `]`
       //               `gather_dims` `(` $gather_dims `)`
@@ -759,8 +759,8 @@ module.exports = grammar({
         field('indices', seq('[', $.value_use, ']')),
         $.gather_dims_attr,
         field('unique', optional($.unique_attr)),
-        field('attributes', optional($.attribute)), ':',
-        $.function_type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.function_type))),
 
       // operation ::= `tensor.scatter` $source `into` $dest `[` $indices `]`
       //               `scatter_dims` `(` $scatter_dims `)`
@@ -773,8 +773,8 @@ module.exports = grammar({
         field('indices', seq('[', $.value_use, ']')),
         $.scatter_dims_attr,
         field('unique', optional($.unique_attr)),
-        field('attributes', optional($.attribute)), ':',
-        $.function_type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.function_type))),
 
       // operation ::= `tensor.pad` $source
       //               (`nofold` $nofold^)?
@@ -795,14 +795,14 @@ module.exports = grammar({
       seq('tensor.reshape',
         field('tensor', $.value_use),
         field('shape', seq('(', $.value_use, ')')),
-        field('attributes', optional($.attribute)), ':',
-        $.function_type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.function_type))),
 
       // operation ::= `tensor.splat` $input attr-dict `:` type($aggregate)
       seq('tensor.splat',
         field('input', $.value_use),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
       // operation ::= `tensor.pack` $source
       //               (`padding_value` `(` $padding_value^ `:` type($padding_value) `)`)?
@@ -824,23 +824,23 @@ module.exports = grammar({
         field('outer_dims_perm', optional($.outer_dims_perm_attr)),
         field('inner_dims_pos', $.inner_dims_pos_attr),
         field('inner_tiles', seq(token('inner_tiles'), '=', $._dense_idx_list)), token('into'),
-        field('destination', $.value_use), ':',
-        $.function_type),
+        field('destination', $.value_use),
+        field('return', seq(':', $.function_type))),
 
       // operation ::= `tensor.generate` $dynamicExtents $body attr-dict `:` type($result)
       seq('tensor.generate',
         field('dynamicExtents', $.value_use_list),
         field('body', $.region),
-        field('attributes', optional($.attribute)), ':',
-        $.type),
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type))),
 
 
       // operation ::= `tensor.rank` $tensor attr-dict `:` type($tensor)
       // operation ::= `tensor.yield` $value attr-dict `:` type($value)
       seq(choice('tensor.rank', 'tensor.yield'),
         field('tensor', $.value_use),
-        field('attributes', optional($.attribute)), ':',
-        $.type)
+        field('attributes', optional($.attribute)),
+        field('return', seq(':', $.type)))
     ),
 
     _dense_idx_list: $ => seq('[', choice($.integer_literal, $.value_use),
@@ -866,7 +866,7 @@ module.exports = grammar({
       // if-op-cond ::= integer-set-attr dim-and-symbol-use-list
       seq('affine.if',
         field('condition', seq($.attribute, $._dim_and_symbol_use_list)),
-        optional($._function_return),
+        field('return', optional($._function_return)),
         field('trueblk', $.region),
         field('falseblk', optional(seq(token('else'), $.region)))),
 
@@ -922,14 +922,15 @@ module.exports = grammar({
         field('attributes', $.attribute),
         field('ins', seq(token('ins'), '(', $._value_use_type_list, ')')),
         field('outs', seq(token('outs'), '(', $._value_use_type_list, ')')),
-        field('body', $.region), optional($._function_return)),
+        field('body', $.region),
+        field('return', optional($._function_return))),
 
       seq(choice('linalg.map', 'linalg.reduce'),
         field('ins', optional(seq(token('ins'), '(', $._value_use_type_list, ')'))),
         field('outs', seq(token('outs'), '(', $._value_use_type_list, ')')),
         field('arguments', $.block_arg_list),
         field('body', $.region),
-        optional($._function_return)),
+        field('return', optional($._function_return))),
 
       seq('linalg.yield',
         field('attributes', optional($.attribute)),
