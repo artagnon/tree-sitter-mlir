@@ -35,9 +35,8 @@ func.func @test_addi_tensor(%arg0 : tensor<8x8xi64>, %arg1 : tensor<8x8xi64>) ->
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -94,9 +93,8 @@ func.func @test_addi_vector(%arg0 : vector<8xi64>, %arg1 : vector<8xi64>) -> vec
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -154,9 +152,8 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -249,31 +246,26 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (memref_dialect
                   (value_use)
@@ -291,9 +283,8 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (memref_dialect
                   (value_use)
@@ -311,9 +302,8 @@ func.func @matmul(%arg0: memref<?xi8>, %M: index, %N: index, %K: index) {
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (memref_dialect
                   (value_use)
@@ -394,9 +384,8 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -411,9 +400,8 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -428,9 +416,8 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -445,9 +432,8 @@ func.func @cast(%arg0: tensor<*xf32>, %arg1 : tensor<4x4xf32>, %arg2: tensor<?x?
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -527,46 +513,74 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (tensor_literal
+                  (tensor_literal
+                    (float_literal))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (comment)
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (tensor_literal
+                    (nested_idx_list
+                      (nested_idx_list
+                        (integer_literal)
+                        (integer_literal)
+                        (integer_literal))
+                      (nested_idx_list
+                        (integer_literal)
+                        (integer_literal)
+                        (integer_literal)))
+                    (nested_idx_list
+                      (float_literal)
                       (float_literal)))
                   (type
                     (builtin_type
@@ -574,11 +588,12 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
+                  (value_use)
+                  (value_use)
                   (value_use)
                   (value_use)
                   (type
@@ -588,112 +603,65 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                           (float_type))))))))
             (comment)
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (tensor_literal
+                  (tensor_literal
+                    (nested_idx_list
+                      (nested_idx_list
+                        (integer_literal)
+                        (integer_literal)
+                        (integer_literal)))
+                    (nested_idx_list
+                      (float_literal)))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (comment)
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (tensor_literal
+                    (nested_idx_list
                       (nested_idx_list
                         (nested_idx_list
                           (integer_literal)
-                          (integer_literal)
-                          (integer_literal))
-                        (nested_idx_list
                           (integer_literal)
                           (integer_literal)
                           (integer_literal)))
                       (nested_idx_list
-                        (float_literal)
-                        (float_literal))))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (comment)
-            (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
-              (custom_operation
-                (arith_dialect
-                  (literal
-                    (tensor_literal
-                      (nested_idx_list
                         (nested_idx_list
                           (integer_literal)
                           (integer_literal)
-                          (integer_literal)))
-                      (nested_idx_list
-                        (float_literal))))
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
-              (custom_operation
-                (tensor_dialect
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (tensor_type
-                        (dim_list
-                          (float_type))))))))
-            (comment)
-            (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
-              (custom_operation
-                (arith_dialect
-                  (literal
-                    (tensor_literal
-                      (nested_idx_list
-                        (nested_idx_list
-                          (nested_idx_list
-                            (integer_literal)
-                            (integer_literal)
-                            (integer_literal)
-                            (integer_literal)))
-                        (nested_idx_list
-                          (nested_idx_list
-                            (integer_literal)
-                            (integer_literal)
-                            (integer_literal)
-                            (integer_literal))))))
+                          (integer_literal)
+                          (integer_literal)))))
                   (type
                     (builtin_type
                       (tensor_type
                         (dim_list
                           (integer_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -707,16 +675,14 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                           (integer_type))))))))
             (comment)
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (tensor_literal
-                      (complex_literal
-                        (float_literal)
-                        (float_literal))))
+                  (tensor_literal
+                    (complex_literal
+                      (float_literal)
+                      (float_literal)))
                   (type
                     (builtin_type
                       (tensor_type
@@ -724,9 +690,8 @@ func.func @fold_extract(%arg0 : index) -> (f32, f16, f16, i32, complex<f32>) {
                           (complex_type
                             (float_type)))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -788,16 +753,13 @@ func.func @empty_dense_literal() -> () {
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (literal
-                          (tensor_literal))
+                        (tensor_literal)
                         (type
                           (builtin_type
                             (tensor_type
                               (dim_list
                                 (integer_type)))))))))
-                (function_type
-                  (type_list_parens)
-                  (type_list_parens))))
+                (function_type)))
             (operation
               (custom_operation
                 (func_dialect)))))))))
@@ -872,7 +834,6 @@ llvm.func @aliases() {
               (generic_operation
                 (string_literal)
                 (function_type
-                  (type_list_parens)
                   (type
                     (dialect_type
                       (pretty_dialect_item
@@ -883,7 +844,6 @@ llvm.func @aliases() {
               (generic_operation
                 (string_literal)
                 (function_type
-                  (type_list_parens)
                   (type
                     (type_alias)))))
             (operation

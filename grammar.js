@@ -37,7 +37,7 @@ module.exports = grammar({
     tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
       optional(choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
         $._primitive_idx_literal)), '>'),
-    literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
+    _literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
       $.tensor_literal, $.complex_literal, $.unit_literal),
 
     nested_idx_list: $ => seq('[', optional(choice($.nested_idx_list, $._idx_list)),
@@ -90,22 +90,22 @@ module.exports = grammar({
     //                            `}`
     //   trailing-location    ::= (`loc` `(` location `)`)?
     operation: $ => seq(
-      field('lhs', optional($.op_result_list)),
+      field('lhs', optional($._op_result_list)),
       field('rhs', choice($.generic_operation, $.custom_operation)),
       field('location', optional($.trailing_location))),
     generic_operation: $ =>
       seq($.string_literal, '(', optional($._value_use_list),
-        ')', optional($.successor_list),
-        optional($.region_list),
+        ')', optional($._successor_list),
+        optional($._region_list),
         optional($.attribute), ':',
         $.function_type),
     // custom-operation rule is defined later in the grammar, post the generic.
-    op_result_list: $ => seq($.op_result, repeat(seq(',', $.op_result)), '='),
+    _op_result_list: $ => seq($.op_result, repeat(seq(',', $.op_result)), '='),
     op_result: $ => seq($.value_use, optional(seq(':', $.integer_literal))),
-    successor_list: $ => seq('[', $.successor, repeat(seq(',', $.successor)),
+    _successor_list: $ => seq('[', $.successor, repeat(seq(',', $.successor)),
       ']'),
     successor: $ => seq($.caret_id, optional($._value_arg_list)),
-    region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
+    _region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
     dictionary_attribute: $ => seq('{', optional($.attribute_entry),
       repeat(seq(',', $.attribute_entry)), '}'),
     trailing_location: $ => seq(token('loc'), '(', $.location, ')'),
@@ -157,9 +157,9 @@ module.exports = grammar({
     //   type-list-parens)
     type: $ => choice($.type_alias, $.dialect_type, $.builtin_type),
     _type_list_no_parens: $ => seq($.type, repeat(seq(',', $.type))),
-    type_list_parens: $ => seq('(', optional($._type_list_no_parens), ')'),
-    function_type: $ => seq(choice($.type, $.type_list_parens), $._function_return),
-    _function_return: $ => seq(token('->'), choice($.type, $.type_list_parens)),
+    _type_list_parens: $ => seq('(', optional($._type_list_no_parens), ')'),
+    function_type: $ => seq(choice($.type, $._type_list_parens), $._function_return),
+    _function_return: $ => seq(token('->'), choice($.type, $._type_list_parens)),
 
     // Type aliases
     //   type-alias-def ::= '!' alias-name '=' type
@@ -499,7 +499,7 @@ module.exports = grammar({
     _fastmath_flag: $ => token(choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
       'contract', 'afn', 'fast')),
 
-    _literal_and_type: $ => seq($.literal, optional(seq(':', $.type))),
+    _literal_and_type: $ => seq($._literal, optional(seq(':', $.type))),
     _from_type_to_type: $ => seq(':',
       field('fromtype', $.type), token('to'),
       field('totype', $.type)),

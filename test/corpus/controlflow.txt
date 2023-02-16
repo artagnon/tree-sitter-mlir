@@ -81,9 +81,8 @@ func.func @simple(i64, i1) -> i64 {
             (block_label
               (caret_id))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -139,9 +138,8 @@ func.func @simple(i64, i1) -> i64 {
                   (builtin_type
                     (integer_type)))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -288,53 +286,44 @@ func.func @for_loop_with_increasing_arg() -> i1 {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (scf_dialect
                   (value_use)
@@ -349,9 +338,8 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                   (region
                     (entry_block
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
                             (value_use)
@@ -367,9 +355,8 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                               (builtin_type
                                 (index_type)))))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -442,9 +429,8 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                             (region
                               (entry_block
                                 (operation
-                                  (op_result_list
-                                    (op_result
-                                      (value_use)))
+                                  (op_result
+                                    (value_use))
                                   (custom_operation
                                     (arith_dialect
                                       (value_use)
@@ -453,9 +439,8 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                         (builtin_type
                                           (index_type))))))
                                 (operation
-                                  (op_result_list
-                                    (op_result
-                                      (value_use)))
+                                  (op_result
+                                    (value_use))
                                   (custom_operation
                                     (arith_dialect
                                       (value_use)
@@ -465,9 +450,8 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                         (builtin_type
                                           (index_type))))))
                                 (operation
-                                  (op_result_list
-                                    (op_result
-                                      (value_use)))
+                                  (op_result
+                                    (value_use))
                                   (custom_operation
                                     (arith_dialect
                                       (value_use)
@@ -476,9 +460,8 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                         (builtin_type
                                           (index_type))))))
                                 (operation
-                                  (op_result_list
-                                    (op_result
-                                      (value_use)))
+                                  (op_result
+                                    (value_use))
                                   (custom_operation
                                     (arith_dialect
                                       (value_use)
@@ -534,27 +517,24 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use))
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
               (custom_operation
                 (scf_dialect
                   (value_use)
-                  (type_list_parens
-                    (type
-                      (builtin_type
-                        (float_type)))
-                    (type
-                      (builtin_type
-                        (float_type))))
+                  (type
+                    (builtin_type
+                      (float_type)))
+                  (type
+                    (builtin_type
+                      (float_type)))
                   (region
                     (entry_block
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
                             (value_use)
@@ -563,9 +543,8 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                               (builtin_type
                                 (float_type))))))
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
                             (value_use)
@@ -587,9 +566,8 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                   (region
                     (entry_block
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
                             (value_use)
@@ -598,9 +576,8 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                               (builtin_type
                                 (float_type))))))
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
                             (value_use)
@@ -668,9 +645,8 @@ func.func @switch(%arg0: index) -> i32 {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (scf_dialect
                   (value_use)
@@ -682,13 +658,11 @@ func.func @switch(%arg0: index) -> i32 {
                   (region
                     (entry_block
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
-                            (literal
-                              (integer_literal))
+                            (integer_literal)
                             (type
                               (builtin_type
                                 (integer_type))))))
@@ -704,13 +678,11 @@ func.func @switch(%arg0: index) -> i32 {
                   (region
                     (entry_block
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
-                            (literal
-                              (integer_literal))
+                            (integer_literal)
                             (type
                               (builtin_type
                                 (integer_type))))))
@@ -725,13 +697,11 @@ func.func @switch(%arg0: index) -> i32 {
                   (region
                     (entry_block
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
-                            (literal
-                              (integer_literal))
+                            (integer_literal)
                             (type
                               (builtin_type
                                 (integer_type))))))
@@ -811,64 +781,53 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (scf_dialect
                   (value_use)
@@ -881,13 +840,12 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
                   (value_use)
                   (value_use)
                   (value_use)
-                  (type_list_parens
-                    (type
-                      (builtin_type
-                        (index_type)))
-                    (type
-                      (builtin_type
-                        (index_type))))
+                  (type
+                    (builtin_type
+                      (index_type)))
+                  (type
+                    (builtin_type
+                      (index_type)))
                   (region
                     (entry_block
                       (operation
@@ -911,9 +869,8 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
                                       (builtin_type
                                         (index_type)))))
                                 (operation
-                                  (op_result_list
-                                    (op_result
-                                      (value_use)))
+                                  (op_result
+                                    (value_use))
                                   (custom_operation
                                     (arith_dialect
                                       (value_use)
@@ -949,9 +906,8 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
                                       (builtin_type
                                         (index_type)))))
                                 (operation
-                                  (op_result_list
-                                    (op_result
-                                      (value_use)))
+                                  (op_result
+                                    (value_use))
                                   (custom_operation
                                     (arith_dialect
                                       (value_use)
@@ -1023,26 +979,22 @@ func.func @while_unused_arg(%x : i32, %y : f64) -> i32 {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (scf_dialect
                   (function_type
-                    (type_list_parens)
                     (type
                       (builtin_type
                         (integer_type))))
                   (region
                     (entry_block
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (generic_operation
                           (string_literal)
                           (function_type
-                            (type_list_parens)
                             (type
                               (builtin_type
                                 (integer_type))))))
@@ -1068,11 +1020,9 @@ func.func @while_unused_arg(%x : i32, %y : f64) -> i32 {
                           (string_literal)
                           (value_use)
                           (function_type
-                            (type_list_parens
-                              (type
-                                (builtin_type
-                                  (integer_type))))
-                            (type_list_parens))))
+                            (type
+                              (builtin_type
+                                (integer_type))))))
                       (operation
                         (custom_operation
                           (scf_dialect))))))))
@@ -1104,9 +1054,8 @@ func.func @while_unused_arg(%x : i32, %y : f64) -> i32 {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (scf_dialect
                   (value_use)
@@ -1114,31 +1063,27 @@ func.func @while_unused_arg(%x : i32, %y : f64) -> i32 {
                   (value_use)
                   (value_use)
                   (function_type
-                    (type_list_parens
-                      (type
-                        (builtin_type
-                          (integer_type)))
-                      (type
-                        (builtin_type
-                          (float_type))))
-                    (type_list_parens
-                      (type
-                        (builtin_type
-                          (integer_type)))))
+                    (type
+                      (builtin_type
+                        (integer_type)))
+                    (type
+                      (builtin_type
+                        (float_type)))
+                    (type
+                      (builtin_type
+                        (integer_type))))
                   (region
                     (entry_block
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (generic_operation
                           (string_literal)
                           (value_use)
                           (function_type
-                            (type_list_parens
-                              (type
-                                (builtin_type
-                                  (integer_type))))
+                            (type
+                              (builtin_type
+                                (integer_type)))
                             (type
                               (builtin_type
                                 (integer_type))))))
@@ -1160,21 +1105,18 @@ func.func @while_unused_arg(%x : i32, %y : f64) -> i32 {
                             (builtin_type
                               (integer_type)))))
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (generic_operation
                           (string_literal)
                           (value_use)
                           (function_type
-                            (type_list_parens
-                              (type
-                                (builtin_type
-                                  (integer_type))))
-                            (type_list_parens
-                              (type
-                                (builtin_type
-                                  (integer_type)))))))
+                            (type
+                              (builtin_type
+                                (integer_type)))
+                            (type
+                              (builtin_type
+                                (integer_type))))))
                       (operation
                         (custom_operation
                           (scf_dialect

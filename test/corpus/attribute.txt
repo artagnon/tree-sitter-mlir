@@ -20,8 +20,7 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
                 (attribute_entry
                   (bare_id)
                   (attribute_value
-                    (literal
-                      (integer_literal))
+                    (integer_literal)
                     (type
                       (builtin_type
                         (integer_type)))))))))))))
@@ -47,8 +46,7 @@ func.func @example_fn_arg(%x: i32 {swift.self = unit})
               (attribute_entry
                 (bare_id)
                 (attribute_value
-                  (literal
-                    (unit_literal)))))))))))
+                  (unit_literal))))))))))
 
 ================================================================================
 strided attribute in memref
@@ -176,8 +174,7 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                       (attribute_entry
                         (bare_id)
                         (attribute_value
-                          (literal
-                            (string_literal))))
+                          (string_literal)))
                       (attribute_entry
                         (bare_id)
                         (attribute_value
@@ -271,20 +268,17 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (float_literal))
+                  (float_literal)
                   (type
                     (builtin_type
                       (float_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (type
@@ -293,9 +287,8 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (linalg_dialect
                   (value_use)
@@ -314,9 +307,8 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (linalg_dialect
                   (attribute
@@ -324,9 +316,8 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                       (attribute_entry
                         (bare_id)
                         (attribute_value
-                          (literal
-                            (tensor_literal
-                              (integer_literal)))
+                          (tensor_literal
+                            (integer_literal))
                           (type
                             (builtin_type
                               (tensor_type
@@ -335,9 +326,8 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                       (attribute_entry
                         (bare_id)
                         (attribute_value
-                          (literal
-                            (tensor_literal
-                              (integer_literal)))
+                          (tensor_literal
+                            (integer_literal))
                           (type
                             (builtin_type
                               (tensor_type
@@ -414,9 +404,8 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -426,9 +415,8 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                     (builtin_type
                       (float_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -438,9 +426,8 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                     (builtin_type
                       (float_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -450,9 +437,8 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                     (builtin_type
                       (float_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -462,9 +448,8 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                     (builtin_type
                       (float_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -474,9 +459,8 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                     (builtin_type
                       (float_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -485,21 +469,8 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                     (builtin_type
                       (float_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
-              (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (value_use)
-                  (fastmath_attr)
-                  (type
-                    (builtin_type
-                      (float_type))))))
-            (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -509,9 +480,19 @@ func.func @fastmath(%arg0: f32, %arg1: f32, %arg2: i32) {
                     (builtin_type
                       (float_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (fastmath_attr)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -536,15 +517,13 @@ Generic function bracketed attributes
   (operation
     (generic_operation
       (string_literal)
-      (region_list
-        (region))
+      (region)
       (attribute
         (dictionary_attribute
           (attribute_entry
             (bare_id)
             (attribute_value
-              (literal
-                (string_literal))))
+              (string_literal)))
           (attribute_entry
             (bare_id)
             (attribute_value
@@ -569,11 +548,8 @@ Generic function bracketed attributes
                 (attribute_entry
                   (bare_id)
                   (attribute_value
-                    (literal
-                      (integer_literal)))))))))
-      (function_type
-        (type_list_parens)
-        (type_list_parens)))))
+                    (integer_literal))))))))
+      (function_type))))
 
 ================================================================================
 Attribute alias definition
@@ -655,31 +631,26 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
-                  (literal
-                    (integer_literal))
+                  (integer_literal)
                   (type
                     (builtin_type
                       (index_type))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -690,9 +661,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -702,9 +672,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (linalg_dialect
                   (attribute
@@ -718,8 +687,7 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (attribute_entry
                         (bare_id)
                         (attribute_value
-                          (literal
-                            (string_literal))))))
+                          (string_literal)))))
                   (value_use)
                   (value_use)
                   (type
@@ -756,9 +724,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                             (builtin_type
                               (float_type)))))
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
                             (value_use)
@@ -779,9 +746,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -792,9 +758,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (tensor_dialect
                   (value_use)
@@ -805,9 +770,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                         (dim_list
                           (float_type))))))))
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (linalg_dialect
                   (attribute
@@ -821,10 +785,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (attribute_entry
                         (bare_id)
                         (attribute_value
-                          (literal
-                            (string_literal))
-                          (literal
-                            (string_literal))))))
+                          (string_literal)
+                          (string_literal)))))
                   (value_use)
                   (value_use)
                   (type
@@ -861,9 +823,8 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                             (builtin_type
                               (float_type)))))
                       (operation
-                        (op_result_list
-                          (op_result
-                            (value_use)))
+                        (op_result
+                          (value_use))
                         (custom_operation
                           (arith_dialect
                             (value_use)

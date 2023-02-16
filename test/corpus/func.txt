@@ -42,9 +42,8 @@ func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (arith_dialect
                   (value_use)
@@ -152,15 +151,13 @@ module {
             (operation
               (generic_operation
                 (string_literal)
-                (region_list
-                  (region))
+                (region)
                 (attribute
                   (dictionary_attribute
                     (attribute_entry
                       (bare_id)
                       (attribute_value
-                        (literal
-                          (string_literal))))
+                        (string_literal)))
                     (attribute_entry
                       (bare_id)
                       (attribute_value
@@ -170,9 +167,7 @@ module {
                               (dialect_namespace)
                               (dialect_ident)
                               (pretty_dialect_item_body))))))))
-                (function_type
-                  (type_list_parens)
-                  (type_list_parens))))))))))
+                (function_type)))))))))
 
 ================================================================================
 Generic operation with successor and region
@@ -195,14 +190,10 @@ func.func @terminator_with_regions() {
             (operation
               (generic_operation
                 (string_literal)
-                (successor_list
-                  (successor
-                    (caret_id)))
-                (region_list
-                  (region))
-                (function_type
-                  (type_list_parens)
-                  (type_list_parens)))))
+                (successor
+                  (caret_id))
+                (region)
+                (function_type))))
           (block
             (block_label
               (caret_id))
@@ -248,14 +239,12 @@ func.func @call_source() -> tensor<f32> {
         (region
           (entry_block
             (operation
-              (op_result_list
-                (op_result
-                  (value_use)))
+              (op_result
+                (value_use))
               (custom_operation
                 (func_dialect
                   (symbol_ref_id)
                   (function_type
-                    (type_list_parens)
                     (type
                       (builtin_type
                         (tensor_type
