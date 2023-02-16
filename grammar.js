@@ -106,8 +106,8 @@ module.exports = grammar({
       ']'),
     successor: $ => seq($.caret_id, optional($._value_arg_list)),
     _region_list: $ => seq('(', $.region, repeat(seq(',', $.region)), ')'),
-    dictionary_attribute: $ => prec(1, seq('{', optional($.attribute_entry),
-      repeat(seq(',', $.attribute_entry)), '}')),
+    dictionary_attribute: $ => seq('{', optional($.attribute_entry),
+      repeat(seq(',', $.attribute_entry)), '}'),
     trailing_location: $ => seq(token('loc'), '(', $.location, ')'),
     // TODO: Complete location forms.
     location: $ => $.string_literal,
@@ -944,7 +944,9 @@ module.exports = grammar({
         field('return', optional($._function_return))),
 
       seq('linalg.generic',
-        repeat1($._ins_outs_attributes),
+        field('attributes', optional($.attribute)),
+        field('ins', optional($._ins)),
+        field('outs', $._outs),
         field('body', $.region),
         field('return', optional($._function_return))),
 
