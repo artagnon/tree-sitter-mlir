@@ -635,7 +635,7 @@ func.func @std_if_yield(%arg0: i1, %arg1: f32)
                 (func_dialect)))))))))
 
 ================================================================================
-scf.index_switch
+Switch statement using scf.index_switch
 ================================================================================
 func.func @switch(%arg0: index) -> i32 {
   %0 = scf.index_switch %arg0 -> i32
@@ -774,3 +774,232 @@ func.func @switch(%arg0: index) -> i32 {
                   (type
                     (builtin_type
                       (integer_type))))))))))))
+
+================================================================================
+Parallel for-loop and reduction using scf.parallel and scf.reduce
+================================================================================
+func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
+  %c0 = arith.constant 0 : index
+  %c1 = arith.constant 1 : index
+  %c2 = arith.constant 2 : index
+  %c3 = arith.constant 3 : index
+  %c6 = arith.constant 6 : index
+  %0:2 = scf.parallel (%i0, %i1) = (%c1, %c3) to (%c2, %c6) step (%c1, %c3) init(%A, %B) -> (index, index) {
+    scf.reduce(%i0) : index {
+    ^bb0(%lhs: index, %rhs: index):
+      %1 = arith.addi %lhs, %rhs : index
+      scf.reduce.return %1 : index
+    }
+    scf.reduce(%i1) : index {
+    ^bb0(%lhs: index, %rhs: index):
+      %2 = arith.muli %lhs, %rhs : index
+      scf.reduce.return %2 : index
+    }
+    scf.yield
+  }
+  return %0#0, %0#1 : index, index
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (index_type)))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (index_type)))
+            (type
+              (builtin_type
+                (index_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (arith_dialect
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (arith_dialect
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (arith_dialect
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (arith_dialect
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (arith_dialect
+                  (literal
+                    (integer_literal))
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result_list
+                (op_result
+                  (value_use)))
+              (custom_operation
+                (scf_dialect
+                  (value_use_list
+                    (value_use)
+                    (value_use))
+                  (value_use_list
+                    (value_use)
+                    (value_use))
+                  (value_use_list
+                    (value_use)
+                    (value_use))
+                  (value_use_list
+                    (value_use)
+                    (value_use))
+                  (value_use_list
+                    (value_use)
+                    (value_use))
+                  (type_list_parens
+                    (type
+                      (builtin_type
+                        (index_type)))
+                    (type
+                      (builtin_type
+                        (index_type))))
+                  (region
+                    (entry_block
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (index_type)))
+                            (region
+                              (block
+                                (block_label
+                                  (caret_id)
+                                  (block_arg_list
+                                    (value_use)
+                                    (type
+                                      (builtin_type
+                                        (index_type)))
+                                    (value_use)
+                                    (type
+                                      (builtin_type
+                                        (index_type)))))
+                                (operation
+                                  (op_result_list
+                                    (op_result
+                                      (value_use)))
+                                  (custom_operation
+                                    (arith_dialect
+                                      (value_use)
+                                      (value_use)
+                                      (type
+                                        (builtin_type
+                                          (index_type))))))
+                                (operation
+                                  (custom_operation
+                                    (scf_dialect
+                                      (value_use_list
+                                        (value_use))
+                                      (type
+                                        (builtin_type
+                                          (index_type)))))))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (index_type)))
+                            (region
+                              (block
+                                (block_label
+                                  (caret_id)
+                                  (block_arg_list
+                                    (value_use)
+                                    (type
+                                      (builtin_type
+                                        (index_type)))
+                                    (value_use)
+                                    (type
+                                      (builtin_type
+                                        (index_type)))))
+                                (operation
+                                  (op_result_list
+                                    (op_result
+                                      (value_use)))
+                                  (custom_operation
+                                    (arith_dialect
+                                      (value_use)
+                                      (value_use)
+                                      (type
+                                        (builtin_type
+                                          (index_type))))))
+                                (operation
+                                  (custom_operation
+                                    (scf_dialect
+                                      (value_use_list
+                                        (value_use))
+                                      (type
+                                        (builtin_type
+                                          (index_type)))))))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use_list
+                    (value_use)
+                    (value_use))
+                  (type
+                    (builtin_type
+                      (index_type)))
+                  (type
+                    (builtin_type
+                      (index_type))))))))))))
