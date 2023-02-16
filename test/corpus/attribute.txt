@@ -169,19 +169,18 @@ func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
             (operation
               (custom_operation
                 (linalg_dialect
-                  (attribute
-                    (dictionary_attribute
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (string_literal)))
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (builtin_attribute
-                            (affine_map))
-                          (builtin_attribute
-                            (affine_map))))))
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (string_literal)))
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (builtin_attribute
+                          (affine_map))
+                        (builtin_attribute
+                          (affine_map)))))
                   (value_use)
                   (type
                     (builtin_type
@@ -311,28 +310,27 @@ func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor
                 (value_use))
               (custom_operation
                 (linalg_dialect
-                  (attribute
-                    (dictionary_attribute
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (tensor_literal
-                            (integer_literal))
-                          (type
-                            (builtin_type
-                              (tensor_type
-                                (dim_list
-                                  (integer_type)))))))
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (tensor_literal
-                            (integer_literal))
-                          (type
-                            (builtin_type
-                              (tensor_type
-                                (dim_list
-                                  (integer_type)))))))))
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (tensor_literal
+                          (integer_literal))
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (integer_type)))))))
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (tensor_literal
+                          (integer_literal))
+                        (type
+                          (builtin_type
+                            (tensor_type
+                              (dim_list
+                                (integer_type))))))))
                   (value_use)
                   (value_use)
                   (type
@@ -676,18 +674,17 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                 (value_use))
               (custom_operation
                 (linalg_dialect
-                  (attribute
-                    (dictionary_attribute
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (attribute_alias)
-                          (attribute_alias)
-                          (attribute_alias)))
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (string_literal)))))
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (attribute_alias)
+                        (attribute_alias)
+                        (attribute_alias)))
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (string_literal))))
                   (value_use)
                   (value_use)
                   (type
@@ -774,19 +771,18 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                 (value_use))
               (custom_operation
                 (linalg_dialect
-                  (attribute
-                    (dictionary_attribute
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (attribute_alias)
-                          (attribute_alias)
-                          (attribute_alias)))
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (string_literal)
-                          (string_literal)))))
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (attribute_alias)
+                        (attribute_alias)
+                        (attribute_alias)))
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (string_literal)
+                        (string_literal))))
                   (value_use)
                   (value_use)
                   (type

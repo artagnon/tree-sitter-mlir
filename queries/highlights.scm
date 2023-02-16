@@ -126,6 +126,7 @@
   "linalg.batch_matmul_transpose_b"
   "linalg.batch_matvec"
   "linalg.batch_reduce_matmul"
+  "linalg.broadcast"
   "linalg.conv_1d_ncw_fcw"
   "linalg.conv_1d_nwc_wcf"
   "linalg.conv_1d"
@@ -178,6 +179,7 @@
   "linalg.quantized_matmul"
   "linalg.vecmat"
   "linalg.generic"
+  "linalg.index"
   "linalg.map"
   "linalg.yield"
 ] @function.builtin
@@ -209,6 +211,8 @@
 [
   (attribute_alias_def)
   (attribute_alias)
+  (dictionary_attribute)
+  (bare_attribute_entry)
   (attribute)
   (fastmath_attr)
   (scatter_dims_attr)

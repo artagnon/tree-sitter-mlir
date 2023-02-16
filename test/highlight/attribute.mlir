@@ -83,7 +83,9 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
 //                                             ^ attribute
 //                                                    ^ attribute
       ins(%arg0, %arg1 : tensor<?xf32>, tensor<?xf32>)
+//    ^ keyword
       outs(%1 : tensor<?xf32>) {
+//    ^ keyword
     ^bb0(%arg3: f32, %arg4: f32, %arg5: f32):
       %3 = arith.addf %arg3, %arg4 : f32
       linalg.yield %3 : f32
@@ -91,6 +93,7 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
   %3 = tensor.dim %arg2, %c1 : tensor<?x?xf32>
   %4 = tensor.empty(%0, %3) : tensor<?x?xf32>
   %5 = linalg.generic {indexing_maps = [#map1, #map0, #map0], iterator_types = ["parallel", "parallel"]}
+//     ^ function.builtin
       ins(%2, %arg2 : tensor<?xf32>, tensor<?x?xf32>)
       outs(%4 : tensor<?x?xf32>){
     ^bb0(%arg5: f32, %arg6: f32, %arg7: f32):
@@ -98,4 +101,17 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
       linalg.yield %6 : f32
     } -> tensor<?x?xf32>
   return %5 : tensor<?x?xf32>
+}
+
+func.func @broadcast(%input: tensor<8x32xf32>,
+                     %init: tensor<8x16x32xf32>) -> tensor<8x16x32xf32> {
+  %bcast = linalg.broadcast
+//         ^ function.builtin
+      ins(%input:tensor<8x32xf32>)
+//    ^ keyword
+      outs(%init:tensor<8x16x32xf32>)
+//    ^ keyword
+      dimensions = [1]
+//    ^ attribute
+  func.return %bcast : tensor<8x16x32xf32>
 }
