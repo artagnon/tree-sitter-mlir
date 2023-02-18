@@ -319,7 +319,7 @@ module.exports = grammar({
     // multi-dim-semi-affine-expr ::= `(` semi-affine-expr (`,` semi-affine-expr)* `)`
 
     _multi_dim_affine_expr: $ => seq($._affine_expr, repeat(seq(',', $._affine_expr))),
-    _affine_expr: $ => prec.left(choice(seq('(', $._affine_expr, ')'), seq('-', $._affine_expr),
+    _affine_expr: $ => prec.right(choice(seq('(', $._affine_expr, ')'), seq('-', $._affine_expr),
       seq($._affine_expr, $._affine_token, $._affine_expr), $._affine_prim)),
     _affine_prim: $ => choice($.integer_literal, $.value_use, $.bare_id,
       seq('symbol', '(', $.value_use, ')'), seq(choice('max', 'min'), '(', $._value_use_list, ')')),
