@@ -124,107 +124,6 @@ func.func @dot_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
                 (func_dialect)))))))))
 
 ================================================================================
-affine_map attribute in linalg.generic
-================================================================================
-func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
-  %arg1: memref<?xf32, strided<[1], offset: ?>>) {
-  linalg.generic {
-    iterator_types = ["parallel"],
-    indexing_maps = [ affine_map<(i) -> (i)>, affine_map<(i) -> (i)>] }
-   ins(%arg0: memref<?xf32, strided<[1], offset: ?>>)
-   outs(%arg1: memref<?xf32, strided<[1], offset: ?>>) {
-    ^bb0(%a: f32, %b: f32):
-      linalg.yield %a : f32
-  }
-  return
-}
---------------------------------------------------------------------------------
-
-(toplevel
-  (operation
-    (custom_operation
-      (func_dialect
-        (symbol_ref_id)
-        (func_arg_list
-          (value_use)
-          (type
-            (builtin_type
-              (memref_type
-                (dim_list
-                  (float_type))
-                (attribute_value
-                  (builtin_attribute
-                    (strided_layout))))))
-          (value_use)
-          (type
-            (builtin_type
-              (memref_type
-                (dim_list
-                  (float_type))
-                (attribute_value
-                  (builtin_attribute
-                    (strided_layout)))))))
-        (region
-          (entry_block
-            (operation
-              (custom_operation
-                (linalg_dialect
-                  (attribute
-                    (dictionary_attribute
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (string_literal)))
-                      (attribute_entry
-                        (bare_id)
-                        (attribute_value
-                          (builtin_attribute
-                            (affine_map))
-                          (builtin_attribute
-                            (affine_map))))))
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (float_type))
-                        (attribute_value
-                          (builtin_attribute
-                            (strided_layout))))))
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (memref_type
-                        (dim_list
-                          (float_type))
-                        (attribute_value
-                          (builtin_attribute
-                            (strided_layout))))))
-                  (region
-                    (block
-                      (block_label
-                        (caret_id)
-                        (block_arg_list
-                          (value_use)
-                          (type
-                            (builtin_type
-                              (float_type)))
-                          (value_use)
-                          (type
-                            (builtin_type
-                              (float_type)))))
-                      (operation
-                        (custom_operation
-                          (linalg_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type)))))))))))
-            (operation
-              (custom_operation
-                (func_dialect)))))))))
-
-================================================================================
 dense attribute in linalg.depthwise_conv_1d_nwc_wcm
 ================================================================================
 func.func @depthwise_conv_1d_nwc_wcm(%input: tensor<1x12x8xf32>, %filter: tensor<3x8x8xf32>)
@@ -589,15 +488,24 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map
+          (bare_id)
+          (bare_id)
+          (bare_id)
+          (bare_id)))))
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map
+          (bare_id)
+          (bare_id)
+          (bare_id)))))
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map
+          (bare_id)
+          (bare_id)))))
   (operation
     (custom_operation
       (func_dialect
@@ -853,40 +761,6 @@ func.func @add_broadcast_mul_fusion(%arg0: tensor<?xf32>, %arg1 : tensor<?xf32>,
                       (tensor_type
                         (dim_list
                           (float_type))))))))))))))
-
-================================================================================
-affine_map with indexing and sum
-================================================================================
-#inline_map_minmax_loop2 = affine_map<()[s0] -> (100, s0 + 1)>
-#map0 = affine_map<(i) -> ()>
-#bound_map1 = affine_map<(i, j)[s] -> (i + j + s)>
---------------------------------------------------------------------------------
-
-(toplevel
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_map))))
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_map))))
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_map)))))
-
-================================================================================
-affine_set
-================================================================================
-#set0 = affine_set<(i)[N, M] : (i >= 0, -i + N >= 0, N - 5 == 0, -i + M + 1 >= 0)>
---------------------------------------------------------------------------------
-
-(toplevel
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_set)))))
 
 ================================================================================
 linalg.generic with attribute alias

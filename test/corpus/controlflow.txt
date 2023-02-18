@@ -1167,27 +1167,43 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map
+          (integer_literal)))))
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map
+          (bare_id)
+          (bare_id)))))
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map
+          (bare_id)
+          (bare_id)))))
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map
+          (bare_id)
+          (bare_id)
+          (bare_id)
+          (bare_id)))))
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map
+          (bare_id)
+          (bare_id)
+          (bare_id)
+          (bare_id)))))
   (attribute_alias_def
     (attribute_value
       (builtin_attribute
-        (affine_map))))
+        (affine_map
+          (bare_id)
+          (bare_id)
+          (integer_literal)))))
   (operation
     (custom_operation
       (func_dialect
@@ -1353,7 +1369,7 @@ func.func @affine_if() -> f32 {
                       (float_type))))))))))))
 
 ================================================================================
-affine.parallel and affine.load
+Parallel for loop written using affine.parallel
 ================================================================================
 func.func @parallel(%A : memref<100x100xf32>, %N : index) {
   affine.parallel (%i0, %j0) = (0, 0) to (symbol(%N), 100) step (10, 10) {
@@ -1398,7 +1414,12 @@ func.func @parallel_min_max(%a: index, %b: index, %c: index, %d: index) {
                 (affine_dialect
                   (value_use)
                   (value_use)
+                  (integer_literal)
+                  (integer_literal)
                   (value_use)
+                  (integer_literal)
+                  (integer_literal)
+                  (integer_literal)
                   (region
                     (entry_block
                       (operation
@@ -1411,7 +1432,9 @@ func.func @parallel_min_max(%a: index, %b: index, %c: index, %d: index) {
                             (value_use)
                             (value_use)
                             (value_use)
+                            (integer_literal)
                             (value_use)
+                            (integer_literal)
                             (string_literal)
                             (string_literal)
                             (type

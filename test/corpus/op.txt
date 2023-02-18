@@ -325,9 +325,16 @@ func.func @gather_like(
                         (bare_id)
                         (attribute_value
                           (builtin_attribute
-                            (affine_map))
+                            (affine_map
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)))
                           (builtin_attribute
-                            (affine_map))))
+                            (affine_map
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)
+                              (bare_id)))))
                       (attribute_entry
                         (bare_id)
                         (attribute_value
@@ -2189,21 +2196,18 @@ func.func @assert(%arg : i1) {
                 (func_dialect)))))))))
 
 ================================================================================
-affine.min and affine.max
+affine_map attribute in linalg.generic
 ================================================================================
-func.func @affine_min(%arg0 : index, %arg1 : index, %arg2 : index) {
-  %0 = affine.min affine_map<(d0)[s0] -> (1000, d0 + 512, s0)> (%arg0)[%arg1]
-  %1 = affine.min affine_map<(d0, d1)[s0] -> (d0 - d1, s0 + 512)> (%arg0, %arg1)[%arg2]
-  %2 = affine.min affine_map<()[s0, s1] -> (s0 - s1, 11)> ()[%arg1, %arg2]
-  %3 = affine.min affine_map<()[] -> (77, 78, 79)> ()[]
-  return
-}
-
-func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
-  %0 = affine.max affine_map<(d0)[s0] -> (1000, d0 + 512, s0)> (%arg0)[%arg1]
-  %1 = affine.max affine_map<(d0, d1)[s0] -> (d0 - d1, s0 + 512)> (%arg0, %arg1)[%arg2]
-  %2 = affine.max affine_map<()[s0, s1] -> (s0 - s1, 11)> ()[%arg1, %arg2]
-  %3 = affine.max affine_map<()[] -> (77, 78, 79)> ()[]
+func.func @copy_view(%arg0: memref<?xf32, strided<[1], offset: ?>>,
+  %arg1: memref<?xf32, strided<[1], offset: ?>>) {
+  linalg.generic {
+    iterator_types = ["parallel"],
+    indexing_maps = [ affine_map<(i) -> (i)>, affine_map<(i) -> (i)>] }
+   ins(%arg0: memref<?xf32, strided<[1], offset: ?>>)
+   outs(%arg1: memref<?xf32, strided<[1], offset: ?>>) {
+    ^bb0(%a: f32, %b: f32):
+      linalg.yield %a : f32
+  }
   return
 }
 --------------------------------------------------------------------------------
@@ -2217,117 +2221,81 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
           (value_use)
           (type
             (builtin_type
-              (index_type)))
+              (memref_type
+                (dim_list
+                  (float_type))
+                (attribute_value
+                  (builtin_attribute
+                    (strided_layout))))))
           (value_use)
           (type
             (builtin_type
-              (index_type)))
-          (value_use)
-          (type
-            (builtin_type
-              (index_type))))
+              (memref_type
+                (dim_list
+                  (float_type))
+                (attribute_value
+                  (builtin_attribute
+                    (strided_layout)))))))
         (region
           (entry_block
             (operation
-              (op_result
-                (value_use))
               (custom_operation
-                (affine_dialect
+                (linalg_dialect
                   (attribute
-                    (builtin_attribute
-                      (affine_map)))
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (string_literal)))
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)))
+                          (builtin_attribute
+                            (affine_map
+                              (bare_id)
+                              (bare_id)))))))
                   (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map)))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout))))))
                   (value_use)
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map)))
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map))))))
-            (operation
-              (custom_operation
-                (func_dialect))))))))
-  (operation
-    (custom_operation
-      (func_dialect
-        (symbol_ref_id)
-        (func_arg_list
-          (value_use)
-          (type
-            (builtin_type
-              (index_type)))
-          (value_use)
-          (type
-            (builtin_type
-              (index_type)))
-          (value_use)
-          (type
-            (builtin_type
-              (index_type))))
-        (region
-          (entry_block
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map)))
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map)))
-                  (value_use)
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map)))
-                  (value_use)
-                  (value_use))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_map))))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout))))))
+                  (region
+                    (block
+                      (block_label
+                        (caret_id)
+                        (block_arg_list
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (float_type)))
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (float_type)))))
+                      (operation
+                        (custom_operation
+                          (linalg_dialect
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (float_type)))))))))))
             (operation
               (custom_operation
                 (func_dialect)))))))))

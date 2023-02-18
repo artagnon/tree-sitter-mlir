@@ -284,18 +284,46 @@ module.exports = grammar({
     ),
     strided_layout: $ => seq(token('strided'), '<', '[', $._dim_list_comma, ']',
       optional(seq(',', token('offset'), ':', choice($.integer_literal, '?', '*'))), '>'),
-    affine_map: $ => seq(token('affine_map'), '<', $._loop_indices_parens,
-      optional($._loop_indices_sq), token('->'), $._loop_indices_parens, '>'),
-    affine_set: $ => seq(token('affine_set'), '<', $._loop_indices_parens,
-      optional($._loop_indices_sq), ':', $._loop_indices_parens, '>'),
-    _loop_indices_parens: $ => seq('(', optional($._loop_indices), ')'),
-    _loop_indices_sq: $ => seq('[', optional($._loop_indices), ']'),
-    _loop_indices: $ => seq($._loop_index,
-      repeat(seq($._semi_affine_tokens, $._loop_index))),
-    _loop_index: $ => choice($._decimal_literal, token(seq(optional('-'), seq(/[a-zA-Z_]/,
-      repeat(/[a-zA-Z0-9_$.]/))))),
     _dim_list_comma: $ => seq($._dim_primitive, repeat(seq(',', $._dim_primitive))),
-    _semi_affine_tokens: $ => token(choice(',', '+', '-', '*', 'ceildiv', 'floordiv', 'mod',
+
+    affine_map: $ => seq(token('affine_map'), '<', $._multi_dim_affine_expr_parens,
+      optional($._multi_dim_affine_expr_sq), token('->'), $._multi_dim_affine_expr_parens, '>'),
+    affine_set: $ => seq(token('affine_set'), '<', $._multi_dim_affine_expr_parens,
+      optional($._multi_dim_affine_expr_sq), ':', $._multi_dim_affine_expr_parens, '>'),
+    _multi_dim_affine_expr_parens: $ => seq('(', optional($._multi_dim_affine_expr), ')'),
+    _multi_dim_affine_expr_sq: $ => seq('[', optional($._multi_dim_affine_expr), ']'),
+
+    // affine-expr ::= `(` affine-expr `)`
+    //               | affine-expr `+` affine-expr
+    //               | affine-expr `-` affine-expr
+    //               | `-`? integer-literal `*` affine-expr
+    //               | affine-expr `ceildiv` integer-literal
+    //               | affine-expr `floordiv` integer-literal
+    //               | affine-expr `mod` integer-literal
+    //               | `-`affine-expr
+    //               | bare-id
+    //               | `-`? integer-literal
+    // multi-dim-affine-expr ::= `(` `)`
+    //                         | `(` affine-expr (`,` affine-expr)* `)`
+
+    // semi-affine-expr ::= `(` semi-affine-expr `)`
+    //                    | semi-affine-expr `+` semi-affine-expr
+    //                    | semi-affine-expr `-` semi-affine-expr
+    //                    | symbol-or-const `*` semi-affine-expr
+    //                    | semi-affine-expr `ceildiv` symbol-or-const
+    //                    | semi-affine-expr `floordiv` symbol-or-const
+    //                    | semi-affine-expr `mod` symbol-or-const
+    //                    | bare-id
+    //                    | `-`? integer-literal
+    // symbol-or-const ::= `-`? integer-literal | symbol-id
+    // multi-dim-semi-affine-expr ::= `(` semi-affine-expr (`,` semi-affine-expr)* `)`
+
+    _multi_dim_affine_expr: $ => seq($._affine_expr, repeat(seq(',', $._affine_expr))),
+    _affine_expr: $ => prec.left(choice(seq('(', $._affine_expr, ')'), seq('-', $._affine_expr),
+      seq($._affine_expr, $._affine_token, $._affine_expr), $._affine_prim)),
+    _affine_prim: $ => choice($.integer_literal, $.value_use, $.bare_id,
+      seq('symbol', '(', $.value_use, ')'), seq(choice('max', 'min'), '(', $._value_use_list, ')')),
+    _affine_token: $ => token(choice('+', '-', '*', 'ceildiv', 'floordiv', 'mod',
       '==', '>=', '<=')),
 
     // Comment (standard BCPL)
@@ -893,8 +921,8 @@ module.exports = grammar({
       //               `[` multi-dim-affine-map-of-ssa-ids `]`,
       //               `[` multi-dim-affine-map-of-ssa-ids `]`, ssa-use `:` memref-type
       seq(choice('affine.dma_start', 'affine.dma_wait'),
-        field('operands', seq($.value_use, $._affine_map_value_list_sq,
-          repeat(seq(',', $.value_use, $._affine_map_value_list_sq)))),
+        field('operands', seq($.value_use, $._multi_dim_affine_expr_sq,
+          repeat(seq(',', $.value_use, $._multi_dim_affine_expr_sq)))), ',',
         field('numElements', $._value_use_list),
         field('return', seq(':', $._type_list_no_parens))),
 
@@ -920,7 +948,7 @@ module.exports = grammar({
       //               `:` memref-type
       seq(choice('affine.load', 'affine.vector_load'),
         field('operand', $.value_use),
-        field('multiDimAffineMap', $._affine_map_value_list_sq),
+        field('multiDimAffineMap', $._multi_dim_affine_expr_sq),
         field('return', seq(':', $._type_list_no_parens))),
 
       // operation ::= ssa-id `=` `affine.min` affine-map-attribute dim-and-symbol-use-list
@@ -929,9 +957,9 @@ module.exports = grammar({
 
       seq('affine.parallel',
         field('iv', $._value_use_list_parens), '=',
-        field('lowerBound', $._affine_map_value_list_parens), token('to'),
-        field('upperBound', $._affine_map_value_list_parens),
-        field('step', optional(seq(token('step'), $._affine_map_value_list_parens))),
+        field('lowerBound', $._multi_dim_affine_expr_parens), token('to'),
+        field('upperBound', $._multi_dim_affine_expr_parens),
+        field('step', optional(seq(token('step'), $._multi_dim_affine_expr_parens))),
         field('reduce', optional(seq(token('reduce'),
           '(', $.string_literal, repeat(seq(',', $.string_literal)), ')'))),
         field('return', optional($._function_return)),
@@ -939,7 +967,7 @@ module.exports = grammar({
 
       seq('affine.prefetch',
         field('source', $.value_use),
-        field('indices', optional($._affine_map_value_list_sq)), ',',
+        field('indices', optional($._multi_dim_affine_expr_sq)), ',',
         field('isWrite', $.isWrite_attr), ',',
         field('localityHint', $.localityHint_attr), ',',
         field('isDataCache', $.isDataCache_attr),
@@ -951,7 +979,7 @@ module.exports = grammar({
       seq(choice('affine.store', 'affine.vector_store'),
         field('source', $.value_use), ',',
         field('destination', $.value_use),
-        field('multiDimAffineMap', $._affine_map_value_list_sq),
+        field('multiDimAffineMap', $._multi_dim_affine_expr_sq),
         field('return', seq(':', $._type_list_no_parens))),
 
       // operation ::= `affine.yield` attr-dict ($operands^ `:` type($operands))?
@@ -966,13 +994,6 @@ module.exports = grammar({
     _value_use_list_parens: $ => seq('(', optional($._value_use_list), ')'),
     _value_use_list_sq: $ => seq('[', optional($._value_use_list), ']'),
     _dim_and_symbol_use_list: $ => seq($._value_use_list_parens, optional($._value_use_list_sq)),
-
-    _affine_map_value_list_sq: $ => seq('[', optional($._value_indices), ']'),
-    _affine_map_value_list_parens: $ => seq('(', optional($._value_indices), ')'),
-    _value_indices: $ => seq($._value_index,
-      repeat(seq($._semi_affine_tokens, $._value_index))),
-    _value_index: $ => choice($._decimal_literal, seq('symbol', '(', $.value_use, ')'),
-      seq(choice('max', 'min'), '(', $._value_use_list, ')'), $.value_use),
 
     // lower-bound ::= `max`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
     // upper-bound ::= `min`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
