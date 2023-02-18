@@ -2159,57 +2159,15 @@ func.func @rank(%t : memref<4x4x?xf32>) {
                 (func_dialect)))))))))
 
 ================================================================================
-affine.for with attribute aliseses
+cf.assert
 ================================================================================
-#map_simple0 = affine_map<()[] -> (10)>
-#map_simple1 = affine_map<()[s0] -> (s0)>
-#map_non_simple0 = affine_map<(d0)[] -> (d0)>
-#map_non_simple1 = affine_map<(d0)[s0] -> (d0 + s0)>
-#map_non_simple2 = affine_map<()[s0, s1] -> (s0 + s1)>
-#map_non_simple3 = affine_map<()[s0] -> (s0 + 3)>
-func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
-  affine.for %i0 = 0 to #map_simple0()[] {
-    affine.for %i1 = 0 to #map_simple1()[%arg1] {
-      affine.for %i2 = 0 to #map_non_simple0(%i0)[] {
-        affine.for %i3 = 0 to #map_non_simple1(%i0)[%arg1] {
-          affine.for %i4 = 0 to #map_non_simple2()[%arg1, %arg0] {
-            affine.for %i5 = 0 to #map_non_simple3()[%arg0] {
-              %c42_i32 = arith.constant 42 : i32
-            }
-          }
-        }
-      }
-    }
-  }
+func.func @assert(%arg : i1) {
+  cf.assert %arg, "Some message in case this assertion fails."
   return
 }
 --------------------------------------------------------------------------------
 
 (toplevel
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_map))))
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_map))))
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_map))))
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_map))))
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_map))))
-  (attribute_alias_def
-    (attribute_value
-      (builtin_attribute
-        (affine_map))))
   (operation
     (custom_operation
       (func_dialect
@@ -2218,161 +2176,17 @@ func.func @funcsimplemap(%arg0: index, %arg1: index) -> () {
           (value_use)
           (type
             (builtin_type
-              (index_type)))
-          (value_use)
-          (type
-            (builtin_type
-              (index_type))))
-        (func_return
-          (type_list_attr_parens))
+              (integer_type))))
         (region
           (entry_block
             (operation
               (custom_operation
-                (affine_dialect
+                (cf_dialect
                   (value_use)
-                  (integer_literal)
-                  (attribute
-                    (attribute_alias))
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (affine_dialect
-                            (value_use)
-                            (integer_literal)
-                            (attribute
-                              (attribute_alias))
-                            (value_use)
-                            (region
-                              (entry_block
-                                (operation
-                                  (custom_operation
-                                    (affine_dialect
-                                      (value_use)
-                                      (integer_literal)
-                                      (attribute
-                                        (attribute_alias))
-                                      (value_use)
-                                      (region
-                                        (entry_block
-                                          (operation
-                                            (custom_operation
-                                              (affine_dialect
-                                                (value_use)
-                                                (integer_literal)
-                                                (attribute
-                                                  (attribute_alias))
-                                                (value_use)
-                                                (value_use)
-                                                (region
-                                                  (entry_block
-                                                    (operation
-                                                      (custom_operation
-                                                        (affine_dialect
-                                                          (value_use)
-                                                          (integer_literal)
-                                                          (attribute
-                                                            (attribute_alias))
-                                                          (value_use)
-                                                          (value_use)
-                                                          (region
-                                                            (entry_block
-                                                              (operation
-                                                                (custom_operation
-                                                                  (affine_dialect
-                                                                    (value_use)
-                                                                    (integer_literal)
-                                                                    (attribute
-                                                                      (attribute_alias))
-                                                                    (value_use)
-                                                                    (region
-                                                                      (entry_block
-                                                                        (operation
-                                                                          (op_result
-                                                                            (value_use))
-                                                                          (custom_operation
-                                                                            (arith_dialect
-                                                                              (integer_literal)
-                                                                              (type
-                                                                                (builtin_type
-                                                                                  (integer_type))))))))))))))))))))))))))))))))))))
+                  (string_literal))))
             (operation
               (custom_operation
                 (func_dialect)))))))))
-
-================================================================================
-affine.if and affine.yield
-================================================================================
-func.func @affine_if() -> f32 {
-  %zero = arith.constant 0.0 : f32
-  %0 = affine.if affine_set<() : ()> () -> f32 {
-    affine.yield %zero : f32
-  } else {
-    affine.yield %zero : f32
-  }
-  return %0 : f32
-}
---------------------------------------------------------------------------------
-
-(toplevel
-  (operation
-    (custom_operation
-      (func_dialect
-        (symbol_ref_id)
-        (func_arg_list)
-        (func_return
-          (type_list_attr_parens
-            (type
-              (builtin_type
-                (float_type)))))
-        (region
-          (entry_block
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (float_literal)
-                  (type
-                    (builtin_type
-                      (float_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (affine_dialect
-                  (attribute
-                    (builtin_attribute
-                      (affine_set)))
-                  (type
-                    (builtin_type
-                      (float_type)))
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (affine_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type))))))))
-                  (region
-                    (entry_block
-                      (operation
-                        (custom_operation
-                          (affine_dialect
-                            (value_use)
-                            (type
-                              (builtin_type
-                                (float_type)))))))))))
-            (operation
-              (custom_operation
-                (func_dialect
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (float_type))))))))))))
 
 ================================================================================
 affine.min and affine.max
@@ -2514,36 +2328,6 @@ func.func @affine_max(%arg0 : index, %arg1 : index, %arg2 : index) {
                   (attribute
                     (builtin_attribute
                       (affine_map))))))
-            (operation
-              (custom_operation
-                (func_dialect)))))))))
-
-================================================================================
-cf.assert
-================================================================================
-func.func @assert(%arg : i1) {
-  cf.assert %arg, "Some message in case this assertion fails."
-  return
-}
---------------------------------------------------------------------------------
-
-(toplevel
-  (operation
-    (custom_operation
-      (func_dialect
-        (symbol_ref_id)
-        (func_arg_list
-          (value_use)
-          (type
-            (builtin_type
-              (integer_type))))
-        (region
-          (entry_block
-            (operation
-              (custom_operation
-                (cf_dialect
-                  (value_use)
-                  (string_literal))))
             (operation
               (custom_operation
                 (func_dialect)))))))))
