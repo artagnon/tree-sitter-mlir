@@ -900,7 +900,7 @@ module.exports = grammar({
           '(', $._value_use_and_type, ')'))),
         field('outer_dims_perm', optional($.outer_dims_perm_attr)),
         field('inner_dims_pos', $.inner_dims_pos_attr),
-        field('inner_tiles', seq(token('inner_tiles'), '=', $._dense_idx_list)), token('into'),
+        field('inner_tiles', $.inner_tiles_attr), token('into'),
         field('destination', $.value_use),
         field('return', $._function_type_annotation)),
 
@@ -928,6 +928,7 @@ module.exports = grammar({
     nofold_attr: $ => token('nofold'),
     outer_dims_perm_attr: $ => seq(token('outer_dims_perm'), '=', $._dense_idx_list),
     inner_dims_pos_attr: $ => seq(token('inner_dims_pos'), '=', $._dense_idx_list),
+    inner_tiles_attr: $ => seq(token('inner_tiles'), '=', $._dense_idx_list),
 
     affine_dialect: $ => prec.right(choice(
       seq('afine.apply',

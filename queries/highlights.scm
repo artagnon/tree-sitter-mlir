@@ -223,6 +223,7 @@
   (gather_dims_attr)
   (outer_dims_perm_attr)
   (inner_dims_pos_attr)
+  (inner_tiles_attr)
   (unique_attr)
   (nofold_attr)
   (isWrite_attr)

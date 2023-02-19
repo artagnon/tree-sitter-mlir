@@ -1507,8 +1507,9 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
                   (inner_dims_pos_attr
                     (integer_literal)
                     (integer_literal))
-                  (integer_literal)
-                  (integer_literal)
+                  (inner_tiles_attr
+                    (integer_literal)
+                    (integer_literal))
                   (value_use)
                   (function_type
                     (type
@@ -1540,8 +1541,9 @@ func.func @pack_nc_to_ncnc(%source: tensor<128x256xf32>, %dest: tensor<4x16x32x1
                   (inner_dims_pos_attr
                     (integer_literal)
                     (integer_literal))
-                  (integer_literal)
-                  (integer_literal)
+                  (inner_tiles_attr
+                    (integer_literal)
+                    (integer_literal))
                   (value_use)
                   (function_type
                     (type
