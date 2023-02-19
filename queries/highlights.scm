@@ -17,6 +17,7 @@
   "scatter_dims"
   "outer_dims_perm"
   "inner_dims_pos"
+  "shared_outs"
   "default"
 ] @keyword
 
@@ -82,12 +83,16 @@
   "arith.select"
 
   "scf.condition"
+  "scf.execute_region"
   "scf.if"
   "scf.index_switch"
   "scf.for"
+  "scf.forall"
+  "scf.forall.in_parallel"
   "scf.parallel"
   "scf.reduce"
   "scf.reduce.return"
+  "scf.while"
   "scf.yield"
 
   "memref.alloc"

@@ -1520,3 +1520,351 @@ func.func @parallel_min_max(%a: index, %b: index, %c: index, %d: index) {
             (operation
               (custom_operation
                 (func_dialect)))))))))
+
+================================================================================
+Execution of a region using scf.execute_region
+================================================================================
+func.func @execute_region() -> i64 {
+  %res = scf.execute_region -> i64 {
+    %c1 = arith.constant 1 : i64
+    scf.yield %c1 : i64
+  }
+
+  %res2:2 = scf.execute_region -> (i64, i64) {
+    %c1 = arith.constant 1 : i64
+    scf.yield %c1, %c1 : i64, i64
+  }
+  return %res : i64
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (integer_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (scf_dialect
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result
+                          (value_use))
+                        (custom_operation
+                          (arith_dialect
+                            (integer_literal)
+                            (type
+                              (builtin_type
+                                (integer_type))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (integer_type)))))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (scf_dialect
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result
+                          (value_use))
+                        (custom_operation
+                          (arith_dialect
+                            (integer_literal)
+                            (type
+                              (builtin_type
+                                (integer_type))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use)
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (integer_type)))
+                            (type
+                              (builtin_type
+                                (integer_type)))))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type))))))))))))
+
+================================================================================
+Parallel loop written using scf.forall and scf.forall.in_parallel
+================================================================================
+func.func @normalized_forall(%in: tensor<100xf32>, %out: tensor<100xf32>) {
+  %c1 = arith.constant 1 : index
+  %num_threads = arith.constant 100 : index
+  %result = scf.forall (%thread_idx) in (%num_threads) shared_outs(%o = %out) -> tensor<100xf32> {
+      %1 = tensor.extract_slice %in[%thread_idx][1][1] : tensor<100xf32> to tensor<1xf32>
+      scf.forall.in_parallel {
+        tensor.parallel_insert_slice %1 into %o[%thread_idx][1][1] :
+          tensor<1xf32> into tensor<100xf32>
+      }
+  }
+  return
+}
+
+func.func @explicit_loop_bounds_forall(%in: tensor<100xf32>,
+    %out: tensor<100xf32>) {
+  %c0 = arith.constant 0 : index
+  %c1 = arith.constant 1 : index
+  %num_threads = arith.constant 100 : index
+  %result = scf.forall (%thread_idx) =  (%c0) to (%num_threads) step (%c1) shared_outs(%o = %out) -> tensor<100xf32> {
+      %1 = tensor.extract_slice %in[%thread_idx][1][1] : tensor<100xf32> to tensor<1xf32>
+      scf.forall.in_parallel {
+        tensor.parallel_insert_slice %1 into %o[%thread_idx][1][1] :
+          tensor<1xf32> into tensor<100xf32>
+      } {mapping = [#gpu.thread<x>]}
+  }
+  return
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (scf_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result
+                          (value_use))
+                        (custom_operation
+                          (tensor_dialect
+                            (value_use)
+                            (value_use)
+                            (integer_literal)
+                            (integer_literal)
+                            (type
+                              (builtin_type
+                                (tensor_type
+                                  (dim_list
+                                    (float_type)))))
+                            (type
+                              (builtin_type
+                                (tensor_type
+                                  (dim_list
+                                    (float_type))))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (region
+                              (entry_block
+                                (operation
+                                  (custom_operation
+                                    (tensor_dialect
+                                      (value_use)
+                                      (value_use)
+                                      (value_use)
+                                      (integer_literal)
+                                      (integer_literal)
+                                      (type
+                                        (builtin_type
+                                          (tensor_type
+                                            (dim_list
+                                              (float_type)))))
+                                      (type
+                                        (builtin_type
+                                          (tensor_type
+                                            (dim_list
+                                              (float_type))))))))))))))))))
+            (operation
+              (custom_operation
+                (func_dialect))))))))
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (scf_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result
+                          (value_use))
+                        (custom_operation
+                          (tensor_dialect
+                            (value_use)
+                            (value_use)
+                            (integer_literal)
+                            (integer_literal)
+                            (type
+                              (builtin_type
+                                (tensor_type
+                                  (dim_list
+                                    (float_type)))))
+                            (type
+                              (builtin_type
+                                (tensor_type
+                                  (dim_list
+                                    (float_type))))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (region
+                              (entry_block
+                                (operation
+                                  (custom_operation
+                                    (tensor_dialect
+                                      (value_use)
+                                      (value_use)
+                                      (value_use)
+                                      (integer_literal)
+                                      (integer_literal)
+                                      (type
+                                        (builtin_type
+                                          (tensor_type
+                                            (dim_list
+                                              (float_type)))))
+                                      (type
+                                        (builtin_type
+                                          (tensor_type
+                                            (dim_list
+                                              (float_type))))))))))
+                            (attribute
+                              (dictionary_attribute
+                                (attribute_entry
+                                  (bare_id)
+                                  (attribute_value
+                                    (dialect_attribute
+                                      (pretty_dialect_item
+                                        (dialect_namespace)
+                                        (dialect_ident)
+                                        (pretty_dialect_item_body)))))))))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
