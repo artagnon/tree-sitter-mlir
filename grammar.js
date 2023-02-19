@@ -246,7 +246,7 @@ module.exports = grammar({
     // vector-element-type ::= float-type | integer-type | index-type
     // vector-dim-list := (static-dim-list `x`)? (`[` static-dim-list `]` `x`)?
     // static-dim-list ::= decimal-literal (`x` decimal-literal)*
-    vector_type: $ => seq(token('vector'), '<', $.vector_dim_list, $._prim_type, '>'),
+    vector_type: $ => seq(token('vector'), '<', optional($.vector_dim_list), $._prim_type, '>'),
     vector_dim_list: $ => choice(seq($._static_dim_list, 'x',
       optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x')),
     _static_dim_list: $ => prec.left(seq(repeat1($._digit), repeat(seq('x', repeat1($._digit))))),
@@ -433,6 +433,7 @@ module.exports = grammar({
       // operation ::= `arith.remui` $lhs `,` $rhs attr-dict `:` type($result)
       // operation ::= `arith.muli` $lhs `,` $rhs attr-dict `:` type($result)
       // operation ::= `arith.mulsi_extended` $lhs `,` $rhs attr-dict `:` type($lhs)
+      // operation ::= `arith.mului_extended` $lhs `,` $rhs attr-dict `:` type($lhs)
       // operation ::= `arith.andi` $lhs `,` $rhs attr-dict `:` type($result)
       // operation ::= `arith.ori` $lhs `,` $rhs attr-dict `:` type($result)
       // operation ::= `arith.xori` $lhs `,` $rhs attr-dict `:` type($result)
@@ -446,7 +447,7 @@ module.exports = grammar({
       seq(choice('arith.addi', 'arith.subi', 'arith.divsi', 'arith.divui',
         'arith.ceildivsi', 'arith.ceildivui', 'arith.floordivsi',
         'arith.remsi', 'arith.remui', 'arith.muli', 'arith.mulsi_extended',
-        'arith.andi', 'arith.ori', 'arith.xori',
+        'arith.mului_extended', 'arith.andi', 'arith.ori', 'arith.xori',
         'arith.maxsi', 'arith.maxui', 'arith.minsi', 'arith.minui',
         'arith.shli', 'arith.shrsi', 'arith.shrui'),
         field('lhs', $.value_use), ',',
@@ -496,7 +497,8 @@ module.exports = grammar({
       // operation ::= `arith.cmpf` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
       seq(choice('arith.cmpi', 'arith.cmpf'),
         field('predicate',
-          choice('eq', 'oeq', 'ne', 'slt', 'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')), ',',
+          choice('eq', 'ne', 'oeq', 'olt', 'ogt', 'slt', 'sle', 'sgt', 'sge',
+            'ult', 'ule', 'ugt', 'uge')), ',',
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
         field('attributes', optional($.attribute)),
@@ -513,9 +515,10 @@ module.exports = grammar({
       // operation ::= `arith.uitofp` $in attr-dict `:` type($in) `to` type($out)
       // operation ::= `arith.bitcast` $in attr-dict `:` type($in) `to` type($out)
       // operation ::= `arith.truncf` $in attr-dict `:` type($in) `to` type($out)
+      // operation ::= `arith.trunci` $in attr-dict `:` type($in) `to` type($out)
       seq(choice('arith.extf', 'arith.extsi', 'arith.extui', 'arith.fptosi', 'arith.fptoui',
         'arith.index_cast', 'arith.index_castui', 'arith.sitofp', 'arith.uitofp', 'arith.bitcast',
-        'arith.truncf'),
+        'arith.truncf', 'arith.trunci'),
         field('in', $.value_use),
         field('attributes', optional($.attribute)),
         field('return', $._from_type_to_type)),

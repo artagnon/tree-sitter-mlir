@@ -48,6 +48,7 @@
   "arith.remui"
   "arith.muli"
   "arith.mulsi_extended"
+  "arith.mului_extended"
   "arith.andi"
   "arith.ori"
   "arith.xori"
