@@ -39,8 +39,9 @@ module.exports = grammar({
     tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
       optional(choice(seq($.nested_idx_list, repeat(seq(',', $.nested_idx_list))),
         $._primitive_idx_literal)), '>'),
+    array_literal: $ => seq(token('array'), '<', $.type, ':', $._idx_list, '>'),
     _literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
-      $.tensor_literal, $.complex_literal, $.unit_literal),
+      $.tensor_literal, $.array_literal, $.complex_literal, $.unit_literal),
 
     nested_idx_list: $ => seq('[', optional(choice($.nested_idx_list, $._idx_list)),
       repeat(seq(',', $.nested_idx_list)), ']'),

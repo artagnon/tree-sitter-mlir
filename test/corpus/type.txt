@@ -1332,3 +1332,67 @@ func.func @test_maxf(%arg0 : f32) -> (f32, f32, f32) {
                   (type
                     (builtin_type
                       (float_type))))))))))))
+
+================================================================================
+array literal
+================================================================================
+func.func @foo(%a : f32) -> vector<1x2xf32> {
+  %0 = "test_create_broadcast"(%a) {broadcast_dims = array<i64: 0, 1>} : (f32) -> vector<1x2xf32>
+  return %0: vector<1x2xf32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (float_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (float_type))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (generic_operation
+                (string_literal)
+                (value_use)
+                (attribute
+                  (dictionary_attribute
+                    (attribute_entry
+                      (bare_id)
+                      (attribute_value
+                        (array_literal
+                          (type
+                            (builtin_type
+                              (integer_type)))
+                          (integer_literal)
+                          (integer_literal))))))
+                (function_type
+                  (type
+                    (builtin_type
+                      (float_type)))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type)))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (float_type)))))))))))))
