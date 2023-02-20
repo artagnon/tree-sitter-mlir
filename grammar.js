@@ -344,6 +344,7 @@ module.exports = grammar({
       $.func_dialect,
       $.llvm_dialect,
       $.arith_dialect,
+      $.math_dialect,
       $.cf_dialect,
       $.scf_dialect,
       $.memref_dialect,
@@ -547,6 +548,16 @@ module.exports = grammar({
       field('fromtype', $.type), token('into'),
       field('totype', $.type)),
 
+    math_dialect: $ => choice(
+      // operation ::= `math.exp` $operand (`fastmath` `` $fastmath^)?
+      //               attr-dict `:` type($result)
+      seq('math.exp',
+        field('operand', $.value_use),
+        field('fastmath', optional($.fastmath_attr)),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation))
+    ),
+
     cf_dialect: $ => prec.right(choice(
       // operation ::= `cf.assert` $arg `,` $msg attr-dict
       seq('cf.assert',
@@ -595,7 +606,8 @@ module.exports = grammar({
 
       seq('scf.execute_region',
         field('return', optional($._function_return)),
-        field('body', $.region)),
+        field('body', $.region),
+        field('attributes', optional($.attribute))),
 
       seq('scf.if',
         field('condition', $.value_use),
@@ -685,6 +697,13 @@ module.exports = grammar({
     _value_assignment: $ => seq($.value_use, '=', $.value_use),
 
     memref_dialect: $ => choice(
+      // operation ::= `memref.assume_alignment` $memref `,` $alignment attr-dict `:` type($memref)
+      seq('memref.assume_alignment',
+        field('memref', $.value_use), ',',
+        field('alignment', $.integer_literal),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
       // operation ::= `memref.alloc` `(`$dynamicSizes`)` (`` `[` $symbolOperands^ `]`)? attr-dict
       //               `:` type($memref)
       seq('memref.alloc',
@@ -717,6 +736,12 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         field('return', $._from_type_into_type)),
 
+      // operation ::= `memref.dealloc` $memref attr-dict `:` type($memref)
+      seq('memref.dealloc',
+        field('memref', $.value_use),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
       // operation ::= `memref.dim` attr-dict $source `,` $index `:` type($source)
       seq('memref.dim',
         field('attributes', optional($.attribute)),
@@ -741,7 +766,7 @@ module.exports = grammar({
 
       // operation ::= `memref.rank` $memref attr-dict `:` type($memref)
       seq('memref.rank',
-        field('value', $.value_use),
+        field('memref', $.value_use),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -769,6 +794,19 @@ module.exports = grammar({
         field('indices', $._value_use_list_sq),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
+
+      // operation ::= `memref.subview` $source ``
+      //               custom<DynamicIndexList>($offsets, $static_offsets)
+      //               custom<DynamicIndexList>($sizes, $static_sizes)
+      //               custom<DynamicIndexList>($strides, $static_strides)
+      //               attr-dict `:` type($source) `to` type($result)
+      seq('memref.subview',
+        field('source', $.value_use),
+        field('offsets', $._dense_idx_list),
+        field('sizes', $._dense_idx_list),
+        field('strides', $._dense_idx_list),
+        field('attributes', optional($.attribute)),
+        field('return', $._from_type_to_type)),
 
       // operation ::= `memref.view` $source `[` $byte_shift `]` `` `[` $sizes `]` attr-dict
       //         `:` type($source) `to` type(results)
@@ -1038,7 +1076,8 @@ module.exports = grammar({
 
     affine_dialect: $ => prec.right(choice(
       seq('affine.apply',
-        field('operand', seq($.attribute, $._dim_and_symbol_use_list))),
+        field('operand', seq($.attribute, $._dim_and_symbol_use_list)),
+        field('attributes', optional($.attribute))),
 
       // operation ::= `affine.delinearize_index` $linear_index `into` ` `
       // `(` $basis `)` attr-dict `:` type($multi_index)
