@@ -1270,6 +1270,16 @@ func.func @pad_dynamic(%arg0: tensor<1x2x2x?xf32>, %low: index, %high: index,
     } : tensor<1x2x2x?xf32> to tensor<6x?x?x?xf32>
   return %0 : tensor<6x?x?x?xf32>
 }
+
+func.func @pad_nofold_same_static_shape(%arg0: tensor<5x6xf32>, %a: index)
+    -> tensor<5x6xf32> {
+  %cst = arith.constant 0.000000e+00 : f32
+  %0 = tensor.pad %arg0 nofold low[%a, 0] high[0, %a] {
+        ^bb0(%arg1: index, %arg2: index):
+          tensor.yield %cst : f32
+  } : tensor<5x6xf32> to tensor<5x6xf32>
+  return %0 : tensor<5x6xf32>
+}
 --------------------------------------------------------------------------------
 
 (toplevel
@@ -1332,6 +1342,89 @@ func.func @pad_dynamic(%arg0: tensor<1x2x2x?xf32>, %low: index, %high: index,
                           (type
                             (builtin_type
                               (index_type)))
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (index_type)))
+                          (value_use)
+                          (type
+                            (builtin_type
+                              (index_type)))))
+                      (operation
+                        (custom_operation
+                          (tensor_dialect
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (float_type))))))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type)))))))))))))
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (float_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (float_literal)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (tensor_dialect
+                  (value_use)
+                  (nofold_attr)
+                  (value_use)
+                  (integer_literal)
+                  (integer_literal)
+                  (value_use)
+                  (region
+                    (block
+                      (block_label
+                        (caret_id)
+                        (block_arg_list
                           (value_use)
                           (type
                             (builtin_type
@@ -2412,3 +2505,175 @@ func.func @notCmpEQ(%arg0: i8, %arg1: i8) -> i1 {
                   (type
                     (builtin_type
                       (integer_type))))))))))))
+
+================================================================================
+bufferization.alloc_tensor
+================================================================================
+func.func @test_alloc_tensor_op(%t: tensor<?x5xf32>, %sz: index)
+  -> tensor<?x5xf32>
+{
+  %0 = bufferization.alloc_tensor(%sz) : tensor<?x5xf32>
+  %1 = bufferization.alloc_tensor() copy(%t) : tensor<?x5xf32>
+  %2 = bufferization.alloc_tensor() : tensor<5x6xf32>
+  %3 = bufferization.alloc_tensor(%sz, %sz) : tensor<?x?xf32>
+  %4 = bufferization.alloc_tensor() copy(%t) {escape = true} : tensor<?x5xf32>
+  %5 = bufferization.alloc_tensor() copy(%t) {escape = false} : tensor<?x5xf32>
+  %c100 = arith.constant 100 : index
+  %6 = bufferization.alloc_tensor() size_hint=%c100 : tensor<100x100xf64, #CSR>
+  %7 = bufferization.alloc_tensor(%sz) {memory_space = "foo"} : tensor<?xf32>
+  return %1 : tensor<?x5xf32>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (tensor_type
+                (dim_list
+                  (float_type)))))
+          (value_use)
+          (type
+            (builtin_type
+              (index_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (tensor_type
+                  (dim_list
+                    (float_type)))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (attribute
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (bool_literal)))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (attribute
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (bool_literal)))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))
+                        (tensor_encoding
+                          (attribute_value
+                            (attribute_alias)))))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (bufferization_dialect
+                  (value_use)
+                  (attribute
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (string_literal)))))
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (tensor_type
+                        (dim_list
+                          (float_type))))))))))))))

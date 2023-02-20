@@ -348,6 +348,7 @@ module.exports = grammar({
       $.scf_dialect,
       $.memref_dialect,
       $.vector_dialect,
+      $.bufferization_dialect,
       $.tensor_dialect,
       $.affine_dialect,
       $.linalg_dialect
@@ -792,6 +793,15 @@ module.exports = grammar({
         field('return', $._type_annotation)),
     ),
 
+    bufferization_dialect: $ => choice(
+      seq('bufferization.alloc_tensor',
+        field('in', $._value_use_list_parens),
+        field('copy', optional(seq(token('copy'), '(', $.value_use, ')'))),
+        field('size_hint', optional(seq(token('size_hint'), '=', $.value_use))),
+        field('attriutes', optional($.attribute)),
+        field('return', $._type_annotation)),
+    ),
+
     tensor_dialect: $ => choice(
       // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)
       seq('tensor.empty',
@@ -870,7 +880,7 @@ module.exports = grammar({
 
       // operation ::= `tensor.from_elements` $elements attr-dict `:` type($result)
       seq('tensor.from_elements',
-        field('elements', $._value_use_list),
+        field('elements', optional($._value_use_list)),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -907,8 +917,8 @@ module.exports = grammar({
       //               `high` `` custom<DynamicIndexList>($high, $static_high)
       //               $region attr-dict `:` type($source) `to` type($result)
       seq('tensor.pad',
-        field('nofold', optional($.nofold_attr)),
         field('source', $.value_use),
+        field('nofold', optional($.nofold_attr)),
         field('low', seq(token('low'), $._dense_idx_list)),
         field('high', seq(token('high'), $._dense_idx_list)),
         field('body', $.region),
