@@ -80,9 +80,8 @@ module.exports = grammar({
     //                            custom-operation)
     //                            trailing-location?
     //   generic-operation    ::= string-literal `(` value-use-list? `)`
-    //   successor-list?
-    //                            region-list? dictionary-attribute? `:`
-    //                            function-type
+    //                            successor-list? region-list?
+    //                            dictionary-attribute? `:` function-type
     //   custom-operation     ::= bare-id custom-operation-format
     //   op-result-list       ::= op-result (`,` op-result)* `=`
     //   op-result            ::= value-id (`:` integer-literal)
@@ -201,7 +200,7 @@ module.exports = grammar({
 
     // Builtin types
     builtin_type: $ => choice(
-      // TODO: Add opaque_type, function_type
+      // TODO: Add opaque_type
       $.integer_type,
       $.float_type,
       $.complex_type,
@@ -349,8 +348,8 @@ module.exports = grammar({
       $.scf_dialect,
       $.memref_dialect,
       $.vector_dialect,
-      $.bufferization_dialect,
       $.tensor_dialect,
+      $.bufferization_dialect,
       $.affine_dialect,
       $.linalg_dialect
     ),
@@ -807,15 +806,6 @@ module.exports = grammar({
         field('return', $._type_annotation)),
     ),
 
-    bufferization_dialect: $ => choice(
-      seq('bufferization.alloc_tensor',
-        field('in', $._value_use_list_parens),
-        field('copy', optional(seq(token('copy'), '(', $.value_use, ')'))),
-        field('size_hint', optional(seq(token('size_hint'), '=', $.value_use))),
-        field('attriutes', optional($.attribute)),
-        field('return', $._type_annotation)),
-    ),
-
     tensor_dialect: $ => choice(
       // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)
       seq('tensor.empty',
@@ -1001,6 +991,15 @@ module.exports = grammar({
     outer_dims_perm_attr: $ => seq(token('outer_dims_perm'), '=', $._dense_idx_list),
     inner_dims_pos_attr: $ => seq(token('inner_dims_pos'), '=', $._dense_idx_list),
     inner_tiles_attr: $ => seq(token('inner_tiles'), '=', $._dense_idx_list),
+
+    bufferization_dialect: $ => choice(
+      seq('bufferization.alloc_tensor',
+        field('in', $._value_use_list_parens),
+        field('copy', optional(seq(token('copy'), '(', $.value_use, ')'))),
+        field('size_hint', optional(seq(token('size_hint'), '=', $.value_use))),
+        field('attriutes', optional($.attribute)),
+        field('return', $._type_annotation)),
+    ),
 
     affine_dialect: $ => prec.right(choice(
       seq('affine.apply',
