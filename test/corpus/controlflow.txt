@@ -754,6 +754,22 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
   }
   return %0#0, %0#1 : index, index
 }
+
+func.func @single_iteration_some(%A: memref<?x?x?xi32>) {
+  %c0 = arith.constant 0 : index
+  %c1 = arith.constant 1 : index
+  %c2 = arith.constant 2 : index
+  %c3 = arith.constant 3 : index
+  %c6 = arith.constant 6 : index
+  %c7 = arith.constant 7 : index
+  %c10 = arith.constant 10 : index
+  scf.parallel (%i0, %i1, %i2) = (%c0, %c3, %c7) to (%c1, %c6, %c10) step (%c1, %c2, %c3) {
+    %c42 = arith.constant 42 : i32
+    memref.store %c42, %A[%i0, %i1, %i2] : memref<?x?x?xi32>
+    scf.yield
+  }
+  return
+}
 --------------------------------------------------------------------------------
 
 (toplevel
@@ -935,7 +951,128 @@ func.func @single_iteration_reduce(%A: index, %B: index) -> (index, index) {
                       (index_type)))
                   (type
                     (builtin_type
-                      (index_type))))))))))))
+                      (index_type)))))))))))
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (integer_type))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (custom_operation
+                (scf_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result
+                          (value_use))
+                        (custom_operation
+                          (arith_dialect
+                            (integer_literal)
+                            (type
+                              (builtin_type
+                                (integer_type))))))
+                      (operation
+                        (custom_operation
+                          (memref_dialect
+                            (value_use)
+                            (value_use)
+                            (value_use)
+                            (value_use)
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (memref_type
+                                  (dim_list
+                                    (integer_type))))))))
+                      (operation
+                        (custom_operation
+                          (scf_dialect))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
 
 ================================================================================
 While loop written using scf.while and scf.condition
@@ -962,6 +1099,16 @@ func.func @while_unused_arg(%x : i32, %y : f64) -> i32 {
     scf.yield %next, %y : i32, f64
   }
   return %0 : i32
+}
+
+func.func @infinite_while() {
+  %true = arith.constant true
+  scf.while : () -> () {
+    scf.condition(%true)
+  } do {
+    scf.yield
+  }
+  return
 }
 --------------------------------------------------------------------------------
 
@@ -1134,7 +1281,38 @@ func.func @while_unused_arg(%x : i32, %y : f64) -> i32 {
                   (value_use)
                   (type
                     (builtin_type
-                      (integer_type))))))))))))
+                      (integer_type)))))))))))
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (bool_literal))))
+            (operation
+              (custom_operation
+                (scf_dialect
+                  (function_type)
+                  (region
+                    (entry_block
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (value_use))))))
+                  (region
+                    (entry_block
+                      (operation
+                        (custom_operation
+                          (scf_dialect))))))))
+            (operation
+              (custom_operation
+                (func_dialect)))))))))
 
 ================================================================================
 affine.for with attribute aliseses
@@ -1648,6 +1826,16 @@ func.func @explicit_loop_bounds_forall(%in: tensor<100xf32>,
   }
   return
 }
+
+func.func @normalized_forall_elide_terminator() -> () {
+  %num_threads = arith.constant 100 : index
+  scf.forall (%thread_idx) in (%num_threads) {
+    scf.forall.in_parallel {
+    }
+  } {mapping = [#gpu.thread<x>]}
+  return
+
+}
 --------------------------------------------------------------------------------
 
 (toplevel
@@ -1865,6 +2053,48 @@ func.func @explicit_loop_bounds_forall(%in: tensor<100xf32>,
                                         (dialect_namespace)
                                         (dialect_ident)
                                         (pretty_dialect_item_body)))))))))))))))
+            (operation
+              (custom_operation
+                (func_dialect))))))))
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list)
+        (func_return
+          (type_list_attr_parens))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (custom_operation
+                (scf_dialect
+                  (value_use)
+                  (value_use)
+                  (region
+                    (entry_block
+                      (operation
+                        (custom_operation
+                          (scf_dialect
+                            (region))))))
+                  (attribute
+                    (dictionary_attribute
+                      (attribute_entry
+                        (bare_id)
+                        (attribute_value
+                          (dialect_attribute
+                            (pretty_dialect_item
+                              (dialect_namespace)
+                              (dialect_ident)
+                              (pretty_dialect_item_body))))))))))
             (operation
               (custom_operation
                 (func_dialect)))))))))

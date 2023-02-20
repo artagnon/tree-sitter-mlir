@@ -591,7 +591,7 @@ module.exports = grammar({
       seq('scf.condition',
         field('condition', $._value_use_list_parens),
         field('attributes', optional($.attribute)),
-        field('arguments', $._value_use_type_list)),
+        field('arguments', optional($._value_use_type_list))),
 
       seq('scf.execute_region',
         field('return', optional($._function_return)),
@@ -622,16 +622,18 @@ module.exports = grammar({
         field('step', seq(token('step'), $.value_use)),
         field('iter_args', optional(seq(token('iter_args'), $._value_assignment_list))),
         field('return', optional($._function_return)),
-        field('body', $.region)),
+        field('body', $.region),
+        field('attributes', optional($.attribute))),
 
       seq('scf.forall',
         field('iv', $._value_use_list_parens),
         field('bounds', seq(choice(seq('=', $._value_use_list_parens, token('to')),
           token('in')), $._value_use_list_parens)),
         field('step', optional(seq(token('step'), $._value_use_list_parens))),
-        field('shared_outs', seq(token('shared_outs'), $._value_assignment_list)),
+        field('shared_outs', optional(seq(token('shared_outs'), $._value_assignment_list))),
         field('return', optional($._function_return)),
-        field('body', $.region)),
+        field('body', $.region),
+        field('attributes', optional($.attribute))),
 
       seq('scf.forall.in_parallel',
         field('body', $.region),
@@ -642,9 +644,10 @@ module.exports = grammar({
         field('lb', $._value_use_list_parens), token('to'),
         field('ub', $._value_use_list_parens),
         field('step', seq(token('step'), $._value_use_list_parens)),
-        field('init', seq(token('init'), $._value_use_list_parens)),
+        field('init', optional(seq(token('init'), $._value_use_list_parens))),
         field('return', optional($._function_return)),
-        field('body', $.region)),
+        field('body', $.region),
+        field('attributes', optional($.attribute))),
 
       seq('scf.reduce',
         field('operand', $._value_use_list_parens),
@@ -661,7 +664,7 @@ module.exports = grammar({
       //        `attributes` attribute-dict
       // initializer ::= /* empty */ | `(` assignment-list `)`
       seq('scf.while',
-        field('assignments', $._value_assignment_list),
+        field('assignments', optional($._value_assignment_list)),
         field('return', $._function_type_annotation),
         field('condblk', $.region), 'do',
         field('doblk', $.region),
@@ -713,6 +716,19 @@ module.exports = grammar({
         field('reassociation', $.nested_idx_list),
         field('attributes', optional($.attribute)),
         field('return', $._from_type_into_type)),
+
+      // operation ::= `memref.dim` attr-dict $source `,` $index `:` type($source)
+      seq('memref.dim',
+        field('attributes', optional($.attribute)),
+        field('source', $.value_use), ',',
+        field('index', $.value_use),
+        field('return', $._type_annotation)),
+
+      // operation ::= `memref.load` $memref `[` $indices `]` attr-dict `:` type($memref)
+      seq('memref.load',
+        field('memref', seq($.value_use, $._value_use_list_sq)),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
 
       seq('memref.prefetch',
         field('source', $.value_use),
@@ -771,7 +787,7 @@ module.exports = grammar({
     vector_dialect: $ => choice(
       // operation ::= `vector.load` $base `[` $indices `]` attr-dict
       //               `:` type($base) `,` type($result)
-      seq(choice('vector.load'),
+      seq('vector.load',
         field('operand', $.value_use),
         field('indices', $._value_use_list_sq),
         field('attributes', optional($.attribute)),
@@ -999,7 +1015,26 @@ module.exports = grammar({
         field('size_hint', optional(seq(token('size_hint'), '=', $.value_use))),
         field('attriutes', optional($.attribute)),
         field('return', $._type_annotation)),
+
+      // operation ::= `bufferization.to_memref` $tensor attr-dict `:` type($memref)
+      seq('bufferization.to_memref',
+        field('tensor', $.value_use),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
+      // operation ::= `bufferization.to_tensor` $memref
+      //               (`restrict` $restrict^)? (`writable` $writable^)? attr-dict
+      //               `:` type($memref)
+      seq('bufferization.to_tensor',
+        field('memref', $.value_use),
+        field('restrict', optional($.restrict_attr)),
+        field('writable', optional($.writable_attr)),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation))
     ),
+
+    restrict_attr: $ => token('restrict'),
+    writable_attr: $ => token('writable'),
 
     affine_dialect: $ => prec.right(choice(
       seq('affine.apply',
