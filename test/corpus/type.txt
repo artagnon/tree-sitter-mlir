@@ -1176,3 +1176,159 @@ llvm.func @aliases() {
             (operation
               (custom_operation
                 (llvm_dialect)))))))))
+
+================================================================================
+negative constant value_use
+================================================================================
+func.func @indexCastFold(%arg0: i8) -> index {
+  %c-2 = arith.constant -2 : i8
+  %idx = arith.index_cast %c-2 : i8 to index
+  return %idx : index
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (integer_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (index_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (integer_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (integer_type)))
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (index_type))))))))))))
+
+================================================================================
+inf value_use
+================================================================================
+func.func @test_maxf(%arg0 : f32) -> (f32, f32, f32) {
+  %c0 = arith.constant 0.0 : f32
+  %-inf = arith.constant 0xFF800000 : f32
+  %0 = arith.maxf %c0, %arg0 : f32
+  %1 = arith.maxf %arg0, %arg0 : f32
+  %2 = arith.maxf %-inf, %arg0 : f32
+  return %0, %1, %2 : f32, f32, f32
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (float_type))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (float_type)))
+            (type
+              (builtin_type
+                (float_type)))
+            (type
+              (builtin_type
+                (float_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (float_literal)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (float_type)))
+                  (type
+                    (builtin_type
+                      (float_type)))
+                  (type
+                    (builtin_type
+                      (float_type))))))))))))

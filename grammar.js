@@ -68,7 +68,7 @@ module.exports = grammar({
     bare_id_list: $ => seq($.bare_id, repeat(seq(',', $.bare_id))),
     value_use: $ => seq('%', $._suffix_id),
     _suffix_id: $ => token(seq(choice(repeat1(/[0-9]/),
-      seq(/[a-zA-Z_$.]/, repeat(/[a-zA-Z0-9_$.]/))),
+      seq(/[a-zA-Z_$.-]/, repeat(/[a-zA-Z0-9_$.-]/))),
       optional(seq(choice(':', '#'), repeat1(/[0-9]/))))),
     symbol_ref_id: $ => seq('@', choice($._suffix_id, $.string_literal),
       optional(seq('::', $.symbol_ref_id))),
@@ -347,6 +347,7 @@ module.exports = grammar({
       $.cf_dialect,
       $.scf_dialect,
       $.memref_dialect,
+      $.vector_dialect,
       $.tensor_dialect,
       $.affine_dialect,
       $.linalg_dialect
@@ -499,8 +500,8 @@ module.exports = grammar({
       // operation ::= `arith.cmpf` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
       seq(choice('arith.cmpi', 'arith.cmpf'),
         field('predicate',
-          choice('eq', 'ne', 'oeq', 'olt', 'ogt', 'slt', 'sle', 'sgt', 'sge',
-            'ult', 'ule', 'ugt', 'uge')), ',',
+          choice('eq', 'ne', 'oeq', 'olt', 'ole', 'ogt', 'oge', 'slt', 'sle', 'sgt', 'sge',
+            'ult', 'ule', 'ugt', 'uge', $.string_literal)), ',',
         field('lhs', $.value_use), ',',
         field('rhs', $.value_use),
         field('attributes', optional($.attribute)),
@@ -748,6 +749,31 @@ module.exports = grammar({
     isWrite_attr: $ => token(choice('read', 'write')),
     localityHint_attr: $ => seq(token('locality'), '<', $.integer_literal, '>'),
     isDataCache_attr: $ => token(choice('data', 'instr')),
+
+    vector_dialect: $ => choice(
+      // operation ::= `vector.load` $base `[` $indices `]` attr-dict
+      //               `:` type($base) `,` type($result)
+      seq(choice('vector.load'),
+        field('operand', $.value_use),
+        field('indices', $._value_use_list_sq),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
+      // operation ::= `vector.splat` $input attr-dict `:` type($aggregate)
+      seq('vector.splat',
+        field('input', $.value_use),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
+      // operation ::= `vector.store` $valueToStore `,` $base `[` $indices `]` attr-dict
+      //               `:` type($base) `,` type($valueToStore)
+      seq(choice('vector.store'),
+        field('source', $.value_use), ',',
+        field('destination', $.value_use),
+        field('indices', $._value_use_list_sq),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+    ),
 
     tensor_dialect: $ => choice(
       // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)
