@@ -736,6 +736,23 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         field('return', $._from_type_to_type)),
 
+      // operation ::= `memref.reshape` $source `(` $shape `)` attr-dict
+      //               `:` functional-type(operands, results)
+      seq('memref.reshape',
+        field('source', $.value_use),
+        field('shape', seq('(', $.value_use, ')')),
+        field('attributes', optional($.attribute)),
+        field('return', $._function_type_annotation)),
+
+      // operation ::= `memref.store` $value `,` $memref `[` $indices `]` attr-dict
+      //                `:` type($memref)
+      seq('memref.store',
+        field('source', $.value_use), ',',
+        field('destination', $.value_use),
+        field('indices', $._value_use_list_sq),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
       // operation ::= `memref.view` $source `[` $byte_shift `]` `` `[` $sizes `]` attr-dict
       //         `:` type($source) `to` type(results)
       seq('memref.view',
@@ -767,7 +784,7 @@ module.exports = grammar({
 
       // operation ::= `vector.store` $valueToStore `,` $base `[` $indices `]` attr-dict
       //               `:` type($base) `,` type($valueToStore)
-      seq(choice('vector.store'),
+      seq('vector.store',
         field('source', $.value_use), ',',
         field('destination', $.value_use),
         field('indices', $._value_use_list_sq),
