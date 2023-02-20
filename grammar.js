@@ -222,7 +222,7 @@ module.exports = grammar({
     none_type: $ => token('none'),
     complex_type: $ => seq(token('complex'), '<', $._prim_type, '>'),
     _prim_type: $ => choice($.integer_type, $.float_type, $.index_type,
-      $.complex_type, $.none_type, $.memref_type),
+      $.complex_type, $.none_type, $.memref_type, $.vector_type, $.tensor_type),
 
     // memref-type ::= `memref` `<` dimension-list-ranked type
     //                 (`,` layout-specification)? (`,` memory-space)? `>`
@@ -255,7 +255,7 @@ module.exports = grammar({
 
     // tuple-type ::= `tuple` `<` (type ( `,` type)*)? `>`
     tuple_type: $ => seq(token('tuple'), '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),
-    tuple_dim: $ => choice($._prim_type, $.tensor_type, $.vector_type),
+    tuple_dim: $ => $._prim_type,
 
     // Attributes
     //   attribute-entry ::= (bare-id | string-literal) `=` attribute-value
@@ -791,6 +791,19 @@ module.exports = grammar({
         field('indices', $._value_use_list_sq),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
+
+      seq('vector.transfer_read',
+        field('source', seq($.value_use, $._value_use_list_sq)),
+        field('paddingMask', repeat(seq(',', $.value_use))),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
+      seq('vector.transfer_write',
+        field('vector', $.value_use), ',',
+        field('source', seq($.value_use, $._value_use_list_sq)),
+        field('mask', optional(seq(',', $.value_use))),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
     ),
 
     bufferization_dialect: $ => choice(
@@ -989,7 +1002,7 @@ module.exports = grammar({
     inner_tiles_attr: $ => seq(token('inner_tiles'), '=', $._dense_idx_list),
 
     affine_dialect: $ => prec.right(choice(
-      seq('afine.apply',
+      seq('affine.apply',
         field('operand', seq($.attribute, $._dim_and_symbol_use_list))),
 
       // operation ::= `affine.delinearize_index` $linear_index `into` ` `
