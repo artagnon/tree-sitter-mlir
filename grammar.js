@@ -3,7 +3,9 @@ module.exports = grammar({
   extras: $ => [/\s/,
     $.comment
   ],
-  conflicts: $ => [],
+  conflicts: $ => [
+    [$._static_dim_list, $._static_dim_list]
+  ],
   rules: {
     // Top level production:
     //   (operation | attribute-alias-def | type-alias-def)
@@ -249,7 +251,7 @@ module.exports = grammar({
     vector_type: $ => seq(token('vector'), '<', optional($.vector_dim_list), $._prim_type, '>'),
     vector_dim_list: $ => choice(seq($._static_dim_list, 'x',
       optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x')),
-    _static_dim_list: $ => prec.left(seq(repeat1($._digit), repeat(seq('x', repeat1($._digit))))),
+    _static_dim_list: $ => seq(repeat1($._digit), repeat(seq('x', repeat1($._digit)))),
 
     // tuple-type ::= `tuple` `<` (type ( `,` type)*)? `>`
     tuple_type: $ => seq(token('tuple'), '<', $.tuple_dim, repeat(seq(',', $.tuple_dim)), '>'),

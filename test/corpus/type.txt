@@ -168,6 +168,280 @@ func.func @test_cmpi_vector_0d(%arg0 : vector<i64>, %arg1 : vector<i64>) -> vect
                         (integer_type)))))))))))))
 
 ================================================================================
+vector type with multiple dimensions
+================================================================================
+func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
+    -> (vector<1x8xi1>, vector<1x8xi1>, vector<1x8xi1>, vector<1x8xi1>,
+        vector<1x8xi1>, vector<1x8xi1>, vector<1x8xi1>, vector<1x8xi1>,
+	vector<1x8xi1>, vector<1x8xi1>) {
+  %0 = arith.cmpi eq, %arg0, %arg0 : vector<1x8xi64>
+  %1 = arith.cmpi sle, %arg0, %arg0 : vector<1x8xi64>
+  %2 = arith.cmpi sge, %arg0, %arg0 : vector<1x8xi64>
+  %3 = arith.cmpi ule, %arg0, %arg0 : vector<1x8xi64>
+  %4 = arith.cmpi uge, %arg0, %arg0 : vector<1x8xi64>
+  %5 = arith.cmpi ne, %arg0, %arg0 : vector<1x8xi64>
+  %6 = arith.cmpi slt, %arg0, %arg0 : vector<1x8xi64>
+  %7 = arith.cmpi sgt, %arg0, %arg0 : vector<1x8xi64>
+  %8 = arith.cmpi ult, %arg0, %arg0 : vector<1x8xi64>
+  %9 = arith.cmpi ugt, %arg0, %arg0 : vector<1x8xi64>
+  return %0, %1, %2, %3, %4, %5, %6, %7, %8, %9
+      : vector<1x8xi1>, vector<1x8xi1>, vector<1x8xi1>, vector<1x8xi1>,
+        vector<1x8xi1>, vector<1x8xi1>, vector<1x8xi1>, vector<1x8xi1>,
+	vector<1x8xi1>, vector<1x8xi1>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (vector_type
+                (vector_dim_list)
+                (integer_type)))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))
+            (type
+              (builtin_type
+                (vector_type
+                  (vector_dim_list)
+                  (integer_type))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (arith_dialect
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type))))
+                  (type
+                    (builtin_type
+                      (vector_type
+                        (vector_dim_list)
+                        (integer_type)))))))))))))
+
+================================================================================
 Scalable vector type
 ================================================================================
 func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]xi64>)
