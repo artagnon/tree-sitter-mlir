@@ -620,6 +620,13 @@ module.exports = grammar({
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
+      // operation ::= `math.ipowi` $lhs `,` $rhs attr-dict `:` type($result)
+      seq('math.ipowi',
+        field('lhs', $.value_use), ',',
+        field('rhs', $.value_use),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
       // operation ::= `math.fma` $a `,` $b `,` $c (`fastmath` `` $fastmath^)?
       //               attr-dict `:` type($result)
       seq('math.fma',
@@ -627,13 +634,6 @@ module.exports = grammar({
         field('b', $.value_use), ',',
         field('c', $.value_use),
         field('fastmath', optional($.fastmath_attr)),
-        field('attributes', optional($.attribute)),
-        field('return', $._type_annotation)),
-
-      // operation ::= `math.ipowi` $lhs `,` $rhs attr-dict `:` type($result)
-      seq('math.ipowi',
-        field('lhs', $.value_use), ',',
-        field('rhs', $.value_use),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
     ),
