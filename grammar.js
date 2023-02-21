@@ -174,8 +174,7 @@ module.exports = grammar({
     //   opaque-dialect-item ::= dialect-namespace '<' string-literal '>'
     //
     //   pretty-dialect-item ::= dialect-namespace '.'
-    //   pretty-dialect-item-lead-ident
-    //                                                 pretty-dialect-item-body?
+    //   pretty-dialect-item-lead-ident pretty-dialect-item-body?
     //
     //   pretty-dialect-item-lead-ident ::= '[A-Za-z][A-Za-z0-9._]*'
     //   pretty-dialect-item-body ::= '<' pretty-dialect-item-contents+ '>'
@@ -657,8 +656,9 @@ module.exports = grammar({
         field('attributes', optional($.attribute))),
 
       // operation ::= `cf.cond_br` $condition `,`
-      // $trueDest(`(` $trueDestOperands ^ `:` type($trueDestOperands)`)`)? `,`
-      // $falseDest(`(` $falseDestOperands ^ `:` type($falseDestOperands)`)`)? attr-dict
+      //               $trueDest(`(` $trueDestOperands ^ `:` type($trueDestOperands)`)`)? `,`
+      //               $falseDest(`(` $falseDestOperands ^ `:` type($falseDestOperands)`)`)?
+      //               attr-dict
       seq('cf.cond_br',
         field('condition', $.value_use), ',',
         field('trueblk', $.successor), ',',
@@ -805,7 +805,7 @@ module.exports = grammar({
         field('return', $._from_type_to_type)),
 
       // operation ::= `memref.copy` $source `,` $target attr-dict
-      // `:` type($source) `to` type($target)
+      //               `:` type($source) `to` type($target)
       seq('memref.copy',
         field('source', $.value_use), ',',
         field('target', $.value_use),
@@ -1167,7 +1167,7 @@ module.exports = grammar({
         field('attributes', optional($.attribute))),
 
       // operation ::= `affine.delinearize_index` $linear_index `into` ` `
-      // `(` $basis `)` attr-dict `:` type($multi_index)
+      //               `(` $basis `)` attr-dict `:` type($multi_index)
       seq('affine.delinearlize_index',
         field('operand', $.value_use), 'into',
         field('basis', $._value_use_list_parens),
@@ -1201,14 +1201,14 @@ module.exports = grammar({
         field('trueblk', $.region),
         field('falseblk', optional(seq(token('else'), $.region)))),
 
-      // operation ::= ssa-id `=` `affine.load` ssa-use `[` multi-dim-affine-map-of-ssa-ids `]`
+      // operation ::= `affine.load` ssa-use `[` multi-dim-affine-map-of-ssa-ids `]`
       //               `:` memref-type
       seq(choice('affine.load', 'affine.vector_load'),
         field('operand', $.value_use),
         field('multiDimAffineMap', $._multi_dim_affine_expr_sq),
         field('return', $._type_annotation)),
 
-      // operation ::= ssa-id `=` `affine.min` affine-map-attribute dim-and-symbol-use-list
+      // operation ::= `affine.min` affine-map-attribute dim-and-symbol-use-list
       seq(choice('affine.min', 'affine.max'),
         field('operand', seq($.attribute, $._dim_and_symbol_use_list))),
 
