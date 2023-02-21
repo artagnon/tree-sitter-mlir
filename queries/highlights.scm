@@ -26,6 +26,12 @@
   "module"
   "unrealized_cast_conversion"
 
+  "func.call"
+  "call"
+  "func.call_indirect"
+  "call_indirect"
+  "func.constant"
+  "constant"
   "func.func"
   "func.return"
   "return"
@@ -292,6 +298,8 @@
   (isWrite_attr)
   (localityHint_attr)
   (isDataCache_attr)
+  (restrict_attr)
+  (writable_attr)
 ] @attribute
 
 [

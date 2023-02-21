@@ -375,7 +375,7 @@ module.exports = grammar({
       //               `:` type($callee)
       // operation ::= `func.call` $callee `(` $operands `)` attr-dict
       //               `:` functional-type($operands, results)
-      seq(choice('func.call_indirect', 'call_indirect', 'func.call', 'call'),
+      seq(choice('func.call', 'call', 'func.call_indirect', 'call_indirect'),
         field('callee', $.symbol_ref_id),
         field('operands', $._value_use_list_parens),
         field('attributes', optional($.attribute)),
