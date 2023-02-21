@@ -271,12 +271,13 @@
 [
   (integer_literal)
   (float_literal)
+  (complex_literal)
 ] @number
 
 [
   (bool_literal)
-  (complex_literal)
   (tensor_literal)
+  (array_literal)
   (unit_literal)
 ] @constant.builtin
 
