@@ -789,7 +789,7 @@ module.exports = grammar({
       //               `:` type($memref)
       seq('memref.alloc',
         field('dynamicSizes', $._value_use_list_parens),
-        field('symbolOperands', optional($._value_use_list_sq)),
+        field('symbolOperands', optional($._dense_idx_list)),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -832,13 +832,13 @@ module.exports = grammar({
 
       // operation ::= `memref.load` $memref `[` $indices `]` attr-dict `:` type($memref)
       seq('memref.load',
-        field('memref', seq($.value_use, $._value_use_list_sq)),
+        field('memref', seq($.value_use, $._dense_idx_list)),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
       seq('memref.prefetch',
         field('source', $.value_use),
-        field('indices', optional($._value_use_list_sq)), ',',
+        field('indices', optional($._dense_idx_list)), ',',
         field('isWrite', $.isWrite_attr), ',',
         field('localityHint', $.localityHint_attr), ',',
         field('isDataCache', $.isDataCache_attr),
@@ -872,7 +872,7 @@ module.exports = grammar({
       seq('memref.store',
         field('source', $.value_use), ',',
         field('destination', $.value_use),
-        field('indices', $._value_use_list_sq),
+        field('indices', $._dense_idx_list),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -893,8 +893,8 @@ module.exports = grammar({
       //         `:` type($source) `to` type(results)
       seq('memref.view',
         field('source', $.value_use),
-        field('byte_shift', $._value_use_list_sq),
-        field('sizes', $._value_use_list_sq),
+        field('byte_shift', $._dense_idx_list),
+        field('sizes', $._dense_idx_list),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation))
     ),
@@ -915,7 +915,7 @@ module.exports = grammar({
 
       // operation ::= `vector.constant_mask` $mask_dim_sizes attr-dict `:` type(results)
       seq('vector.constant_mask',
-        field('mask', $._value_use_list_sq),
+        field('mask', $._dense_idx_list),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -932,7 +932,7 @@ module.exports = grammar({
       //               `:` type($res) `from` type($source)
       seq(choice('vector.extract', 'vector.load', 'vector.scalable.extract'),
         field('operand', $.value_use),
-        field('indices', $._value_use_list_sq),
+        field('indices', $._dense_idx_list),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -960,7 +960,7 @@ module.exports = grammar({
       seq(choice('vector.insert', 'vector.scalable.insert', 'vector.shuffle', 'vector.store'),
         field('source', $.value_use), ',',
         field('destination', $.value_use),
-        field('position', $._value_use_list_sq),
+        field('position', $._dense_idx_list),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -987,14 +987,14 @@ module.exports = grammar({
         field('return', $._type_annotation)),
 
       seq('vector.transfer_read',
-        field('source', seq($.value_use, $._value_use_list_sq)),
+        field('source', seq($.value_use, $._dense_idx_list)),
         field('paddingMask', repeat(seq(',', $.value_use))),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
       seq('vector.transfer_write',
         field('vector', $.value_use), ',',
-        field('source', seq($.value_use, $._value_use_list_sq)),
+        field('source', seq($.value_use, $._dense_idx_list)),
         field('mask', optional(seq(',', $.value_use))),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
@@ -1036,7 +1036,7 @@ module.exports = grammar({
       // operation ::= `tensor.extract` $tensor `[` $indices `]` attr-dict `:` type($tensor)
       seq('tensor.extract',
         field('tensor', $.value_use),
-        field('indices', $._value_use_list_sq),
+        field('indices', $._dense_idx_list),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -1045,7 +1045,7 @@ module.exports = grammar({
       seq('tensor.insert',
         field('scalar', $.value_use), token('into'),
         field('destination', $.value_use),
-        field('indices', $._value_use_list_sq),
+        field('indices', $._dense_idx_list),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -1094,7 +1094,7 @@ module.exports = grammar({
       //               `:` functional-type(operands, results)
       seq('tensor.gather',
         field('source', $.value_use),
-        field('indices', $._value_use_list_sq),
+        field('indices', $._dense_idx_list),
         field('gatherDims', $.gather_dims_attr),
         field('unique', optional($.unique_attr)),
         field('attributes', optional($.attribute)),
@@ -1108,7 +1108,7 @@ module.exports = grammar({
       seq('tensor.scatter',
         field('source', $.value_use), token('into'),
         field('destination', $.value_use),
-        field('indices', $._value_use_list_sq),
+        field('indices', $._dense_idx_list),
         field('scatterDims', $.scatter_dims_attr),
         field('unique', optional($.unique_attr)),
         field('attributes', optional($.attribute)),
@@ -1181,8 +1181,8 @@ module.exports = grammar({
         field('return', $._type_annotation))
     ),
 
-    _dense_idx_list: $ => seq('[', choice($.integer_literal, $.value_use),
-      repeat(seq(',', choice($.integer_literal, $.value_use))), ']'),
+    _dense_idx_list: $ => seq('[', optional(seq(choice($.integer_literal, $.value_use),
+      repeat(seq(',', choice($.integer_literal, $.value_use))))), ']'),
     gather_dims_attr: $ => seq(token('gather_dims'), '(', $._dense_idx_list, ')'),
     scatter_dims_attr: $ => seq(token('scatter_dims'), '(', $._dense_idx_list, ')'),
     unique_attr: $ => token('unique'),
@@ -1307,10 +1307,7 @@ module.exports = grammar({
     // symbol-use-list ::= `[` ssa-use-list? `]`
     // dim-and-symbol-use-list ::= dim-use-list symbol-use-list?
     _value_use_list_parens: $ => seq('(', optional($._value_use_list), ')'),
-    _value_use_list_sq: $ => seq('[', optional($._value_use_idx_list), ']'),
-    _value_use_idx_list: $ => seq(choice($.value_use, $.integer_literal),
-      repeat(seq(',', choice($.value_use, $.integer_literal)))),
-    _dim_and_symbol_use_list: $ => seq($._value_use_list_parens, optional($._value_use_list_sq)),
+    _dim_and_symbol_use_list: $ => seq($._value_use_list_parens, optional($._dense_idx_list)),
 
     // lower-bound ::= `max`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
     // upper-bound ::= `min`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
