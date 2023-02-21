@@ -58,7 +58,7 @@ module.exports = grammar({
     //   alias-name :: = bare-id
     //
     //   symbol-ref-id ::= `@` (suffix-id | string-literal) (`::`
-    //   symbol-ref-id)?
+    //                     symbol-ref-id)?
     //   value-id-list ::= value-id (`,` value-id)*
     //
     //   // Uses of value, e.g. in an operand list to an operation.
@@ -153,13 +153,14 @@ module.exports = grammar({
     //   ssa-use-and-type-list ::= ssa-use-and-type (`,` ssa-use-and-type)*
     //
     //   function-type ::= (type | type-list-parens) `->` (type |
-    //   type-list-parens)
+    //                      type-list-parens)
     type: $ => choice($.type_alias, $.dialect_type, $.builtin_type),
     _type_list_no_parens: $ => prec.left(seq($.type, repeat(seq(',', $.type)))),
     _type_list_parens: $ => seq('(', optional($._type_list_no_parens), ')'),
     function_type: $ => seq(choice($.type, $._type_list_parens), $._function_return),
     _function_return: $ => seq(token('->'), choice($.type, $._type_list_parens)),
-    _type_annotation: $ => seq(':', $._type_list_no_parens),
+    _type_annotation: $ => seq(':', choice(seq($.type, choice('from', 'into', 'to'), $.type),
+      $._type_list_no_parens)),
     _function_type_annotation: $ => seq(':', $.function_type),
 
     // Type aliases
@@ -525,7 +526,7 @@ module.exports = grammar({
         'arith.truncf', 'arith.trunci'),
         field('in', $.value_use),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_to_type)),
+        field('return', $._type_annotation)),
 
       seq('arith.select',
         field('cond', $.value_use), ',',
@@ -540,12 +541,6 @@ module.exports = grammar({
       'contract', 'afn', 'fast')),
 
     _literal_and_type: $ => seq($._literal, optional($._type_annotation)),
-    _from_type_to_type: $ => seq(':',
-      field('fromtype', $.type), token('to'),
-      field('totype', $.type)),
-    _from_type_into_type: $ => seq(':',
-      field('fromtype', $.type), token('into'),
-      field('totype', $.type)),
 
     math_dialect: $ => choice(
       // operation ::= `math.absf` $operand (`fastmath` `` $fastmath^)?
@@ -802,7 +797,7 @@ module.exports = grammar({
       seq('memref.cast',
         field('in', $.value_use),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_to_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `memref.copy` $source `,` $target attr-dict
       //               `:` type($source) `to` type($target)
@@ -810,7 +805,7 @@ module.exports = grammar({
         field('source', $.value_use), ',',
         field('target', $.value_use),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_to_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `memref.collapse_shape` $src $reassociation attr-dict
       //               `:` type($src) `into` type($result)
@@ -820,7 +815,7 @@ module.exports = grammar({
         field('source', $.value_use),
         field('reassociation', $.nested_idx_list),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_into_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `memref.dealloc` $memref attr-dict `:` type($memref)
       seq('memref.dealloc',
@@ -862,7 +857,7 @@ module.exports = grammar({
         field('source', $.value_use),
         field('dynamicResultSize', optional($._value_use_list_parens)),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_to_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `memref.reshape` $source `(` $shape `)` attr-dict
       //               `:` functional-type(operands, results)
@@ -892,7 +887,7 @@ module.exports = grammar({
         field('sizes', $._dense_idx_list),
         field('strides', $._dense_idx_list),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_to_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `memref.view` $source `[` $byte_shift `]` `` `[` $sizes `]` attr-dict
       //         `:` type($source) `to` type(results)
@@ -901,35 +896,93 @@ module.exports = grammar({
         field('byte_shift', $._value_use_list_sq),
         field('sizes', $._value_use_list_sq),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_to_type))
+        field('return', $._type_annotation))
     ),
 
     isWrite_attr: $ => token(choice('read', 'write')),
     localityHint_attr: $ => seq(token('locality'), '<', $.integer_literal, '>'),
     isDataCache_attr: $ => token(choice('data', 'instr')),
 
-    vector_dialect: $ => choice(
+    vector_dialect: $ => prec.right(choice(
+      // operation ::= `vector.bitcast` $source attr-dict `:` type($source) `to` type($result)
+      // operation ::= `vector.broadcast` $source attr-dict `:` type($source) `to` type($vector)
+      // operation ::= `vector.shape_cast` $source attr-dict `:` type($source) `to` type($result)
+      // operation ::= `vector.type_cast` $memref attr-dict `:` type($memref) `to` type($result)
+      seq(choice('vector.bitcast', 'vector.broadcast', 'vector.shape_cast', 'vector.type_cast'),
+        field('in', $.value_use),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
+      // operation ::= `vector.constant_mask` $mask_dim_sizes attr-dict `:` type(results)
+      seq('vector.constant_mask',
+        field('mask', $._value_use_list_sq),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
+      // operation ::= `vector.create_mask` $operands attr-dict `:` type(results)
+      seq('vector.create_mask',
+        field('operands', $._value_use_list),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
       // operation ::= `vector.extract` $vector `` $position attr-dict `:` type($vector)
       // operation ::= `vector.load` $base `[` $indices `]` attr-dict
-      //               `:` type($base) `,` type($result)
-      seq(choice('vector.extract', 'vector.load'),
+      //               `:` type($base) `,` type($nresult)
+      // operation ::= `vector.scalable.extract` $source `[` $pos `]` attr-dict
+      //               `:` type($res) `from` type($source)
+      seq(choice('vector.extract', 'vector.load', 'vector.scalable.extract'),
         field('operand', $.value_use),
         field('indices', $._value_use_list_sq),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
-      // operation ::= `vector.splat` $input attr-dict `:` type($aggregate)
-      seq('vector.splat',
-        field('input', $.value_use),
+      // operation ::= `vector.fma` $lhs `,` $rhs `,` $acc attr-dict `:` type($lhs)
+      seq('vector.fma',
+        field('lhs', $.value_use), ',',
+        field('rhs', $.value_use), ',',
+        field('acc', $.value_use),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
+      // operation ::= `vector.flat_transpose` $matrix attr-dict `:` type($matrix) `->` type($res)
+      seq('vector.flat_transpose',
+        field('matrix', $.value_use),
+        field('attributes', optional($.attribute)),
+        field('return', $._function_type_annotation)),
+
+      // operation ::= `vector.insert` $source `,` $dest $position attr-dict
+      //               `:` type($source) `into` type($dest)
+      // operation ::= `vector.scalable.insert` $source `,` $dest `[` $pos `]` attr-dict
+      //               `:` type($source) `into` type($dest)
+      // operation ::= `vector.shuffle` operands $mask attr-dict `:` type(operands)
       // operation ::= `vector.store` $valueToStore `,` $base `[` $indices `]` attr-dict
       //               `:` type($base) `,` type($valueToStore)
-      seq('vector.store',
+      seq(choice('vector.insert', 'vector.scalable.insert', 'vector.shuffle', 'vector.store'),
         field('source', $.value_use), ',',
         field('destination', $.value_use),
-        field('indices', $._value_use_list_sq),
+        field('position', $._value_use_list_sq),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
+      // operation ::= `vector.insert_strided_slice` $source `,` $dest attr-dict
+      //               `:` type($source) `into` type($dest)
+      seq('vector.insert_strided_slice',
+        field('source', $.value_use), ',',
+        field('destination', $.value_use),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
+      // operation ::= `vector.matrix_multiply` $lhs `,` $rhs attr-dict
+      //                `:` `(` type($lhs) `,` type($rhs) `)` `->` type($res)
+      seq('vector.matrix_multiply',
+        field('lhs', $.value_use), ',',
+        field('rhs', $.value_use),
+        field('attributes', optional($.attribute)),
+        field('return', $._function_type_annotation)),
+
+      // operation ::= `vector.print` $source attr-dict `:` type($source)
+      seq(choice('vector.print', 'vector.splat'),
+        field('operand', $.value_use),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -945,7 +998,12 @@ module.exports = grammar({
         field('mask', optional(seq(',', $.value_use))),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
-    ),
+
+      // operation ::= `vector.yield` attr-dict ($operands^ `:` type($operands))?
+      seq('vector.yield',
+        field('attributes', optional($.attribute)),
+        field('results', optional($._value_use_type_list)))
+    )),
 
     tensor_dialect: $ => choice(
       // operation ::= `tensor.empty` `(`$dynamicSizes`)` attr-dict `:` type($result)
@@ -958,7 +1016,7 @@ module.exports = grammar({
       seq('tensor.cast',
         field('in', $.value_use),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_to_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `tensor.dim` attr-dict $source `,` $index `:` type($source)
       seq('tensor.dim',
@@ -973,7 +1031,7 @@ module.exports = grammar({
         field('tensor', $.value_use),
         field('reassociation', $.nested_idx_list),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_into_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `tensor.extract` $tensor `[` $indices `]` attr-dict `:` type($tensor)
       seq('tensor.extract',
@@ -1002,7 +1060,7 @@ module.exports = grammar({
         field('sizes', $._dense_idx_list),
         field('strides', $._dense_idx_list),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_to_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `tensor.insert_slice` $source `into` $dest ``
       //                custom<DynamicIndexList>($offsets, $static_offsets)
@@ -1021,7 +1079,7 @@ module.exports = grammar({
         field('sizes', $._dense_idx_list),
         field('strides', $._dense_idx_list),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_into_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `tensor.from_elements` $elements attr-dict `:` type($result)
       seq('tensor.from_elements',
@@ -1068,7 +1126,7 @@ module.exports = grammar({
         field('high', seq(token('high'), $._dense_idx_list)),
         field('body', $.region),
         field('attributes', optional($.attribute)),
-        field('return', $._from_type_to_type)),
+        field('return', $._type_annotation)),
 
       // operation ::= `tensor.reshape` $source `(` $shape `)` attr-dict
       //                `:` functional-type(operands, results)
