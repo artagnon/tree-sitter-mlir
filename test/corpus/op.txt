@@ -2338,6 +2338,79 @@ func.func @truncation_spillover(%arg0 : memref<?xi32>) -> index {
                       (index_type))))))))))))
 
 ================================================================================
+memref.reinterpret_cast
+================================================================================
+func.func @memref_reinterpret_cast_static_to_dynamic_sizes(%in: memref<?xf32>)
+    -> memref<10x?xf32, strided<[?, 1], offset: ?>> {
+  %out = memref.reinterpret_cast %in to
+           offset: [1], sizes: [10, 10], strides: [1, 1]
+           : memref<?xf32> to memref<10x?xf32, strided<[?, 1], offset: ?>>
+  return %out : memref<10x?xf32, strided<[?, 1], offset: ?>>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (memref_type
+                  (dim_list
+                    (float_type))
+                  (attribute_value
+                    (builtin_attribute
+                      (strided_layout))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (memref_dialect
+                  (value_use)
+                  (integer_literal)
+                  (integer_literal)
+                  (integer_literal)
+                  (integer_literal)
+                  (integer_literal)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout)))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout)))))))))))))))
+
+================================================================================
 cf.assert
 ================================================================================
 func.func @assert(%arg : i1) {

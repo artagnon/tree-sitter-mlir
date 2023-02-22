@@ -787,7 +787,9 @@ module.exports = grammar({
 
       // operation ::= `memref.alloc` `(`$dynamicSizes`)` (`` `[` $symbolOperands^ `]`)? attr-dict
       //               `:` type($memref)
-      seq('memref.alloc',
+      // operation ::= `memref.alloca` `(`$dynamicSizes`)` (`` `[` $symbolOperands^ `]`)? attr-dict
+      //               `:` type($memref)
+      seq(choice('memref.alloc', 'memref.alloca'),
         field('dynamicSizes', $._value_use_list_parens),
         field('symbolOperands', optional($._dense_idx_list)),
         field('attributes', optional($.attribute)),
@@ -856,6 +858,21 @@ module.exports = grammar({
       seq('memref.realloc',
         field('source', $.value_use),
         field('dynamicResultSize', optional($._value_use_list_parens)),
+        field('attributes', optional($.attribute)),
+        field('return', $._type_annotation)),
+
+      // operation ::= `memref.reinterpret_cast` $source `to` `offset` `` `:`
+      //               custom<DynamicIndexList>($offsets, $static_offsets)
+      //               `` `,` `sizes` `` `:`
+      //               custom<DynamicIndexList>($sizes, $static_sizes)
+      //               `` `,` `strides` `` `:`
+      //               custom<DynamicIndexList>($strides, $static_strides)
+      //               attr-dict `:` type($source) `to` type($result)
+      seq('memref.reinterpret_cast',
+        field('source', $.value_use), token('to'),
+        field('offset', seq(token('offset'), ':', $._dense_idx_list, ',')),
+        field('sizes', seq(token('sizes'), ':', $._dense_idx_list, ',')),
+        field('strides', seq(token('strides'), ':', $._dense_idx_list)),
         field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
@@ -1248,8 +1265,10 @@ module.exports = grammar({
         field('lowerBound', seq(optional(token('max')), $._bound)), token('to'),
         field('upperBound', seq(optional(token('min')), $._bound)),
         field('step', optional(seq(token('step'), $.integer_literal))),
+        field('iter_args', optional(seq(token('iter_args'), $._value_assignment_list))),
         field('return', optional($._function_return)),
-        field('body', $.region)),
+        field('body', $.region),
+        field('attributes', optional($.attribute))),
 
       // operation  ::= `affine.if` if-op-cond `{` op* `}` (`else` `{` op* `}`)?
       // if-op-cond ::= integer-set-attr dim-and-symbol-use-list
@@ -1257,7 +1276,8 @@ module.exports = grammar({
         field('condition', seq($.attribute, $._dim_and_symbol_use_list)),
         field('return', optional($._function_return)),
         field('trueblk', $.region),
-        field('falseblk', optional(seq(token('else'), $.region)))),
+        field('falseblk', optional(seq(token('else'), $.region))),
+        field('attributes', optional($.attribute))),
 
       // operation ::= `affine.load` ssa-use `[` multi-dim-affine-map-of-ssa-ids `]`
       //               `:` memref-type
