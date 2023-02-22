@@ -7,22 +7,22 @@ import * as os from "node:os";
 import glob from "glob";
 
 const dialects = {
-  "Builtin": 75,
-  "Func": 50,
-  "Arith": 76,
+  "Builtin": 100,
+  "Func": 100,
+  "Arith": 83,
   "Math": 100,
   "ControlFlow": 100,
-  "SCF": 84,
+  "SCF": 88,
   "Tensor": 93,
-  "Affine": 55,
-  "Linalg": 49,
+  "Affine": 57,
+  "Linalg": 50,
 };
 
 let mlir_testdir = path.join(os.homedir(), "src", "llvm", "mlir", "test", "Dialect");
 
 function bench_dialect(dialect, min_pct) {
   let testdir = path.join(mlir_testdir, dialect);
-  let testfiles = glob.sync(`${testdir}/*.mlir`);
+  let testfiles = glob.sync(`${testdir}/*.mlir`, { ignore: [`${testdir}/invalid.mlir`] });
   let child = cp.spawn("npx", ["tree-sitter", "parse", "-q", "-s", ...testfiles],
     { cwd: process.cwd() });
   let output = "";
@@ -32,10 +32,10 @@ function bench_dialect(dialect, min_pct) {
     let match = output.match(/success percentage: (\d+\.\d+)%/i);
     let pass_pct = parseFloat(match[1]);
     if (pass_pct < min_pct) {
-      console.log('%s, %f%% passed; minimum required is %d%%', dialect, pass_pct, min_pct);
+      console.log("%s, %f%% passed; minimum required is %d%%", dialect, pass_pct, min_pct);
       process.exit(1);
     }
-    console.log('%s, %f%% passed', dialect, pass_pct);
+    console.log("%s, %f%% passed", dialect, pass_pct);
   });
   child.on("error", (err) => console.log(err));
 }
