@@ -24,7 +24,7 @@
 
 [
   "module"
-  "unrealized_cast_conversion"
+  "unrealized_conversion_cast"
 
   "func.call"
   "call"

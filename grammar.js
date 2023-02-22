@@ -194,7 +194,7 @@ module.exports = grammar({
       '>'),
     pretty_dialect_item: $ => seq($.dialect_namespace, '.', $.dialect_ident,
       optional($.pretty_dialect_item_body)),
-    pretty_dialect_item_body: $ => seq('<', repeat1($._pretty_dialect_item_contents), '>'),
+    pretty_dialect_item_body: $ => seq('<', repeat($._pretty_dialect_item_contents), '>'),
     _pretty_dialect_item_contents: $ => prec.left(choice($.pretty_dialect_item_body,
       repeat1(/[^<>]/))),
 
@@ -357,15 +357,15 @@ module.exports = grammar({
 
     builtin_dialect: $ => prec.right(choice(
       // operation ::= `builtin.module` ($sym_name^)? attr-dict-with-keyword $bodyRegion
-      seq('module',
+      seq(choice('builtin.module', 'module'),
         field('name', optional($.bare_id)),
         field('attributes', optional($.attribute)),
         field('body', $.region)),
 
       // operation ::= `builtin.unrealized_conversion_cast` ($inputs^ `:` type($inputs))?
       //                `to` type($outputs) attr-dict
-      seq('unrealized_cast_conversion',
-        field('inputs', $._value_use_type_list), token('to'),
+      seq(choice('builtin.unrealized_conversion_cast', 'unrealized_conversion_cast'),
+        field('inputs', optional($._value_use_type_list)), token('to'),
         field('outputs', $._type_list_no_parens),
         field('attributes', optional($.attribute)))
     )),
