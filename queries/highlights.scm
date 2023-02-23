@@ -20,6 +20,22 @@
   "inner_dims_pos"
   "shared_outs"
   "default"
+
+  "eq"
+  "ne"
+  "oeq"
+  "olt"
+  "ole"
+  "ogt"
+  "oge"
+  "slt"
+  "sle"
+  "sgt"
+  "sge"
+  "ult"
+  "ule"
+  "ugt"
+  "uge"
 ] @keyword
 
 [
