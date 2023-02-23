@@ -1,18 +1,18 @@
 'use strict';
 
-const builtin_dialect = require('./builtin');
-const func_dialect = require('./func');
-const llvm_dialect = require('./llvm');
-const arith_dialect = require('./arith');
-const math_dialect = require('./math');
-const cf_dialect = require('./cf');
-const scf_dialect = require('./scf');
-const memref_dialect = require('./memref');
-const vector_dialect = require('./vector');
-const tensor_dialect = require('./tensor');
-const bufferization_dialect = require('./bufferization');
-const affine_dialect = require('./affine');
-const linalg_dialect = require('./linalg');
+const builtin_dialect = require('./dialect/builtin');
+const func_dialect = require('./dialect/func');
+const llvm_dialect = require('./dialect/llvm');
+const arith_dialect = require('./dialect/arith');
+const math_dialect = require('./dialect/math');
+const cf_dialect = require('./dialect/cf');
+const scf_dialect = require('./dialect/scf');
+const memref_dialect = require('./dialect/memref');
+const vector_dialect = require('./dialect/vector');
+const tensor_dialect = require('./dialect/tensor');
+const bufferization_dialect = require('./dialect/bufferization');
+const affine_dialect = require('./dialect/affine');
+const linalg_dialect = require('./dialect/linalg');
 
 const common = {
   // Top level production:
