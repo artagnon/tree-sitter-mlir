@@ -15,7 +15,7 @@ const dialects = {
   "SCF": 88,
   "Tensor": 93,
   "Affine": 73,
-  "Linalg": 50,
+  "Linalg": 51,
 };
 
 let mlir_testdir = path.join(os.homedir(), "src", "llvm", "mlir", "test", "Dialect");

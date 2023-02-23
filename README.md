@@ -11,5 +11,5 @@ Tensor, 93.33% passed
 Arith, 83.33% passed
 SCF, 88% passed
 Affine, 73.08% passed
-Linalg, 50% passed
+Linalg, 51.11% passed
 ```

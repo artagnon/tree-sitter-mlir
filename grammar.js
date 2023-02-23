@@ -4,7 +4,8 @@ module.exports = grammar({
     $.comment
   ],
   conflicts: $ => [
-    [$._static_dim_list, $._static_dim_list]
+    [$._static_dim_list, $._static_dim_list],
+    [$.dictionary_attribute, $.region]
   ],
   rules: {
     // Top level production:
@@ -1213,7 +1214,7 @@ module.exports = grammar({
         field('in', $._value_use_list_parens),
         field('copy', optional(seq(token('copy'), '(', $.value_use, ')'))),
         field('size_hint', optional(seq(token('size_hint'), '=', $.value_use))),
-        field('attriutes', optional($.attribute)),
+        field('attributes', optional($.attribute)),
         field('return', $._type_annotation)),
 
       // operation ::= `bufferization.to_memref` $tensor attr-dict `:` type($memref)
@@ -1359,9 +1360,7 @@ module.exports = grammar({
         field('return', optional($._function_return))),
 
       seq('linalg.generic',
-        field('attributes', optional($.attribute)),
-        field('ins', optional($._ins)),
-        field('outs', $._outs),
+        repeat1($._ins_outs_attributes),
         field('body', $.region),
         field('return', optional($._function_return))),
 
