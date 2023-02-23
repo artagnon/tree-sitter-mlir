@@ -92,11 +92,5 @@ module.exports = {
       field('results', optional($._value_use_type_list))),
   )),
 
-  scf_case_label: $ => choice(seq(token('case'), $.integer_literal), token('default')),
-
-  // assignment-list ::= assignment | assignment `,` assignment-list
-  // assignment ::= ssa-value `=` ssa-value
-  _value_assignment_list: $ => seq('(', optional($._value_assignment),
-    repeat(seq(',', $._value_assignment)), ')'),
-  _value_assignment: $ => seq($.value_use, '=', $.value_use)
+  scf_case_label: $ => choice(seq(token('case'), $.integer_literal), token('default'))
 }

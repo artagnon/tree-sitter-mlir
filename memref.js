@@ -138,9 +138,5 @@ module.exports = {
       field('sizes', $._dense_idx_list),
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation))
-  ),
-
-  isWrite_attr: $ => token(choice('read', 'write')),
-  localityHint_attr: $ => seq(token('locality'), '<', $.integer_literal, '>'),
-  isDataCache_attr: $ => token(choice('data', 'instr'))
+  )
 }

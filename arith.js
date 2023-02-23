@@ -113,12 +113,5 @@ module.exports = {
       field('trueblk', $.value_use), ',',
       field('falseblk', $.value_use),
       field('return', $._type_annotation))
-  ),
-
-  fastmath_attr: $ => seq(token('fastmath'), '<',
-    seq($._fastmath_flag, repeat(seq(',', $._fastmath_flag))), '>'),
-  _fastmath_flag: $ => token(choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
-    'contract', 'afn', 'fast')),
-
-  _literal_and_type: $ => seq($._literal, optional($._type_annotation))
+  )
 }

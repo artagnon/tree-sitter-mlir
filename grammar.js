@@ -170,6 +170,7 @@ const common = {
   _type_annotation: $ => seq(':', choice(seq($.type, choice('from', 'into', 'to'), $.type),
     $._type_list_no_parens)),
   _function_type_annotation: $ => seq(':', $.function_type),
+  _literal_and_type: $ => seq($._literal, optional($._type_annotation)),
 
   // Type aliases
   //   type-alias-def ::= '!' alias-name '=' type
@@ -342,6 +343,65 @@ const common = {
     seq('symbol', '(', $.value_use, ')'), seq(choice('max', 'min'), '(', $._value_use_list, ')')),
   _affine_token: $ => token(choice('+', '-', '*', 'ceildiv', 'floordiv', 'mod',
     '==', '>=', '<=')),
+
+  func_return: $ => seq(token('->'), $.type_list_attr_parens),
+  func_arg_list: $ => seq('(', optional(choice($.variadic,
+    $._value_id_and_type_attr_list)), ')'),
+  _value_id_and_type_attr_list: $ => seq($._value_id_and_type_attr,
+    repeat(seq(',', $._value_id_and_type_attr)), optional(seq(',', $.variadic))),
+  _value_id_and_type_attr: $ => seq($._function_arg, optional($.attribute)),
+  _function_arg: $ => choice(seq($.value_use, ':', $.type), $.value_use, $.type),
+  type_list_attr_parens: $ => choice($.type, seq('(', $.type, optional($.attribute),
+    repeat(seq(',', $.type, optional($.attribute))), ')'), seq('(', ')')),
+  variadic: $ => token('...'),
+
+  // (func.func|llvm.func) takes arguments, an optional return type, and and optional body
+  _op_func: $ => seq(
+    field('visibility', optional('private')),
+    field('name', $.symbol_ref_id),
+    field('arguments', $.func_arg_list),
+    field('return', optional($.func_return)),
+    field('attributes', optional(seq(token('attributes'), $.attribute))),
+    field('body', optional($.region))),
+
+  // dim-use-list ::= `(` ssa-use-list? `)`
+  // symbol-use-list ::= `[` ssa-use-list? `]`
+  // dim-and-symbol-use-list ::= dim-use-list symbol-use-list?
+  _value_use_list_parens: $ => seq('(', optional($._value_use_list), ')'),
+  _dim_and_symbol_use_list: $ => seq($._value_use_list_parens, optional($._dense_idx_list)),
+
+  // assignment-list ::= assignment | assignment `,` assignment-list
+  // assignment ::= ssa-value `=` ssa-value
+  _value_assignment_list: $ => seq('(', optional($._value_assignment),
+    repeat(seq(',', $._value_assignment)), ')'),
+  _value_assignment: $ => seq($.value_use, '=', $.value_use),
+
+  _dense_idx_list: $ => seq('[', optional(seq(choice($.integer_literal, $.value_use),
+    repeat(seq(',', choice($.integer_literal, $.value_use))))), ']'),
+
+  // lower-bound ::= `max`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
+  // upper-bound ::= `min`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
+  // shorthand-bound ::= ssa-id | `-`? integer-literal
+  _bound: $ => choice(seq($.attribute, $._dim_and_symbol_use_list), $._shorthand_bound),
+  _shorthand_bound: $ => choice($.value_use, $.integer_literal),
+
+  // Dialect-specific attributes
+  restrict_attr: $ => token('restrict'),
+  writable_attr: $ => token('writable'),
+  gather_dims_attr: $ => seq(token('gather_dims'), '(', $._dense_idx_list, ')'),
+  scatter_dims_attr: $ => seq(token('scatter_dims'), '(', $._dense_idx_list, ')'),
+  unique_attr: $ => token('unique'),
+  nofold_attr: $ => token('nofold'),
+  outer_dims_perm_attr: $ => seq(token('outer_dims_perm'), '=', $._dense_idx_list),
+  inner_dims_pos_attr: $ => seq(token('inner_dims_pos'), '=', $._dense_idx_list),
+  inner_tiles_attr: $ => seq(token('inner_tiles'), '=', $._dense_idx_list),
+  isWrite_attr: $ => token(choice('read', 'write')),
+  localityHint_attr: $ => seq(token('locality'), '<', $.integer_literal, '>'),
+  isDataCache_attr: $ => token(choice('data', 'instr')),
+  fastmath_attr: $ => seq(token('fastmath'), '<',
+    seq($._fastmath_flag, repeat(seq(',', $._fastmath_flag))), '>'),
+  _fastmath_flag: $ => token(choice('none', 'reassoc', 'nnan', 'ninf', 'nsz', 'arcp',
+    'contract', 'afn', 'fast')),
 
   // Comment (standard BCPL)
   comment: $ => token(seq('//', /.*/)),

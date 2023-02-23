@@ -24,8 +24,5 @@ module.exports = {
       field('writable', optional($.writable_attr)),
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation))
-  ),
-
-  restrict_attr: $ => token('restrict'),
-  writable_attr: $ => token('writable')
+  )
 }

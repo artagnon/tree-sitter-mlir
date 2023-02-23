@@ -86,17 +86,5 @@ module.exports = {
     seq('affine.yield',
       field('attributes', optional($.attribute)),
       field('results', optional($._value_use_type_list)))
-  )),
-
-  // dim-use-list ::= `(` ssa-use-list? `)`
-  // symbol-use-list ::= `[` ssa-use-list? `]`
-  // dim-and-symbol-use-list ::= dim-use-list symbol-use-list?
-  _value_use_list_parens: $ => seq('(', optional($._value_use_list), ')'),
-  _dim_and_symbol_use_list: $ => seq($._value_use_list_parens, optional($._dense_idx_list)),
-
-  // lower-bound ::= `max`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
-  // upper-bound ::= `min`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
-  // shorthand-bound ::= ssa-id | `-`? integer-literal
-  _bound: $ => choice(seq($.attribute, $._dim_and_symbol_use_list), $._shorthand_bound),
-  _shorthand_bound: $ => choice($.value_use, $.integer_literal)
+  ))
 }

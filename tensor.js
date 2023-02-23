@@ -175,15 +175,5 @@ module.exports = {
       field('tensor', $.value_use),
       field('attributes', optional($.attribute)),
       field('return', $._type_annotation))
-  ),
-
-  _dense_idx_list: $ => seq('[', optional(seq(choice($.integer_literal, $.value_use),
-    repeat(seq(',', choice($.integer_literal, $.value_use))))), ']'),
-  gather_dims_attr: $ => seq(token('gather_dims'), '(', $._dense_idx_list, ')'),
-  scatter_dims_attr: $ => seq(token('scatter_dims'), '(', $._dense_idx_list, ')'),
-  unique_attr: $ => token('unique'),
-  nofold_attr: $ => token('nofold'),
-  outer_dims_perm_attr: $ => seq(token('outer_dims_perm'), '=', $._dense_idx_list),
-  inner_dims_pos_attr: $ => seq(token('inner_dims_pos'), '=', $._dense_idx_list),
-  inner_tiles_attr: $ => seq(token('inner_tiles'), '=', $._dense_idx_list)
+  )
 }
