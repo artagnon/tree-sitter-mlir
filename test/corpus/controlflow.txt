@@ -359,6 +359,7 @@ func.func @for_loop_with_increasing_arg() -> i1 {
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -433,6 +434,7 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                     (value_use))
                                   (custom_operation
                                     (arith_dialect
+                                      (arith_cmp_predicate)
                                       (value_use)
                                       (value_use)
                                       (type
@@ -454,6 +456,7 @@ func.func @std_for(%arg0 : index, %arg1 : index, %arg2 : index) {
                                     (value_use))
                                   (custom_operation
                                     (arith_dialect
+                                      (arith_cmp_predicate)
                                       (value_use)
                                       (value_use)
                                       (type

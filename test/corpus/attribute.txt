@@ -959,6 +959,7 @@ func.func @main() -> (tensor<i32>) attributes {} {
                           (value_use))
                         (custom_operation
                           (arith_dialect
+                            (arith_cmp_predicate)
                             (value_use)
                             (value_use)
                             (type

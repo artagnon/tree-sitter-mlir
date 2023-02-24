@@ -81,9 +81,7 @@ module.exports = {
     // operation ::= `arith.cmpi` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
     // operation ::= `arith.cmpf` $predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)
     seq(choice('arith.cmpi', 'arith.cmpf'),
-      field('predicate',
-        choice('eq', 'ne', 'oeq', 'olt', 'ole', 'ogt', 'oge', 'slt', 'sle', 'sgt', 'sge',
-          'ult', 'ule', 'ugt', 'uge', $.string_literal)), ',',
+      field('predicate', choice($.arith_cmp_predicate, $.string_literal)), ',',
       field('lhs', $.value_use), ',',
       field('rhs', $.value_use),
       field('attributes', optional($.attribute)),
@@ -113,5 +111,8 @@ module.exports = {
       field('trueblk', $.value_use), ',',
       field('falseblk', $.value_use),
       field('return', $._type_annotation))
-  )
+  ),
+
+  arith_cmp_predicate: $ => choice('eq', 'ne', 'oeq', 'olt', 'ole', 'ogt', 'oge', 'slt', 'sle',
+    'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')
 }

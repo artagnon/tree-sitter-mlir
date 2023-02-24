@@ -152,6 +152,7 @@ func.func @test_cmpi_vector_0d(%arg0 : vector<i64>, %arg1 : vector<i64>) -> vect
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -262,6 +263,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -274,6 +276,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -286,6 +289,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -298,6 +302,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -310,6 +315,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -322,6 +328,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -334,6 +341,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -346,6 +354,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -358,6 +367,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
@@ -370,6 +380,7 @@ func.func @cmpi_equal_vector_operands(%arg0: vector<1x8xi64>)
                 (value_use))
               (custom_operation
                 (arith_dialect
+                  (arith_cmp_predicate)
                   (value_use)
                   (value_use)
                   (type
