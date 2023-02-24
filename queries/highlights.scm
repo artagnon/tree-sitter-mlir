@@ -331,7 +331,7 @@
 [
   ":"
   ","
-] @punctuation.delimeter
+] @punctuation.delimiter
 
 [
   "="
