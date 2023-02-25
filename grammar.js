@@ -140,7 +140,7 @@ const common = {
     repeat(seq(',', $._value_use_and_type))),
   block_arg_list: $ => seq('(', optional($._value_use_and_type_list), ')'),
   _value_arg_list: $ => seq('(', optional($._value_use_type_list), ')'),
-  _value_use_type_list: $ => seq($._value_use_list, $._type_annotation),
+  _value_use_type_list: $ => seq($._value_use_list, ':', $._type_list_no_parens),
 
   // Regions
   //   region      ::= `{` entry-block? block* `}`
@@ -168,8 +168,8 @@ const common = {
   _type_list_parens: $ => seq('(', optional($._type_list_no_parens), ')'),
   function_type: $ => seq(choice($.type, $._type_list_parens), $._function_return),
   _function_return: $ => seq(token('->'), choice($.type, $._type_list_parens)),
-  _type_annotation: $ => seq(':', choice(seq($.type, choice('from', 'into', 'to'), $.type),
-    $._type_list_no_parens)),
+  _type_annotation: $ => seq(':', choice(seq($._type_list_no_parens,
+    choice('from', 'into', 'to'), $.type), $._type_list_no_parens)),
   _function_type_annotation: $ => seq(':', $.function_type),
   _literal_and_type: $ => seq($._literal, optional($._type_annotation)),
 
@@ -377,8 +377,9 @@ const common = {
     repeat(seq(',', $._value_assignment)), ')'),
   _value_assignment: $ => seq($.value_use, '=', $.value_use),
 
-  _dense_idx_list: $ => seq('[', optional(seq(choice($.integer_literal, $.value_use),
-    repeat(seq(',', choice($.integer_literal, $.value_use))))), ']'),
+  _dense_idx_list: $ => seq('[', optional(seq($._dense_idx_prim,
+    repeat(seq(',', $._dense_idx_prim)))), ']'),
+  _dense_idx_prim: $ => choice($.integer_literal, seq($.value_use, optional($._type_annotation))),
 
   // lower-bound ::= `max`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
   // upper-bound ::= `min`? affine-map-attribute dim-and-symbol-use-list | shorthand-bound
