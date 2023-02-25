@@ -113,6 +113,6 @@ module.exports = {
       field('return', $._type_annotation))
   ),
 
-  arith_cmp_predicate: $ => choice('eq', 'ne', 'oeq', 'olt', 'ole', 'ogt', 'oge', 'slt', 'sle',
-    'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge')
+  arith_cmp_predicate: $ => token(choice('eq', 'ne', 'oeq', 'olt', 'ole', 'ogt', 'oge', 'slt',
+   'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge'))
 }
