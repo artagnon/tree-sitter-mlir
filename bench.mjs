@@ -13,8 +13,9 @@ const dialects = {
   "Math": 100,
   "ControlFlow": 100,
   "SCF": 88,
+  "Memref": 90,
   "Tensor": 93,
-  "Affine": 73,
+  "Affine": 76,
   "Linalg": 51,
 };
 

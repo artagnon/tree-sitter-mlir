@@ -7,9 +7,10 @@ Math, 100% passed
 Builtin, 100% passed
 Func, 100% passed
 ControlFlow, 100% passed
+Memref, 90.91% passed
 Tensor, 93.33% passed
 Arith, 83.33% passed
 SCF, 88% passed
-Affine, 73.08% passed
+Affine, 76.92% passed
 Linalg, 51.11% passed
 ```

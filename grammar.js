@@ -42,6 +42,7 @@ const common = {
   string_literal: $ => token(seq('"', repeat(/[^\\"\n\f\v\r]+/), '"')),
   bool_literal: $ => token(choice('true', 'false')),
   unit_literal: $ => token('unit'),
+  uninitialized_literal: $ => token('uninitialized'),
   complex_literal: $ => seq('(', choice($.integer_literal, $.float_literal), ',',
     choice($.integer_literal, $.float_literal), ')'),
   tensor_literal: $ => seq(token(choice('dense', 'sparse')), '<',
@@ -49,7 +50,7 @@ const common = {
       $._primitive_idx_literal)), '>'),
   array_literal: $ => seq(token('array'), '<', $.type, ':', $._idx_list, '>'),
   _literal: $ => choice($.integer_literal, $.float_literal, $.string_literal, $.bool_literal,
-    $.tensor_literal, $.array_literal, $.complex_literal, $.unit_literal),
+    $.tensor_literal, $.array_literal, $.complex_literal, $.unit_literal, $.uninitialized_literal),
 
   nested_idx_list: $ => seq('[', optional(choice($.nested_idx_list, $._idx_list)),
     repeat(seq(',', $.nested_idx_list)), ']'),
@@ -388,6 +389,7 @@ const common = {
   // Dialect-specific attributes
   restrict_attr: $ => token('restrict'),
   writable_attr: $ => token('writable'),
+  constant_attr: $ => token('constant'),
   gather_dims_attr: $ => seq(token('gather_dims'), '(', $._dense_idx_list, ')'),
   scatter_dims_attr: $ => seq(token('scatter_dims'), '(', $._dense_idx_list, ')'),
   unique_attr: $ => token('unique'),

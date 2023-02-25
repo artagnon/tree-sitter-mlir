@@ -2411,6 +2411,175 @@ func.func @memref_reinterpret_cast_static_to_dynamic_sizes(%in: memref<?xf32>)
                             (strided_layout)))))))))))))))
 
 ================================================================================
+memref.extract_strided_metadata
+================================================================================
+func.func @extract_strided_metadata(%memref : memref<10x?xf32>)
+  -> memref<?x?xf32, strided<[?, ?], offset: ?>> {
+
+  %base, %offset, %sizes:2, %strides:2 = memref.extract_strided_metadata %memref
+    : memref<10x?xf32> -> memref<f32>, index, index, index, index, index
+
+  %m2 = memref.reinterpret_cast %base to
+      offset: [%offset],
+      sizes: [%sizes#0, %sizes#1],
+      strides: [%strides#0, %strides#1]
+    : memref<f32> to memref<?x?xf32, strided<[?, ?], offset: ?>>
+
+  return %m2: memref<?x?xf32, strided<[?, ?], offset: ?>>
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (memref_type
+                  (dim_list
+                    (float_type))
+                  (attribute_value
+                    (builtin_attribute
+                      (strided_layout))))))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (op_result
+                (value_use))
+              (custom_operation
+                (memref_dialect
+                  (value_use)
+                  (function_type
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type)))))
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type))))))
+                  (type
+                    (builtin_type
+                      (index_type)))
+                  (type
+                    (builtin_type
+                      (index_type)))
+                  (type
+                    (builtin_type
+                      (index_type)))
+                  (type
+                    (builtin_type
+                      (index_type)))
+                  (type
+                    (builtin_type
+                      (index_type))))))
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (memref_dialect
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type)))))
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout)))))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (memref_type
+                        (dim_list
+                          (float_type))
+                        (attribute_value
+                          (builtin_attribute
+                            (strided_layout)))))))))))))))
+
+================================================================================
+memref.extract_aligned_pointer_as_index
+================================================================================
+func.func @memref_extract_aligned_pointer(%src : memref<?xf32>) -> index {
+  %0 = memref.extract_aligned_pointer_as_index %src : memref<?xf32> -> index
+  return %0 : index
+}
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (func_dialect
+        (symbol_ref_id)
+        (func_arg_list
+          (value_use)
+          (type
+            (builtin_type
+              (memref_type
+                (dim_list
+                  (float_type))))))
+        (func_return
+          (type_list_attr_parens
+            (type
+              (builtin_type
+                (index_type)))))
+        (region
+          (entry_block
+            (operation
+              (op_result
+                (value_use))
+              (custom_operation
+                (memref_dialect
+                  (value_use)
+                  (function_type
+                    (type
+                      (builtin_type
+                        (memref_type
+                          (dim_list
+                            (float_type)))))
+                    (type
+                      (builtin_type
+                        (index_type)))))))
+            (operation
+              (custom_operation
+                (func_dialect
+                  (value_use)
+                  (type
+                    (builtin_type
+                      (index_type))))))))))))
+
+================================================================================
 cf.assert
 ================================================================================
 func.func @assert(%arg : i1) {
