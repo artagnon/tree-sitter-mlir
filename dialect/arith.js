@@ -108,8 +108,9 @@ module.exports = {
 
     seq('arith.select',
       field('cond', $.value_use), ',',
-      field('trueblk', $.value_use), ',',
-      field('falseblk', $.value_use),
+      field('trueCond', $.value_use), ',',
+      field('falseCond', $.value_use),
+      field('attributes', optional($.attribute)),
       field('return', $._type_annotation))
   ),
 

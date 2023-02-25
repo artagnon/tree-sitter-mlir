@@ -17,7 +17,8 @@ module.exports = {
       field('condition', $.value_use),
       field('return', optional($._function_return)),
       field('trueblk', $.region),
-      field('falseblk', optional(seq(token('else'), $.region)))),
+      field('falseblk', optional(seq(token('else'), $.region))),
+      field('attributes', optional($.attribute))),
 
     // operation ::= `scf.index_switch` $arg attr-dict (`->` type($results)^)?
     //               custom<SwitchCases>($cases, $caseRegions) `\n`

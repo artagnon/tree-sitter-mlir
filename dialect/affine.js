@@ -49,11 +49,13 @@ module.exports = {
     seq(choice('affine.load', 'affine.vector_load'),
       field('operand', $.value_use),
       field('multiDimAffineMap', $._multi_dim_affine_expr_sq),
+      field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
 
     // operation ::= `affine.min` affine-map-attribute dim-and-symbol-use-list
     seq(choice('affine.min', 'affine.max'),
-      field('operand', seq($.attribute, $._dim_and_symbol_use_list))),
+      field('operand', seq($.attribute, $._dim_and_symbol_use_list)),
+      field('attributes', optional($.attribute))),
 
     seq('affine.parallel',
       field('iv', $._value_use_list_parens), '=',
@@ -63,7 +65,8 @@ module.exports = {
       field('reduce', optional(seq(token('reduce'),
         '(', $.string_literal, repeat(seq(',', $.string_literal)), ')'))),
       field('return', optional($._function_return)),
-      field('body', $.region)),
+      field('body', $.region),
+      field('attributes', optional($.attribute))),
 
     seq('affine.prefetch',
       field('source', $.value_use),
@@ -80,6 +83,7 @@ module.exports = {
       field('source', $.value_use), ',',
       field('destination', $.value_use),
       field('multiDimAffineMap', $._multi_dim_affine_expr_sq),
+      field('attributes', optional($.attribute)),
       field('return', $._type_annotation)),
 
     // operation ::= `affine.yield` attr-dict ($operands^ `:` type($operands))?

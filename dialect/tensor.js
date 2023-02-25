@@ -159,6 +159,7 @@ module.exports = {
       field('inner_dims_pos', $.inner_dims_pos_attr),
       field('inner_tiles', $.inner_tiles_attr), token('into'),
       field('destination', $.value_use),
+      field('attributes', optional($.attribute)),
       field('return', $._function_type_annotation)),
 
     // operation ::= `tensor.generate` $dynamicExtents $body attr-dict `:` type($result)
