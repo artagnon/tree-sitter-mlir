@@ -1247,14 +1247,12 @@ func.func @indexCastFold(%arg0: i8) -> index {
 ================================================================================
 inf value_use
 ================================================================================
-func.func @test_maxf(%arg0 : f32) -> (f32, f32, f32) {
-  %c0 = arith.constant 0.0 : f32
-  %-inf = arith.constant 0xFF800000 : f32
-  %0 = arith.maxf %c0, %arg0 : f32
-  %1 = arith.maxf %arg0, %arg0 : f32
-  %2 = arith.maxf %-inf, %arg0 : f32
-  return %0, %1, %2 : f32, f32, f32
-}
+ func.func @test_maxf(%arg0 : f32) -> f32 {
+   %c0 = arith.constant 0.0 : f32
+   %-inf = arith.constant 0xFF800000 : f32
+   %0 = arith.maximumf %-inf, %arg0 : f32
+   return %0 : f32
+ }
 --------------------------------------------------------------------------------
 
 (toplevel
@@ -1269,12 +1267,6 @@ func.func @test_maxf(%arg0 : f32) -> (f32, f32, f32) {
               (float_type))))
         (func_return
           (type_list_attr_parens
-            (type
-              (builtin_type
-                (float_type)))
-            (type
-              (builtin_type
-                (float_type)))
             (type
               (builtin_type
                 (float_type)))))
@@ -1309,37 +1301,9 @@ func.func @test_maxf(%arg0 : f32) -> (f32, f32, f32) {
                     (builtin_type
                       (float_type))))))
             (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (float_type))))))
-            (operation
-              (op_result
-                (value_use))
-              (custom_operation
-                (arith_dialect
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (float_type))))))
-            (operation
               (custom_operation
                 (func_dialect
                   (value_use)
-                  (value_use)
-                  (value_use)
-                  (type
-                    (builtin_type
-                      (float_type)))
-                  (type
-                    (builtin_type
-                      (float_type)))
                   (type
                     (builtin_type
                       (float_type))))))))))))

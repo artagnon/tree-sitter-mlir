@@ -52,9 +52,9 @@ module.exports = {
     //                attr-dict `:` type($result)
     // operation ::= `arith.divf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
-    // operation ::= `arith.maxf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+    // operation ::= `arith.maximumf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
-    // operation ::= `arith.minf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
+    // operation ::= `arith.minimumf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
     // operation ::= `arith.mulf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
@@ -62,7 +62,7 @@ module.exports = {
     //                attr-dict `:` type($result)
     // operation ::= `arith.subf` $lhs `,` $rhs (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
-    seq(choice('arith.addf', 'arith.divf', 'arith.maxf', 'arith.minf', 'arith.mulf',
+    seq(choice('arith.addf', 'arith.divf', 'arith.maximumf', 'arith.minimumf', 'arith.mulf',
       'arith.remf', 'arith.subf'),
       field('lhs', $.value_use), ',',
       field('rhs', $.value_use),
@@ -115,5 +115,5 @@ module.exports = {
   ),
 
   arith_cmp_predicate: $ => token(choice('eq', 'ne', 'oeq', 'olt', 'ole', 'ogt', 'oge', 'slt',
-   'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge'))
+    'sle', 'sgt', 'sge', 'ult', 'ule', 'ugt', 'uge'))
 }
