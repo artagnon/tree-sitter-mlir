@@ -323,6 +323,7 @@
   "->"
 ] @operator
 
+(builtin_dialect name: (symbol_ref_id) @function)
 (func_dialect name: (symbol_ref_id) @function)
 (llvm_dialect name: (symbol_ref_id) @function)
 

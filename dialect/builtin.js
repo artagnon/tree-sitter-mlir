@@ -4,7 +4,7 @@ module.exports = {
   builtin_dialect: $ => prec.right(choice(
     // operation ::= `builtin.module` ($sym_name^)? attr-dict-with-keyword $bodyRegion
     seq(choice('builtin.module', 'module'),
-      field('name', optional($.bare_id)),
+      field('name', optional($.symbol_ref_id)),
       field('attributes', optional($.attribute)),
       field('body', $.region)),
 

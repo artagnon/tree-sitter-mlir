@@ -259,3 +259,60 @@ func.func @call_source() -> tensor<f32> {
                       (tensor_type
                         (dim_list
                           (float_type))))))))))))))
+
+================================================================================
+Module with name
+================================================================================
+module @addmodule {
+  func.func @test_addi(%arg0 : i64, %arg1 : i64) -> i64 {
+    %0 = arith.addi %arg0, %arg1 : i64
+    return %0 : i64
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (custom_operation
+      (builtin_dialect
+        (symbol_ref_id)
+        (region
+          (entry_block
+            (operation
+              (custom_operation
+                (func_dialect
+                  (symbol_ref_id)
+                  (func_arg_list
+                    (value_use)
+                    (type
+                      (builtin_type
+                        (integer_type)))
+                    (value_use)
+                    (type
+                      (builtin_type
+                        (integer_type))))
+                  (func_return
+                    (type_list_attr_parens
+                      (type
+                        (builtin_type
+                          (integer_type)))))
+                  (region
+                    (entry_block
+                      (operation
+                        (op_result
+                          (value_use))
+                        (custom_operation
+                          (arith_dialect
+                            (value_use)
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (integer_type))))))
+                      (operation
+                        (custom_operation
+                          (func_dialect
+                            (value_use)
+                            (type
+                              (builtin_type
+                                (integer_type)))))))))))))))))

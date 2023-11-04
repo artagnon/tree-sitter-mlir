@@ -28,6 +28,7 @@ func.func @sort_memref(%input1: memref<?x?xf32>, %input2: memref<?x?xi32>,
 
 module @arctorustadt {
 // <- function.builtin
+//     ^ function
       func.func @ok0(%in: !arc.adt<"i32">) -> () {
 //    ^ function.builtin
 //              ^ function
