@@ -4,19 +4,19 @@ import * as cp from "node:child_process";
 import * as process from "node:process";
 import * as path from "node:path";
 import * as os from "node:os";
-import glob from "glob";
+import { glob } from "glob";
 
 const dialects = {
-  "Builtin": 100,
+  "Builtin": 66,
   "Func": 100,
-  "Arith": 83,
-  "Math": 100,
+  "Arith": 72,
+  "Math": 87,
   "ControlFlow": 100,
-  "SCF": 88,
-  "Memref": 90,
-  "Tensor": 93,
+  "SCF": 73,
+  "Memref": 69,
+  "Tensor": 68,
   "Affine": 76,
-  "Linalg": 51,
+  "Linalg": 37,
 };
 
 let mlir_testdir = path.join(os.homedir(), "src", "llvm", "mlir", "test", "Dialect");
