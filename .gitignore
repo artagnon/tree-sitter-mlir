@@ -6,3 +6,4 @@ Cargo.toml
 scratch.mlir
 Cargo.lock
 target/
+build/
