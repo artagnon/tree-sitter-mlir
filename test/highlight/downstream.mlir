@@ -25,3 +25,37 @@ func.func @sort_memref(%input1: memref<?x?xf32>, %input2: memref<?x?xi32>,
   func.return
 // ^ function.builtin
 }
+
+module @arctorustadt {
+// <- function.builtin
+      func.func @ok0(%in: !arc.adt<"i32">) -> () {
+//    ^ function.builtin
+//              ^ function
+//                   ^ variable.parameter
+//                        ^ type
+            return
+//          ^ function.builtin
+      }
+
+      func.func @ok2(%in: !arc.adt<"i32">) -> !arc.adt<"i32"> {
+//    ^ function.builtin
+//              ^ function
+//                   ^ variable.parameter
+//                        ^ type
+//                                            ^ type
+            return %in: !arc.adt<"i32">
+//          ^ function.builtin
+//                 ^ variable.parameter
+//                      ^ type
+      }
+
+      func.func @ok4() -> !arc.adt<"i32"> {
+//    ^ function.builtin
+//              ^ function
+//                        ^ type
+            %out = arc.adt_constant "4711": !arc.adt<"i32">
+            return %out: !arc.adt<"i32">
+//          ^ function.builtin
+//                       ^ type
+      }
+}
