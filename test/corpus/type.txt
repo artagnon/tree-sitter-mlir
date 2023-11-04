@@ -512,6 +512,46 @@ func.func @test_addi_scalable_vector(%arg0 : vector<[8]xi64>, %arg1 : vector<[8]
                         (integer_type)))))))))))))
 
 ================================================================================
+Scalable 2d vector with scalable dimensions
+================================================================================
+%scalable_vector_2d = "foo.op"() : () -> vector<[2]x[2]xf64>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (generic_operation
+      (string_literal)
+      (function_type
+        (type
+          (builtin_type
+            (vector_type
+              (vector_dim_list)
+              (vector_dim_list)
+              (float_type))))))))
+
+================================================================================
+Scalable vector with bf16
+================================================================================
+%scalable_vector_2d_mixed = "foo.op"() : () -> vector<2x[4]xbf16>
+--------------------------------------------------------------------------------
+
+(toplevel
+  (operation
+    (op_result
+      (value_use))
+    (generic_operation
+      (string_literal)
+      (function_type
+        (type
+          (builtin_type
+            (vector_type
+              (vector_dim_list)
+              (vector_dim_list)
+              (float_type))))))))
+
+================================================================================
 !llvm.ptr dialect type
 ================================================================================
 llvm.func @byvalattr(%arg0: !llvm.ptr<i32> {llvm.byval}) {

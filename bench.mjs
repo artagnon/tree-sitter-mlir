@@ -7,7 +7,7 @@ import * as os from "node:os";
 import { glob } from "glob";
 
 const dialects = {
-  "Builtin": 66,
+  "Builtin": 100,
   "Func": 100,
   "Arith": 72,
   "Math": 87,
@@ -15,7 +15,7 @@ const dialects = {
   "SCF": 73,
   "Memref": 69,
   "Tensor": 68,
-  "Affine": 76,
+  "Affine": 82,
   "Linalg": 37,
 };
 

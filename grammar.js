@@ -258,9 +258,9 @@ const common = {
   // vector-element-type ::= float-type | integer-type | index-type
   // vector-dim-list := (static-dim-list `x`)? (`[` static-dim-list `]` `x`)?
   // static-dim-list ::= decimal-literal (`x` decimal-literal)*
-  vector_type: $ => seq(token('vector'), '<', optional($.vector_dim_list), $._prim_type, '>'),
-  vector_dim_list: $ => choice(seq($._static_dim_list, 'x',
-    optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x')),
+  vector_type: $ => seq(token('vector'), '<', repeat($.vector_dim_list), $._prim_type, '>'),
+  vector_dim_list: $ => prec.left(choice(seq($._static_dim_list, 'x',
+    optional(seq('[', $._static_dim_list, ']', 'x'))), seq('[', $._static_dim_list, ']', 'x'))),
   _static_dim_list: $ => seq(repeat1($._digit), repeat(seq('x', repeat1($._digit)))),
 
   // tuple-type ::= `tuple` `<` (type ( `,` type)*)? `>`
