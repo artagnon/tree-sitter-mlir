@@ -22,14 +22,16 @@
   },
   "devDependencies": {
     "glob": "^10.3.10",
-    "tree-sitter-cli": "^0.20.8"
+    "tree-sitter-cli": "^0.21.0"
   },
   "tree-sitter": [
     {
       "scope": "source.mlir",
       "file-types": [
         "mlir"
-      ]
+      ],
+      "highlights": "queries/highlights.scm",
+      "locals": "queries/locals.scm"
     }
   ]
 }

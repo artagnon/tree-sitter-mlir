@@ -327,9 +327,9 @@
 (func_dialect name: (symbol_ref_id) @function)
 (llvm_dialect name: (symbol_ref_id) @function)
 
-(func_arg_list (value_use) @variable.parameter)
-(block_arg_list (value_use) @variable.parameter)
-
 (caret_id) @tag
 (value_use) @variable
 (comment) @comment
+
+(func_arg_list (value_use) @variable.parameter)
+(block_arg_list (value_use) @variable.parameter)
