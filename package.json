@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "glob": "^10.3.10",
-    "tree-sitter-cli": "^0.21.0"
+    "tree-sitter-cli": "^0.22.0"
   },
   "tree-sitter": [
     {
