@@ -5,11 +5,14 @@
   "author": "Ramkumar Ramachandra",
   "license": "Apache-2.0",
   "main": "grammar.js",
+  "types": "bindings/node",
   "scripts": {
     "compile": "tree-sitter generate",
     "update-tests": "tree-sitter test --update",
     "test": "tree-sitter test",
-    "bench": "node bench.mjs"
+    "bench": "node bench.mjs",
+    "install": "node-gyp-build",
+    "prebuildify": "prebuildify --napi --strip"
   },
   "keywords": [
     "tree-sitter",
@@ -17,12 +20,30 @@
     "parser",
     "grammar"
   ],
+  "files": [
+    "grammar.js",
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "src/**"
+  ],
   "dependencies": {
-    "nan": "^2.18.0"
+    "node-addon-api": "^7.1.0",
+    "node-gyp-build": "^4.8.0"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.21.0"
+  },
+  "peerDependenciesMeta": {
+    "tree_sitter": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "glob": "^10.3.10",
-    "tree-sitter-cli": "^0.22.0"
+    "tree-sitter-cli": "^0.22.0",
+    "prebuildify": "^6.0.0"
   },
   "tree-sitter": [
     {
