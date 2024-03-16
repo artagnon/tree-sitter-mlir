@@ -1,9 +1,4 @@
 node_modules/
-src/
-bindings/
-binding.gyp
-Cargo.toml
-scratch.mlir
-Cargo.lock
 target/
 build/
+scratch.mlir
