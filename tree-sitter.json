@@ -1,0 +1,36 @@
+{
+  "grammars": [
+    {
+      "name": "mlir",
+      "camelcase": "Mlir",
+      "scope": "source.mlir",
+      "path": ".",
+      "file-types": [
+        "mlir"
+      ],
+      "highlights": "queries/highlights.scm",
+      "locals": "queries/locals.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "description": "Tree sitter grammar for MLIR",
+    "authors": [
+      {
+        "name": "Ramkumar Ramachandra"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/tree-sitter/tree-sitter-mlir"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}
