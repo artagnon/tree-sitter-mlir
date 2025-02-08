@@ -10,7 +10,7 @@ func.func @sort_memref(%input1: memref<?x?xf32>, %input2: memref<?x?xi32>,
 //                                  ^ variable.parameter
       outs(%init1: memref<?x?xf32>, %init2: memref<?x?xi32>)
 //    ^ keyword
-//                                  ^ variable.parameter
+//                                  ^ variable
       { dimension = 0 : i64, is_stable = true }
 //                                       ^ constant.builtin
       (%e11: f32, %e12: f32, %e21: i32, %e22: i32) {
