@@ -72,7 +72,7 @@ module.exports = {
 
     // operation ::= `arith.negf` $operand (`fastmath` `` $fastmath^)?
     //                attr-dict `:` type($result)
-    seq(choice('arith.negf'),
+    seq('arith.negf',
       field('operand', $.value_use),
       field('fastmath', optional($.fastmath_attr)),
       field('attributes', optional($.attribute)),

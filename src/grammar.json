@@ -4453,13 +4453,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "arith.negf"
-                }
-              ]
+              "type": "STRING",
+              "value": "arith.negf"
             },
             {
               "type": "FIELD",
