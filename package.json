@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "glob": "^13.0.0",
-    "tree-sitter-cli": "^0.25.6",
+    "tree-sitter-cli": "^0.26.0",
     "prebuildify": "^6.0.1"
   }
 }
